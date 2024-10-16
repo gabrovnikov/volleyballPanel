@@ -9,14 +9,10 @@ scoreTeam1 = 0
 scoreTeam2 = 0
 setTeam1 = 0
 setTeam2 = 0
-timers_running = [False] * 5
-times_seconds = [0] * 5  # Tempo de cada set em segundos
 current_set = 0  # Para saber qual set está rodando
-# Labels para exibir o tempo final de cada set
-final_time_labels = [None] * 5
+set_scores = [[0, 0] for _ in range(5)]  # Armazena os placares de cada set
 
-# variaveis de cor
-
+# variáveis de cor
 colorFont = "white"
 colorBackground = "black"
 
@@ -62,49 +58,29 @@ def update_score():
     # Atualizar o label com o número total de sets
     labelTotalSets.config(text=f"Número de sets: {setTeam1 + setTeam2}")
 
-# Função para converter segundos em minutos:segundos
-def format_time(seconds):
-    minutes, seconds = divmod(seconds, 60)
-    return f"{minutes:02d}:{seconds:02d}"
+# Função para armazenar o placar do set atual
+def store_set_score():
+    global set_scores, current_set
+    set_scores[current_set][0] = scoreTeam1
+    set_scores[current_set][1] = scoreTeam2
+    set_score_labels[current_set][1].config(text=f"{scoreTeam1} x {scoreTeam2}")
 
-# Função para atualizar o cronômetro de um set específico
-def update_set_timer(set_index):
-    if timers_running[set_index]:
-        times_seconds[set_index] += 1
-        minutes, seconds = divmod(times_seconds[set_index], 60)
-        set_timer_labels[set_index].config(text=f"{minutes:02d}:{seconds:02d}")
-        root.after(1000, update_set_timer, set_index)
- 
- # Função para iniciar o cronômetro de um set
-def start_set_timer(set_index):
-    global current_set
-    # Parar o cronômetro do set anterior se estiver rodando
-    if timers_running[current_set]:
-        timers_running[current_set] = False
-        final_time_labels[current_set].config(text=f"Tempo set {current_set + 1}: {format_time(times_seconds[current_set])}")
+# Função para mudar para o próximo set
+def next_set():
+    global scoreTeam1, scoreTeam2, current_set
+    # Armazenar o placar do set atual
+    store_set_score()
+    # Passar para o próximo set
+    current_set += 1
+    scoreTeam1, scoreTeam2 = 0, 0
+    update_score()
 
-    # Iniciar o cronômetro do novo set
-    current_set = set_index
-    if not timers_running[set_index]:
-        timers_running[set_index] = True
-        update_set_timer(set_index)
-
-# Função para zerar os tempos e reiniciar os cronômetros
-def reset_all_timers():
-    global times_seconds
-    global timers_running
-    times_seconds = [0] * 5
-    timers_running = [False] * 5
-    for i in range(5):
-        set_timer_labels[i].config(text="00:00")
-        final_time_labels[i].config(text=f"Tempo do set {i + 1}: 00:00")
-        
 ###############################################################
 # Criar a janela principal
 root = tk.Tk()
 root.title("Placar e Cronômetro")
 root.geometry("768x384")
-root.configure(bg=colorBackground) # Fundo preto
+root.configure(bg=colorBackground)  # Fundo preto
 
 # Labels do placar
 labelTeam1 = tk.Label(root, text="Equipe 1", font=("Arial", 15), bg=colorBackground, fg=colorFont)
@@ -133,19 +109,14 @@ timer_label.pack(pady=20)
 labelTotalSets = tk.Label(root, text=f"Número de sets: {setTeam1 + setTeam2}", font=("Arial", 15), bg="red", fg=colorFont)
 labelTotalSets.place(relx=0.4, rely=0.6, relwidth=0.25, relheight=0.1)
 
-# Labels para exibir o tempo de cada set embaixo do placar
-set_timer_labels = []
+# Labels para exibir o placar de cada set
+set_score_labels = []
 for i in range(5):
-    label = tk.Label(root, text="00:00", font=("Arial", 15), bg="black", fg="white")
-    label.place(relx=0.1 + i*0.15, rely=0.9, relwidth=0.12, relheight=0.1)
-    set_timer_labels.append(label)
-
-# Labels para exibir o tempo final de cada set embaixo de cada cronômetro
-for i in range(5):
-    final_label = tk.Label(root, text=f"Set {i + 1}: 00:00", font=("Arial", 12), bg="green", fg="white")
-    final_label.place(relx=0.1 + i*0.15, rely=0.85, relwidth=0.15, relheight=0.05)
-    final_time_labels[i] = final_label
-
+    set_label = tk.Label(root, text=f"SET {i + 1}", font=("Arial", 15), bg=colorBackground, fg=colorFont)
+    score_label = tk.Label(root, text="0 x 0", font=("Arial", 15), bg=colorBackground, fg=colorFont)
+    set_label.place(relx=0.1 + i * 0.15, rely=0.82, relwidth=0.12, relheight=0.1)
+    score_label.place(relx=0.1 + i * 0.15, rely=0.90, relwidth=0.12, relheight=0.1)
+    set_score_labels.append((set_label, score_label))
 
 ###############################################################
 
@@ -167,12 +138,14 @@ def increaseTeam2():
 
 def decreaseTeam1():
     global scoreTeam1
-    scoreTeam1 -= 1
+    if scoreTeam1 > 0:
+        scoreTeam1 -= 1
     update_score()
 
 def decreaseTeam2():
     global scoreTeam2
-    scoreTeam2 -= 1
+    if scoreTeam2 > 0:
+        scoreTeam2 -= 1
     update_score()
 
 # Funções para aumentar o número de sets
@@ -188,10 +161,13 @@ def increaseSet2():
 
 # Zerar os sets (panic button)
 def reset_sets():
-    global setTeam1, setTeam2
+    global setTeam1, setTeam2, scoreTeam1, scoreTeam2, current_set
     setTeam1 = 0
     setTeam2 = 0
-    update_score()   
+    scoreTeam1 = 0
+    scoreTeam2 = 0
+    current_set = 0
+    update_score()
 
 # Botões para controle do placar
 buttonTeam1Up = tk.Button(controlWindow, text="1 +", command=increaseTeam1)
@@ -205,6 +181,9 @@ buttonSet2Up = tk.Button(controlWindow, text="Set 2 +", command=increaseSet2)
 
 # Botão para zerar os sets
 buttonResetSets = tk.Button(controlWindow, text="Zerar Sets", command=reset_sets)
+
+# Botão para avançar para o próximo set
+buttonNextSet = tk.Button(controlWindow, text="Próximo Set", command=next_set)
 
 # Posicionar os botões do placar
 buttonTeam1Up.place(relx=0.1, rely=0.1, relwidth=0.1, relheight=0.1)
@@ -225,17 +204,8 @@ buttonResetTimer = tk.Button(controlWindow, text="Reiniciar Cronômetro", comman
 buttonStartTimer.place(relx=0.1, rely=0.85, relwidth=0.35, relheight=0.1)
 buttonStopTimer.place(relx=0.55, rely=0.85, relwidth=0.35, relheight=0.1)
 
-# Posicionar o botão de zerar sets
-buttonResetSets.place(relx=0.3, rely=0.8, relwidth=0.4, relheight=0.1)
-
-# Botões para iniciar os cronômetros dos sets na janela de controle
-for i in range(5):
-    button = tk.Button(controlWindow, text=f"Set {i + 1}", command=lambda i=i: start_set_timer(i))
-    button.place(relx=0.1 + i*0.15, rely=0.2, relwidth=0.05, relheight=0.05)
-
-# Botão para reiniciar todos os cronômetros
-reset_button = tk.Button(controlWindow, text="Reset timers", command=reset_all_timers)
-reset_button.place(relx=0.35, rely=0.6, relwidth=0.3, relheight=0.1)
+# Posicionar o botão de avançar set
+buttonNextSet.place(relx=0.3, rely=0.9, relwidth=0.4, relheight=0.1)
 
 # Iniciar o loop principal
 root.mainloop()
