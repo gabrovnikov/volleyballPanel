@@ -114,8 +114,8 @@ set_score_labels = []
 for i in range(5):
     set_label = tk.Label(root, text=f"SET {i + 1}", font=("Arial", 15), bg=colorBackground, fg=colorFont)
     score_label = tk.Label(root, text="0 x 0", font=("Arial", 15), bg=colorBackground, fg=colorFont)
-    set_label.place(relx=0.1 + i * 0.15, rely=0.82, relwidth=0.12, relheight=0.1)
-    score_label.place(relx=0.1 + i * 0.15, rely=0.90, relwidth=0.12, relheight=0.1)
+    set_label.place(relx=0.1 + i * 0.15, rely=0.9, relwidth=0.12, relheight=0.1)
+    score_label.place(relx=0.1 + i * 0.15, rely=0.95, relwidth=0.12, relheight=0.1)
     set_score_labels.append((set_label, score_label))
 
 ###############################################################

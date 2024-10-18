@@ -12,11 +12,14 @@ setTeam1 = 0
 setTeam2 = 0
 current_set = 0  # Para saber qual set está rodando
 set_scores = [[0, 0] for _ in range(5)]  # Armazena os placares de cada set
+current_set_display = 1  # Set atual, começa no 1
 
 # variáveis de cor
 colorFont = "white"
 colorBackground = "black"
 
+#definir o time que está sacando 
+serving_team = 1  # Começa com a Equipe 1 
 ####################################################
 
 # Função para atualizar o cronômetro
@@ -76,6 +79,30 @@ def next_set():
     scoreTeam1, scoreTeam2 = 0, 0
     update_score()
 
+# Função para atualizar o ícone do saque
+def update_serve_icon():
+    if serving_team == 1:
+        labelServe1.place(relx=0.12, rely=0.05, relwidth=0.1, relheight=0.1)
+        labelServe2.place_forget()  # Remove o ícone da Equipe 2
+    else:
+        labelServe2.place(relx=0.88, rely=0.05, relwidth=0.1, relheight=0.1, anchor="ne")
+        labelServe1.place_forget()  # Remove o ícone da Equipe 1
+
+# Função para alternar o time que está sacando
+def toggle_serving_team():
+    global serving_team
+    serving_team = 2 if serving_team == 1 else 1  # Alterna entre 1 e 2
+    update_serve_icon()
+
+# Função para atualizar o label do set atual
+def update_current_set_label():
+    labelCurrentSet.config(text=f"Set atual: {current_set_display}")
+
+# Função para alterar o set atual com base no número escolhido
+def set_current_set(set_number):
+    global current_set_display
+    current_set_display = set_number
+    update_current_set_label()
 ###############################################################
 # Criar a janela principal
 root = tk.Tk()
@@ -83,11 +110,15 @@ root.title("Placar e Cronômetro")
 root.geometry("768x384")
 root.configure(bg=colorBackground)  # Fundo preto
 
-# Brazão times
-team1 = PhotoImage(file="team1.png")
+# Brasão times
+team1 = PhotoImage(file="./Placar/team1.png")
 small_team1 = team1.subsample(2,2)
-team2 = PhotoImage(file="team2.png")
+team2 = PhotoImage(file="./Placar/team2.png")
 small_team2 = team2.subsample(2,2)
+
+# Imagem para o time que está sacando
+serve_icon = PhotoImage(file="./Placar/white_ball.png")
+small_serve_icon = serve_icon.subsample(15, 15)  # Reduz o tamanho da imagem
 
 # Labels do placar
 labelTeam1 = tk.Label(root, text="Equipe 1", font=("Arial", 15), bg=colorBackground, fg=colorFont)
@@ -100,11 +131,11 @@ labelScore2 = tk.Label(root, text=str(scoreTeam2), font=("Arial", 60), bg=colorB
 labelSet1 = tk.Label(root, text=f"Sets: {setTeam1}", font=("Arial", 15), bg=colorBackground, fg=colorFont)
 labelSet2 = tk.Label(root, text=f"Sets: {setTeam2}", font=("Arial", 15), bg=colorBackground, fg=colorFont)
 
-# label do brazão dos times
+# label do brasão dos times
 labelBrazaoTime1 = tk.Label(root, image=small_team1, bg=colorBackground)
 labelBrazaoTime2 = tk.Label(root, image=small_team2,  bg=colorBackground)
 
-# Posicionando label brazão dos times
+# Posicionando label brasão dos times
 labelBrazaoTime1.place(relx=0, rely=0.2, relwidth=0.1, relheight=0.3)
 labelBrazaoTime2.place(relx=1, rely=0.2, relwidth=0.1, relheight=0.3, anchor="ne")
 
@@ -117,7 +148,7 @@ labelScore2.place(relx=0.93, rely=0.3, relwidth=0.2, relheight=0.2, anchor="ne")
 labelSet2.place(relx=0.93, rely=0.5, relwidth=0.2, relheight=0.2, anchor="ne")
 
 # Label do cronômetro
-timer_label = tk.Label(root, text="00:00", font=("Arial", 20), bg=colorBackground, fg=colorFont)
+timer_label = tk.Label(root, text="00:00", font=("Arial", 40), bg=colorBackground, fg=colorFont)
 timer_label.pack(pady=20)
 
 # Label do número de sets no placar
@@ -133,8 +164,15 @@ for i in range(5):
     score_label.place(relx=0.1 + i * 0.15, rely=0.90, relwidth=0.12, relheight=0.1)
     set_score_labels.append((set_label, score_label))
 
-###############################################################
+# Adicionar o label do set atual na janela principal
+labelCurrentSet = tk.Label(root, text=f"Set atual: {current_set_display}", font=("Arial", 20), bg=colorBackground, fg=colorFont)
+labelCurrentSet.place(relx=0.4, rely=0.45, relwidth=0.25, relheight=0.1)  # Posicionamento centralizado abaixo do placar    
 
+# Labels para o ícone de saque
+labelServe1 = tk.Label(root, image=small_serve_icon, bg=colorBackground)
+labelServe2 = tk.Label(root, image=small_serve_icon, bg=colorBackground)    
+
+###############################################################
 # Criar a janela de controle
 controlWindow = tk.Toplevel(root)
 controlWindow.title("Controles")
@@ -206,11 +244,29 @@ buttonSet1Down = tk.Button(controlWindow, text="Set 1 -", command=decreaseSet1)
 buttonSet2Up = tk.Button(controlWindow, text="Set 2 +", command=increaseSet2)
 buttonSet2Down = tk.Button(controlWindow, text="Set 2 -", command=decreaseSet2)
 
+# Funções dos botões para selecionar manualmente o set atual
+buttonSet1 = tk.Button(controlWindow, text="1", command=lambda: set_current_set(1))
+buttonSet2 = tk.Button(controlWindow, text="2", command=lambda: set_current_set(2))
+buttonSet3 = tk.Button(controlWindow, text="3", command=lambda: set_current_set(3))
+buttonSet4 = tk.Button(controlWindow, text="4", command=lambda: set_current_set(4))
+buttonSet5 = tk.Button(controlWindow, text="5", command=lambda: set_current_set(5))
+
 # Botão para zerar os sets
 buttonResetSets = tk.Button(controlWindow, text="Zerar Sets", command=reset_sets)
 
 # Botão para avançar para o próximo set
 buttonNextSet = tk.Button(controlWindow, text="Próximo Set", command=next_set)
+
+#### Textos para a janela de controle ###################
+
+title_label = tk.Label(controlWindow, text="Set atual", font=("Arial", 15), bg="lightgray", fg="black")
+title_label.place(relx=0.25, rely=0.25, relwidth=0.2, relheight=0.05)  # Posiciona no topo centralizado
+
+
+
+
+
+#-----------------------------------#
 
 # Posicionar os botões do placar
 buttonTeam1Up.place(relx=0.1, rely=0.6, relwidth=0.1, relheight=0.1)
@@ -229,12 +285,26 @@ buttonStartTimer = tk.Button(controlWindow, text="Iniciar Cronômetro", command=
 buttonStopTimer = tk.Button(controlWindow, text="Parar Cronômetro", command=stop_timer)
 buttonResetTimer = tk.Button(controlWindow, text="Reiniciar Cronômetro", command=reset_timer)
 
+# Adicionar o botão no painel de controle para alternar o saque
+buttonToggleServe = tk.Button(controlWindow, text="Alternar Saque", command=toggle_serving_team)
+buttonToggleServe.place(relx=0.4, rely=0.75, relwidth=0.2, relheight=0.1)
+
 # Posicionar os botões do cronômetro
 buttonStartTimer.place(relx=0.1, rely=0.85, relwidth=0.35, relheight=0.1)
 buttonStopTimer.place(relx=0.55, rely=0.85, relwidth=0.35, relheight=0.1)
 
 # Posicionar o botão de avançar set
 buttonNextSet.place(relx=0.3, rely=0.9, relwidth=0.4, relheight=0.1)
+
+# Posicionar os botões de seleção de set
+buttonSet1.place(relx=0.1, rely=0.35, relwidth=0.1, relheight=0.1)
+buttonSet2.place(relx=0.25, rely=0.35, relwidth=0.1, relheight=0.1)
+buttonSet3.place(relx=0.4, rely=0.35, relwidth=0.1, relheight=0.1)
+buttonSet4.place(relx=0.55, rely=0.35, relwidth=0.1, relheight=0.1)
+buttonSet5.place(relx=0.7, rely=0.35, relwidth=0.1, relheight=0.1)
+
+# Começar o ícone na Equipe 1
+update_serve_icon()
 
 # Iniciar o loop principal
 root.mainloop()
