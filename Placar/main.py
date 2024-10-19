@@ -62,6 +62,10 @@ def update_score():
     # Atualizar o label com o número total de sets
     labelTotalSets.config(text=f"Número de sets: {setTeam1 + setTeam2}")
 
+# Update visualização set atual na janela de comando
+def update_current_set_control_label():
+    labelCurrentSetControl.config(text=current_set_display)
+
 # Função para armazenar o placar do set atual
 def store_set_score():
     global set_scores, current_set
@@ -69,15 +73,31 @@ def store_set_score():
     set_scores[current_set][1] = scoreTeam2
     set_score_labels[current_set][1].config(text=f"{scoreTeam1} x {scoreTeam2}")
 
-# Função para mudar para o próximo set
+# Função para mudar o set
 def next_set():
-    global scoreTeam1, scoreTeam2, current_set
+    global scoreTeam1, scoreTeam2, current_set, current_set_display
     # Armazenar o placar do set atual
     store_set_score()
     # Passar para o próximo set
     current_set += 1
+    current_set_display += 1
     scoreTeam1, scoreTeam2 = 0, 0
     update_score()
+    update_current_set_control_label()  # Atualiza o label na janela de controle
+    update_current_set_label()  # Atualiza o label na janela principal
+    
+def prev_set():
+    global scoreTeam1, scoreTeam2, current_set, current_set_display
+    # Armazenar o placar do set atual
+    store_set_score()
+    # Voltar para o set anterior
+    if current_set > 0:
+        current_set -= 1
+        current_set_display -= 1
+    scoreTeam1, scoreTeam2 = 0, 0
+    update_score()
+    update_current_set_control_label()  # Atualiza o label na janela de controle
+    update_current_set_label()  # Atualiza o label na janela principal
 
 # Função para atualizar o ícone do saque
 def update_serve_icon():
@@ -111,13 +131,13 @@ root.geometry("768x384")
 root.configure(bg=colorBackground)  # Fundo preto
 
 # Brasão times
-team1 = PhotoImage(file="./Placar/team1.png")
+team1 = PhotoImage(file="team1.png")
 small_team1 = team1.subsample(2,2)
-team2 = PhotoImage(file="./Placar/team2.png")
+team2 = PhotoImage(file="team2.png")
 small_team2 = team2.subsample(2,2)
 
 # Imagem para o time que está sacando
-serve_icon = PhotoImage(file="./Placar/white_ball.png")
+serve_icon = PhotoImage(file="white_ball.png")
 small_serve_icon = serve_icon.subsample(15, 15)  # Reduz o tamanho da imagem
 
 # Labels do placar
@@ -256,14 +276,14 @@ buttonResetSets = tk.Button(controlWindow, text="Zerar Sets", command=reset_sets
 
 # Botão para avançar para o próximo set
 buttonNextSet = tk.Button(controlWindow, text="Próximo Set", command=next_set)
+buttonPrevSet = tk.Button(controlWindow, text="Set Anterior", command=prev_set)
 
 #### Textos para a janela de controle ###################
-
 title_label = tk.Label(controlWindow, text="Set atual", font=("Arial", 15), bg="lightgray", fg="black")
-title_label.place(relx=0.25, rely=0.25, relwidth=0.2, relheight=0.05)  # Posiciona no topo centralizado
+title_label.place(relx=0.5, rely=0.25, relwidth=0.2, relheight=0.05, anchor="center")  # Posiciona no topo centralizado
 
-
-
+labelCurrentSetControl = tk.Label(controlWindow, text=current_set_display)
+labelCurrentSetControl.place(relx=0.5, rely=0.35, relwidth=0.1, relheight=0.1, anchor="center")  # Posiciona entre os botões de set
 
 
 #-----------------------------------#
@@ -287,21 +307,16 @@ buttonResetTimer = tk.Button(controlWindow, text="Reiniciar Cronômetro", comman
 
 # Adicionar o botão no painel de controle para alternar o saque
 buttonToggleServe = tk.Button(controlWindow, text="Alternar Saque", command=toggle_serving_team)
-buttonToggleServe.place(relx=0.4, rely=0.75, relwidth=0.2, relheight=0.1)
+buttonToggleServe.place(relx=0.4, rely=0.6, relwidth=0.2, relheight=0.1)
 
 # Posicionar os botões do cronômetro
 buttonStartTimer.place(relx=0.1, rely=0.85, relwidth=0.35, relheight=0.1)
 buttonStopTimer.place(relx=0.55, rely=0.85, relwidth=0.35, relheight=0.1)
 
 # Posicionar o botão de avançar set
-buttonNextSet.place(relx=0.3, rely=0.9, relwidth=0.4, relheight=0.1)
+buttonNextSet.place(relx=0.6, rely=0.30, relwidth=0.1, relheight=0.1, anchor="nw")
+buttonPrevSet.place(relx=0.4, rely=0.30, relwidth=0.1, relheight=0.1, anchor="ne")
 
-# Posicionar os botões de seleção de set
-buttonSet1.place(relx=0.1, rely=0.35, relwidth=0.1, relheight=0.1)
-buttonSet2.place(relx=0.25, rely=0.35, relwidth=0.1, relheight=0.1)
-buttonSet3.place(relx=0.4, rely=0.35, relwidth=0.1, relheight=0.1)
-buttonSet4.place(relx=0.55, rely=0.35, relwidth=0.1, relheight=0.1)
-buttonSet5.place(relx=0.7, rely=0.35, relwidth=0.1, relheight=0.1)
 
 # Começar o ícone na Equipe 1
 update_serve_icon()
