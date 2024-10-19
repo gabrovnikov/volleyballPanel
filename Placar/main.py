@@ -25,6 +25,9 @@ serving_team = 1  # Começa com a Equipe 1
 subsTeam1 = 0
 subsTeam2 = 0
 
+# Variáveis para contagem de tempos
+timeTeam1 = 0
+timeTeam2 = 0
 
 ####################################################
 
@@ -60,8 +63,9 @@ def reset_timer():
 
 # Atualizar o placar e os sets
 def update_score():
-    labelScore1.config(text=str(scoreTeam1))
-    labelScore2.config(text=str(scoreTeam2))
+    labelScore.config(text=f"{scoreTeam1} x {scoreTeam2}", bg=colorBackground)
+    #labelScore1.config(text=str(scoreTeam1))
+    #labelScore2.config(text=str(scoreTeam2))
     labelSet1.config(text=f"Sets: {setTeam1}")
     labelSet2.config(text=f"Sets: {setTeam2}")
     # Atualizar o label com o número total de sets
@@ -142,6 +146,18 @@ def increaseSubsTeam2():
     global subsTeam2
     subsTeam2 += 1
     update_score()    
+
+# Funções para aumentar o número de substituições
+def increaseTimeTeam1():
+    global timeTeam1
+    timeTeam1 += 1
+    update_score()
+
+def increaseTimeTeam2():
+    global timeTeam2
+    timeTeam2 += 1
+    update_score()   
+
 ###############################################################
 # Criar a janela principal
 root = tk.Tk()
@@ -160,34 +176,37 @@ serve_icon = PhotoImage(file="./Placar/white_ball.png")
 small_serve_icon = serve_icon.subsample(15, 15)  # Reduz o tamanho da imagem
 
 # Labels do placar
-labelTeam1 = tk.Label(root, text="Equipe 1", font=("Arial", 15), bg=colorBackground, fg=colorFont)
-labelScore1 = tk.Label(root, text=str(scoreTeam1), font=("Arial", 60), bg=colorBackground, fg=colorFont)
+labelTeam1 = tk.Label(root, text="Mackenzie", font=("Arial", 25), bg=colorBackground, fg=colorFont)
+##labelScore1 = tk.Label(root, text=str(scoreTeam1), font=("Arial", 80), bg=colorBackground, fg=colorFont)
 
-labelTeam2 = tk.Label(root, text="Equipe 2", font=("Arial", 15), bg=colorBackground, fg=colorFont)
-labelScore2 = tk.Label(root, text=str(scoreTeam2), font=("Arial", 60), bg=colorBackground, fg=colorFont)
-
+labelTeam2 = tk.Label(root, text="Olympico", font=("Arial", 25), bg=colorBackground, fg=colorFont)
+##labelScore2 = tk.Label(root, text=str(scoreTeam2), font=("Arial", 80), bg=colorBackground, fg=colorFont)
+labelScore = Label(root, text="0 x 0", font=("Helvetica", 48))
+labelScore.grid(row=0, column=1)
 # Labels dos sets
-labelSet1 = tk.Label(root, text=f"Sets: {setTeam1}", font=("Arial", 15), bg=colorBackground, fg=colorFont)
-labelSet2 = tk.Label(root, text=f"Sets: {setTeam2}", font=("Arial", 15), bg=colorBackground, fg=colorFont)
+labelSet1 = tk.Label(root, text=f"Sets: {setTeam1}", font=("Arial", 25), bg=colorBackground, fg=colorFont)
+labelSet2 = tk.Label(root, text=f"Sets: {setTeam2}", font=("Arial", 25), bg=colorBackground, fg=colorFont)
 
 # label do brasão dos times
 labelBrazaoTime1 = tk.Label(root, image=small_team1, bg=colorBackground)
 labelBrazaoTime2 = tk.Label(root, image=small_team2,  bg=colorBackground)
 
 # Posicionando label brasão dos times
-labelBrazaoTime1.place(relx=0, rely=0.2, relwidth=0.1, relheight=0.3)
-labelBrazaoTime2.place(relx=1, rely=0.2, relwidth=0.1, relheight=0.3, anchor="ne")
+# label do brasão dos times (centralizados)
+labelBrazaoTime1.place(relx=0.2, rely=0.2, relwidth=0.1, relheight=0.3)
+labelBrazaoTime2.place(relx=0.8, rely=0.2, relwidth=0.1, relheight=0.3, anchor="ne")
 
 # Posicionar os labels do placar e sets
-labelTeam1.place(relx=0.07, rely=0.1, relwidth=0.2, relheight=0.2)
-labelScore1.place(relx=0.07, rely=0.3, relwidth=0.2, relheight=0.2)
-labelSet1.place(relx=0.07, rely=0.5, relwidth=0.2, relheight=0.2)
-labelTeam2.place(relx=0.93, rely=0.1, relwidth=0.2, relheight=0.2, anchor="ne")
-labelScore2.place(relx=0.93, rely=0.3, relwidth=0.2, relheight=0.2, anchor="ne")
-labelSet2.place(relx=0.93, rely=0.5, relwidth=0.2, relheight=0.2, anchor="ne")
+# Labels do placar (centralizados)
+labelTeam1.place(relx=0.3, rely=0.1, relwidth=0.2, relheight=0.2)
+labelScore.place(relx=0.5, rely=0.3, relwidth=0.2, relheight=0.2, anchor="center")
+labelSet1.place(relx=0.3, rely=0.5, relwidth=0.2, relheight=0.2)
+labelTeam2.place(relx=0.7, rely=0.1, relwidth=0.2, relheight=0.2, anchor="ne")
+#labelScore2.place(relx=0.7, rely=0.3, relwidth=0.2, relheight=0.2, anchor="ne")
+labelSet2.place(relx=0.7, rely=0.5, relwidth=0.2, relheight=0.2, anchor="ne")
 
 # Label do cronômetro
-timer_label = tk.Label(root, text="00:00", font=("Arial", 40), bg=colorBackground, fg=colorFont)
+timer_label = tk.Label(root, text="00:00", font=("Arial", 50), bg=colorBackground, fg=colorFont)
 timer_label.pack(pady=20)
 
 # Label do número de sets no placar
@@ -197,14 +216,14 @@ timer_label.pack(pady=20)
 # Labels para exibir o placar de cada set
 set_score_labels = []
 for i in range(5):
-    set_label = tk.Label(root, text=f"SET {i + 1}", font=("Arial", 15), bg=colorBackground, fg=colorFont)
-    score_label = tk.Label(root, text="0 x 0", font=("Arial", 15), bg=colorBackground, fg=colorFont)
+    set_label = tk.Label(root, text=f"SET {i + 1}", font=("Arial", 25), bg=colorBackground, fg=colorFont)
+    score_label = tk.Label(root, text="0 x 0", font=("Arial", 25), bg=colorBackground, fg=colorFont)
     set_label.place(relx=0.1 + i * 0.15, rely=0.82, relwidth=0.12, relheight=0.1)
     score_label.place(relx=0.1 + i * 0.15, rely=0.90, relwidth=0.12, relheight=0.1)
     set_score_labels.append((set_label, score_label))
 
 # Adicionar o label do set atual na janela principal
-labelCurrentSet = tk.Label(root, text=f"Set atual: {current_set_display}", font=("Arial", 20), bg=colorBackground, fg=colorFont)
+labelCurrentSet = tk.Label(root, text=f"Set atual: {current_set_display}", font=("Arial", 30), bg=colorBackground, fg=colorFont)
 labelCurrentSet.place(relx=0.4, rely=0.65, relwidth=0.25, relheight=0.1)  # Posicionamento centralizado abaixo do placar    
 
 # Labels para o ícone de saque
@@ -212,13 +231,20 @@ labelServe1 = tk.Label(root, image=small_serve_icon, bg=colorBackground)
 labelServe2 = tk.Label(root, image=small_serve_icon, bg=colorBackground)    
 
 # Labels para mostrar número de substituições de cada time
-labelSubs1 = tk.Label(root, text=f"Substituições: {subsTeam1}", font=("Arial", 15), bg=colorBackground, fg=colorFont)
-labelSubs2 = tk.Label(root, text=f"Substituições: {subsTeam2}", font=("Arial", 15), bg=colorBackground, fg=colorFont)
+labelSubs1 = tk.Label(root, text=f"Substituições: {subsTeam1}", font=("Arial", 25), bg=colorBackground, fg=colorFont)
+labelSubs2 = tk.Label(root, text=f"Substituições: {subsTeam2}", font=("Arial", 25), bg=colorBackground, fg=colorFont)
 
 # Posicionar os labels das substituições ao lado dos nomes das equipes
 labelSubs1.place(relx=0.07, rely=0.65, relwidth=0.2, relheight=0.1)
 labelSubs2.place(relx=0.93, rely=0.65, relwidth=0.2, relheight=0.1, anchor="ne")
 
+# Labels para mostrar número de substituições de cada time
+labelTime1 = tk.Label(root, text=f"Tempos: {timeTeam1}", font=("Arial", 25), bg=colorBackground, fg=colorFont)
+labelTime2 = tk.Label(root, text=f"Tempos: {timeTeam2}", font=("Arial", 25), bg=colorBackground, fg=colorFont)
+
+# Posicionar os labels das substituições ao lado dos nomes das equipes
+labelTime1.place(relx=0.07, rely=0.75, relwidth=0.2, relheight=0.1)
+labelTime2.place(relx=0.93, rely=0.75, relwidth=0.2, relheight=0.1, anchor="ne")
 ###############################################################
 # Criar a janela de controle
 controlWindow = tk.Toplevel(root)
@@ -322,6 +348,13 @@ buttonSubsTeam2 = tk.Button(controlWindow, text="Substituição Time 2", command
 buttonSubsTeam1.place(relx=0.1, rely=0.5, relwidth=0.35, relheight=0.1)
 buttonSubsTeam2.place(relx=0.55, rely=0.5, relwidth=0.35, relheight=0.1)
 
+# Botões para aumentar o número de substituições para cada time
+buttonTimeTeam1 = tk.Button(controlWindow, text="Tempo Time 1", command=increaseTimeTeam1)
+buttonTimeTeam2 = tk.Button(controlWindow, text="Tempo Time 2", command=increaseTimeTeam2)
+
+# Posicionar os botões de substituições na janela de controle
+buttonTimeTeam1.place(relx=0.1, rely=0.4, relwidth=0.35, relheight=0.1)
+buttonTimeTeam2.place(relx=0.55, rely=0.4, relwidth=0.35, relheight=0.1)
 #-----------------------------------#
 
 # Posicionar os botões do placar
