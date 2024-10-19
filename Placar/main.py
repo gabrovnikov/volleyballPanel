@@ -20,6 +20,12 @@ colorBackground = "black"
 
 #definir o time que está sacando 
 serving_team = 1  # Começa com a Equipe 1 
+
+# Variáveis para contagem de substituições
+subsTeam1 = 0
+subsTeam2 = 0
+
+
 ####################################################
 
 # Função para atualizar o cronômetro
@@ -58,9 +64,11 @@ def update_score():
     labelScore2.config(text=str(scoreTeam2))
     labelSet1.config(text=f"Sets: {setTeam1}")
     labelSet2.config(text=f"Sets: {setTeam2}")
-
     # Atualizar o label com o número total de sets
     labelTotalSets.config(text=f"Número de sets: {setTeam1 + setTeam2}")
+    # Atualizar substituições
+    labelSubs1.config(text=f"Substituições: {subsTeam1}")
+    labelSubs2.config(text=f"Substituições: {subsTeam2}")
 
 # Update visualização set atual na janela de comando
 def update_current_set_control_label():
@@ -123,6 +131,17 @@ def set_current_set(set_number):
     global current_set_display
     current_set_display = set_number
     update_current_set_label()
+
+# Funções para aumentar o número de substituições
+def increaseSubsTeam1():
+    global subsTeam1
+    subsTeam1 += 1
+    update_score()
+
+def increaseSubsTeam2():
+    global subsTeam2
+    subsTeam2 += 1
+    update_score()    
 ###############################################################
 # Criar a janela principal
 root = tk.Tk()
@@ -131,13 +150,13 @@ root.geometry("768x384")
 root.configure(bg=colorBackground)  # Fundo preto
 
 # Brasão times
-team1 = PhotoImage(file="team1.png")
+team1 = PhotoImage(file="./Placar/team1.png")
 small_team1 = team1.subsample(2,2)
-team2 = PhotoImage(file="team2.png")
+team2 = PhotoImage(file="./Placar/team2.png")
 small_team2 = team2.subsample(2,2)
 
 # Imagem para o time que está sacando
-serve_icon = PhotoImage(file="white_ball.png")
+serve_icon = PhotoImage(file="./Placar/white_ball.png")
 small_serve_icon = serve_icon.subsample(15, 15)  # Reduz o tamanho da imagem
 
 # Labels do placar
@@ -172,8 +191,8 @@ timer_label = tk.Label(root, text="00:00", font=("Arial", 40), bg=colorBackgroun
 timer_label.pack(pady=20)
 
 # Label do número de sets no placar
-labelTotalSets = tk.Label(root, text=f"Número de sets: {setTeam1 + setTeam2}", font=("Arial", 15), bg="red", fg=colorFont)
-labelTotalSets.place(relx=0.4, rely=0.6, relwidth=0.25, relheight=0.1)
+##labelTotalSets = tk.Label(root, text=f"Número de sets: {setTeam1 + setTeam2}", font=("Arial", 15), bg="red", fg=colorFont)
+##labelTotalSets.place(relx=0.4, rely=0.6, relwidth=0.25, relheight=0.1)
 
 # Labels para exibir o placar de cada set
 set_score_labels = []
@@ -186,11 +205,19 @@ for i in range(5):
 
 # Adicionar o label do set atual na janela principal
 labelCurrentSet = tk.Label(root, text=f"Set atual: {current_set_display}", font=("Arial", 20), bg=colorBackground, fg=colorFont)
-labelCurrentSet.place(relx=0.4, rely=0.45, relwidth=0.25, relheight=0.1)  # Posicionamento centralizado abaixo do placar    
+labelCurrentSet.place(relx=0.4, rely=0.65, relwidth=0.25, relheight=0.1)  # Posicionamento centralizado abaixo do placar    
 
 # Labels para o ícone de saque
 labelServe1 = tk.Label(root, image=small_serve_icon, bg=colorBackground)
 labelServe2 = tk.Label(root, image=small_serve_icon, bg=colorBackground)    
+
+# Labels para mostrar número de substituições de cada time
+labelSubs1 = tk.Label(root, text=f"Substituições: {subsTeam1}", font=("Arial", 15), bg=colorBackground, fg=colorFont)
+labelSubs2 = tk.Label(root, text=f"Substituições: {subsTeam2}", font=("Arial", 15), bg=colorBackground, fg=colorFont)
+
+# Posicionar os labels das substituições ao lado dos nomes das equipes
+labelSubs1.place(relx=0.07, rely=0.65, relwidth=0.2, relheight=0.1)
+labelSubs2.place(relx=0.93, rely=0.65, relwidth=0.2, relheight=0.1, anchor="ne")
 
 ###############################################################
 # Criar a janela de controle
@@ -252,6 +279,8 @@ def reset_sets():
     current_set = 0
     update_score()
 
+    
+
 # Botões para controle do placar
 buttonTeam1Up = tk.Button(controlWindow, text="1 +", command=increaseTeam1)
 buttonTeam2Up = tk.Button(controlWindow, text="2 +", command=increaseTeam2)
@@ -285,6 +314,13 @@ title_label.place(relx=0.5, rely=0.25, relwidth=0.2, relheight=0.05, anchor="cen
 labelCurrentSetControl = tk.Label(controlWindow, text=current_set_display)
 labelCurrentSetControl.place(relx=0.5, rely=0.35, relwidth=0.1, relheight=0.1, anchor="center")  # Posiciona entre os botões de set
 
+# Botões para aumentar o número de substituições para cada time
+buttonSubsTeam1 = tk.Button(controlWindow, text="Substituição Time 1", command=increaseSubsTeam1)
+buttonSubsTeam2 = tk.Button(controlWindow, text="Substituição Time 2", command=increaseSubsTeam2)
+
+# Posicionar os botões de substituições na janela de controle
+buttonSubsTeam1.place(relx=0.1, rely=0.5, relwidth=0.35, relheight=0.1)
+buttonSubsTeam2.place(relx=0.55, rely=0.5, relwidth=0.35, relheight=0.1)
 
 #-----------------------------------#
 
