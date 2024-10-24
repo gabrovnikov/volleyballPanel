@@ -1,9 +1,11 @@
 import tkinter as tk
 from tkinter import *
-
+from tkinter import filedialog
+from PIL import Image, ImageTk
 # Variáveis globais do cronômetro
 timer_running = False
 time_seconds = 0
+timer_label_control = None  # Label para o cronômetro na janela de controle
 
 # Variáveis do placar e sets
 scoreTeam1 = 0
@@ -14,13 +16,6 @@ current_set = 0  # Para saber qual set está rodando
 set_scores = [[0, 0] for _ in range(5)]  # Armazena os placares de cada set
 current_set_display = 1  # Set atual, começa no 1
 
-# variáveis de cor
-colorFont = "white"
-colorBackground = "black"
-
-#definir o time que está sacando 
-serving_team = 1  # Começa com a Equipe 1 
-
 # Variáveis para contagem de substituições
 subsTeam1 = 0
 subsTeam2 = 0
@@ -29,6 +24,12 @@ subsTeam2 = 0
 timeTeam1 = 0
 timeTeam2 = 0
 
+# variáveis de cor
+colorFont = "white"
+colorBackground = "black"
+
+#definir o time que está sacando 
+serving_team = 1  # Começa com a Equipe 1 
 ####################################################
 
 # Função para atualizar o cronômetro
@@ -38,7 +39,13 @@ def update_timer():
         time_seconds += 1
         # Converter os segundos em minutos e segundos
         minutes, seconds = divmod(time_seconds, 60)
-        timer_label.config(text=f"{minutes:02d}:{seconds:02d}")
+        time_formatted = f"{minutes:02d}:{seconds:02d}"
+
+        # Atualiza o cronômetro nas duas janelas
+        timer_label.config(text=time_formatted)
+        timer_label_control.config(text=time_formatted)  # Atualiza também na janela de controle
+
+
         # Atualizar o cronômetro a cada 1000ms (1 segundo)
         root.after(1000, update_timer)
 
@@ -59,20 +66,18 @@ def reset_timer():
     global time_seconds
     time_seconds = 0
     timer_label.config(text="00:00")
+    timer_label_control.config(text="00:00")
     stop_timer()
 
 # Atualizar o placar e os sets
 def update_score():
-    labelScore.config(text=f"{scoreTeam1} x {scoreTeam2}", bg=colorBackground)
-    #labelScore1.config(text=str(scoreTeam1))
-    #labelScore2.config(text=str(scoreTeam2))
+    labelScore1.config(text=str(scoreTeam1))
+    labelScore2.config(text=str(scoreTeam2))
     labelSet1.config(text=f"Sets: {setTeam1}")
     labelSet2.config(text=f"Sets: {setTeam2}")
+
     # Atualizar o label com o número total de sets
     labelTotalSets.config(text=f"Número de sets: {setTeam1 + setTeam2}")
-    # Atualizar substituições
-    labelSubs1.config(text=f"Substituições: {subsTeam1}")
-    labelSubs2.config(text=f"Substituições: {subsTeam2}")
 
 # Update visualização set atual na janela de comando
 def update_current_set_control_label():
@@ -136,6 +141,13 @@ def set_current_set(set_number):
     current_set_display = set_number
     update_current_set_label()
 
+# Função para atualizar os nomes das equipes
+def update_team_names():
+    team1_name = entryTeam1.get()  # Captura o nome da equipe 1
+    team2_name = entryTeam2.get()  # Captura o nome da equipe 2
+
+    labelTeam1.config(text=team1_name)  # Atualiza o label da Equipe 1 na janela principal
+    labelTeam2.config(text=team2_name)  # Atualiza o label da Equipe 2 na janela principal
 # Funções para aumentar o número de substituições
 def increaseSubsTeam1():
     global subsTeam1
@@ -156,7 +168,7 @@ def increaseTimeTeam1():
 def increaseTimeTeam2():
     global timeTeam2
     timeTeam2 += 1
-    update_score()   
+    update_score()  
 
 ###############################################################
 # Criar a janela principal
@@ -166,23 +178,22 @@ root.geometry("768x384")
 root.configure(bg=colorBackground)  # Fundo preto
 
 # Brasão times
-team1 = PhotoImage(file="./Placar/team1.png")
+team1 = PhotoImage(file="team1.png")
 small_team1 = team1.subsample(2,2)
-team2 = PhotoImage(file="./Placar/team2.png")
+team2 = PhotoImage(file="team2.png")
 small_team2 = team2.subsample(2,2)
 
 # Imagem para o time que está sacando
-serve_icon = PhotoImage(file="./Placar/white_ball.png")
+serve_icon = PhotoImage(file="white_ball.png")
 small_serve_icon = serve_icon.subsample(15, 15)  # Reduz o tamanho da imagem
 
 # Labels do placar
-labelTeam1 = tk.Label(root, text="Mackenzie", font=("Arial", 25), bg=colorBackground, fg=colorFont)
-##labelScore1 = tk.Label(root, text=str(scoreTeam1), font=("Arial", 80), bg=colorBackground, fg=colorFont)
+labelTeam1 = tk.Label(root, text="Equipe 1", font=("Arial", 30), bg=colorBackground, fg=colorFont)
+labelScore1 = tk.Label(root, text=str(scoreTeam1), font=("Arial", 60), bg=colorBackground, fg=colorFont)
 
-labelTeam2 = tk.Label(root, text="Olympico", font=("Arial", 25), bg=colorBackground, fg=colorFont)
-##labelScore2 = tk.Label(root, text=str(scoreTeam2), font=("Arial", 80), bg=colorBackground, fg=colorFont)
-labelScore = Label(root, text="0 x 0", font=("Helvetica", 48))
-labelScore.grid(row=0, column=1)
+labelTeam2 = tk.Label(root, text="Equipe 2", font=("Arial", 30), bg=colorBackground, fg=colorFont)
+labelScore2 = tk.Label(root, text=str(scoreTeam2), font=("Arial", 60), bg=colorBackground, fg=colorFont)
+
 # Labels dos sets
 labelSet1 = tk.Label(root, text=f"Sets: {setTeam1}", font=("Arial", 25), bg=colorBackground, fg=colorFont)
 labelSet2 = tk.Label(root, text=f"Sets: {setTeam2}", font=("Arial", 25), bg=colorBackground, fg=colorFont)
@@ -193,38 +204,43 @@ labelBrazaoTime2 = tk.Label(root, image=small_team2,  bg=colorBackground)
 
 # Posicionando label brasão dos times
 # label do brasão dos times (centralizados)
-labelBrazaoTime1.place(relx=0.2, rely=0.2, relwidth=0.1, relheight=0.3)
-labelBrazaoTime2.place(relx=0.8, rely=0.2, relwidth=0.1, relheight=0.3, anchor="ne")
+labelBrazaoTime1.place(relx=0.2, rely=0.25, relwidth=0.1, relheight=0.3)
+labelBrazaoTime2.place(relx=0.8, rely=0.25, relwidth=0.1, relheight=0.3, anchor="ne")
 
 # Posicionar os labels do placar e sets
 # Labels do placar (centralizados)
-labelTeam1.place(relx=0.3, rely=0.1, relwidth=0.2, relheight=0.2)
-labelScore.place(relx=0.5, rely=0.3, relwidth=0.2, relheight=0.2, anchor="center")
-labelSet1.place(relx=0.3, rely=0.5, relwidth=0.2, relheight=0.2)
-labelTeam2.place(relx=0.7, rely=0.1, relwidth=0.2, relheight=0.2, anchor="ne")
-#labelScore2.place(relx=0.7, rely=0.3, relwidth=0.2, relheight=0.2, anchor="ne")
-labelSet2.place(relx=0.7, rely=0.5, relwidth=0.2, relheight=0.2, anchor="ne")
+labelTeam1.place(relx=0.25, rely=0.20, relwidth=0.2, relheight=0.2, anchor="center")
+labelScore1.place(relx=0.4, rely=0.4, relwidth=0.3, relheight=0.2, anchor="center")
+labelSet1.place(relx=0.25, rely=0.6, relwidth=0.2, relheight=0.2, anchor="center")
+
+
+labelTeam2.place(relx=0.75, rely=0.20, relwidth=0.2, relheight=0.2, anchor="center")
+labelScore2.place(relx=0.6, rely=0.4, relwidth=0.2, relheight=0.2, anchor="center")
+labelSet2.place(relx=0.75, rely=0.6, relwidth=0.2, relheight=0.2, anchor="center")
+
+#labelScore = Label(root, text="0 x 0", font=("Helvetica", 80), bg=colorBackground, fg=colorFont)
+#labelScore.place(relx=0.5, rely=0.4, relwidth=0.3, relheight=0.2, anchor="center")
 
 # Label do cronômetro
-timer_label = tk.Label(root, text="00:00", font=("Arial", 50), bg=colorBackground, fg=colorFont)
+timer_label = tk.Label(root, text="00:00", font=("Arial", 40), bg=colorBackground, fg=colorFont)
 timer_label.pack(pady=20)
 
 # Label do número de sets no placar
-##labelTotalSets = tk.Label(root, text=f"Número de sets: {setTeam1 + setTeam2}", font=("Arial", 15), bg="red", fg=colorFont)
-##labelTotalSets.place(relx=0.4, rely=0.6, relwidth=0.25, relheight=0.1)
+labelTotalSets = tk.Label(root, text=f"Número de sets: {setTeam1 + setTeam2}", font=("Arial", 15), bg="red", fg=colorFont)
+labelTotalSets.place(relx=0.4, rely=0.6, relwidth=0.25, relheight=0.1)
 
 # Labels para exibir o placar de cada set
 set_score_labels = []
 for i in range(5):
-    set_label = tk.Label(root, text=f"SET {i + 1}", font=("Arial", 25), bg=colorBackground, fg=colorFont)
-    score_label = tk.Label(root, text="0 x 0", font=("Arial", 25), bg=colorBackground, fg=colorFont)
+    set_label = tk.Label(root, text=f"SET {i + 1}", font=("Arial", 15), bg=colorBackground, fg=colorFont)
+    score_label = tk.Label(root, text="0 x 0", font=("Arial", 15), bg=colorBackground, fg=colorFont)
     set_label.place(relx=0.1 + i * 0.15, rely=0.82, relwidth=0.12, relheight=0.1)
     score_label.place(relx=0.1 + i * 0.15, rely=0.90, relwidth=0.12, relheight=0.1)
     set_score_labels.append((set_label, score_label))
 
 # Adicionar o label do set atual na janela principal
-labelCurrentSet = tk.Label(root, text=f"Set atual: {current_set_display}", font=("Arial", 30), bg=colorBackground, fg=colorFont)
-labelCurrentSet.place(relx=0.4, rely=0.65, relwidth=0.25, relheight=0.1)  # Posicionamento centralizado abaixo do placar    
+labelCurrentSet = tk.Label(root, text=f"Set atual: {current_set_display}", font=("Arial", 20), bg=colorBackground, fg=colorFont)
+labelCurrentSet.place(relx=0.5, rely=0.55, relwidth=0.25, relheight=0.1, anchor="center")  # Posicionamento centralizado abaixo do placar    
 
 # Labels para o ícone de saque
 labelServe1 = tk.Label(root, image=small_serve_icon, bg=colorBackground)
@@ -245,11 +261,20 @@ labelTime2 = tk.Label(root, text=f"Tempos: {timeTeam2}", font=("Arial", 25), bg=
 # Posicionar os labels das substituições ao lado dos nomes das equipes
 labelTime1.place(relx=0.07, rely=0.75, relwidth=0.2, relheight=0.1)
 labelTime2.place(relx=0.93, rely=0.75, relwidth=0.2, relheight=0.1, anchor="ne")
+
+
 ###############################################################
 # Criar a janela de controle
 controlWindow = tk.Toplevel(root)
 controlWindow.title("Controles")
 controlWindow.geometry("700x600")
+
+# Caixas de texto para entrada de nome das equipes
+entryTeam1 = tk.Entry(controlWindow, font=("Arial", 15))
+entryTeam1.place(relx=0.2, rely=0.5, relwidth=0.2, relheight=0.05, anchor="center")
+
+entryTeam2 = tk.Entry(controlWindow, font=("Arial", 15))
+entryTeam2.place(relx=0.8, rely=0.5, relwidth=0.2, relheight=0.05, anchor="center")
 
 # Funções para aumentar/diminuir o placar
 def increaseTeam1():
@@ -297,15 +322,18 @@ def decreaseSet2():
 
 # Zerar os sets (panic button)
 def reset_sets():
-    global setTeam1, setTeam2, scoreTeam1, scoreTeam2, current_set
+    global setTeam1, setTeam2, scoreTeam1, scoreTeam2, current_set, current_set_display
     setTeam1 = 0
     setTeam2 = 0
     scoreTeam1 = 0
     scoreTeam2 = 0
     current_set = 0
+    current_set_display = 1
     update_score()
+    update_current_set_control_label()
+    update_current_set_label()
 
-    
+
 
 # Botões para controle do placar
 buttonTeam1Up = tk.Button(controlWindow, text="1 +", command=increaseTeam1)
@@ -326,35 +354,30 @@ buttonSet3 = tk.Button(controlWindow, text="3", command=lambda: set_current_set(
 buttonSet4 = tk.Button(controlWindow, text="4", command=lambda: set_current_set(4))
 buttonSet5 = tk.Button(controlWindow, text="5", command=lambda: set_current_set(5))
 
-# Botão para zerar os sets
-buttonResetSets = tk.Button(controlWindow, text="Zerar Sets", command=reset_sets)
+# Botão para atualizar os nomes das equipes
+buttonUpdateNames = tk.Button(controlWindow, text="Atualizar Nomes", command=lambda: update_team_names())
+buttonUpdateNames.place(relx=0.5, rely=0.5, relwidth=0.2, relheight=0.05, anchor="center")
 
-# Botão para avançar para o próximo set
+# Botão para controlar SETS
 buttonNextSet = tk.Button(controlWindow, text="Próximo Set", command=next_set)
 buttonPrevSet = tk.Button(controlWindow, text="Set Anterior", command=prev_set)
+buttonResetSets = tk.Button(controlWindow, text="Zerar Sets", command=reset_sets)
+
 
 #### Textos para a janela de controle ###################
-title_label = tk.Label(controlWindow, text="Set atual", font=("Arial", 15), bg="lightgray", fg="black")
-title_label.place(relx=0.5, rely=0.25, relwidth=0.2, relheight=0.05, anchor="center")  # Posiciona no topo centralizado
+title_label = tk.Label(controlWindow, text="Cronômetro", font=("Arial", 15), bg="lightgray", fg="black")
+title_label.place(relx=0.5, rely=0.05, relwidth=0.2, relheight=0.05, anchor="center")  # Posiciona no topo centralizado
 
-labelCurrentSetControl = tk.Label(controlWindow, text=current_set_display)
+title_label = tk.Label(controlWindow, text="Set atual", font=("Arial", 15), bg="lightgray", fg="black")
+title_label.place(relx=0.5, rely=0.27, relwidth=0.2, relheight=0.05, anchor="center")  # Posiciona no topo centralizado
+
+labelCurrentSetControl = tk.Label(controlWindow, text=current_set_display, font=("Arial", 40), bg="lightgray", fg="black")
 labelCurrentSetControl.place(relx=0.5, rely=0.35, relwidth=0.1, relheight=0.1, anchor="center")  # Posiciona entre os botões de set
 
-# Botões para aumentar o número de substituições para cada time
-buttonSubsTeam1 = tk.Button(controlWindow, text="Substituição Time 1", command=increaseSubsTeam1)
-buttonSubsTeam2 = tk.Button(controlWindow, text="Substituição Time 2", command=increaseSubsTeam2)
+# Label do cronômetro na janela de controle
+timer_label_control = tk.Label(controlWindow, text="00:00", font=("Arial", 40), bg="lightgray", fg="black")
+timer_label_control.place(relx=0.4, rely=0.08, relwidth=0.2, relheight=0.1, anchor="nw")
 
-# Posicionar os botões de substituições na janela de controle
-buttonSubsTeam1.place(relx=0.1, rely=0.5, relwidth=0.35, relheight=0.1)
-buttonSubsTeam2.place(relx=0.55, rely=0.5, relwidth=0.35, relheight=0.1)
-
-# Botões para aumentar o número de substituições para cada time
-buttonTimeTeam1 = tk.Button(controlWindow, text="Tempo Time 1", command=increaseTimeTeam1)
-buttonTimeTeam2 = tk.Button(controlWindow, text="Tempo Time 2", command=increaseTimeTeam2)
-
-# Posicionar os botões de substituições na janela de controle
-buttonTimeTeam1.place(relx=0.1, rely=0.4, relwidth=0.35, relheight=0.1)
-buttonTimeTeam2.place(relx=0.55, rely=0.4, relwidth=0.35, relheight=0.1)
 #-----------------------------------#
 
 # Posicionar os botões do placar
@@ -379,14 +402,21 @@ buttonToggleServe = tk.Button(controlWindow, text="Alternar Saque", command=togg
 buttonToggleServe.place(relx=0.4, rely=0.6, relwidth=0.2, relheight=0.1)
 
 # Posicionar os botões do cronômetro
-buttonStartTimer.place(relx=0.1, rely=0.85, relwidth=0.35, relheight=0.1)
-buttonStopTimer.place(relx=0.55, rely=0.85, relwidth=0.35, relheight=0.1)
+buttonStartTimer.place(relx=0.6, rely=0.08, relwidth=0.1, relheight=0.1, anchor="nw")
+buttonStopTimer.place(relx=0.4, rely=0.08, relwidth=0.1, relheight=0.1, anchor="ne")
+buttonResetTimer.place(relx=0.5, rely=0.2, relwidth=0.2, relheight=0.05, anchor="center")
 
 # Posicionar o botão de avançar set
 buttonNextSet.place(relx=0.6, rely=0.30, relwidth=0.1, relheight=0.1, anchor="nw")
 buttonPrevSet.place(relx=0.4, rely=0.30, relwidth=0.1, relheight=0.1, anchor="ne")
+buttonResetSets.place(relx=0.5, rely=0.42, relwidth=0.2, relheight=0.05, anchor="center")
 
-
+#Desenhando linhas para separar as áreas nas telas
+#Janela de comando
+separator1 = tk.Frame(controlWindow, bg="black", width=2)  # Defina a altura como 2 para uma linha fina
+separator1.place(relx=0.3, rely=0, relheight=1)
+separator2 = tk.Frame(controlWindow, bg="black", width=2)  # Defina a altura como 2 para uma linha fina
+separator2.place(relx=0.7, rely=0, relheight=1)
 # Começar o ícone na Equipe 1
 update_serve_icon()
 
