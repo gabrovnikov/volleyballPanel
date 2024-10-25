@@ -82,12 +82,12 @@ def update_score():
     labelScore.config(text= str(scoreTeam1)+" x "+ str(scoreTeam2))
     # Atualizar o label com o número total de sets
     labelTotalSets.config(text=f"Número de sets: {setTeam1 + setTeam2}")
-    labelSet1.config(text="Sets:" + str(setTeam1))
-    labelSet2.config(text="Sets:" + str(setTeam2))
-    labelSubs1.config(text="Sustituições:" + str(subsTeam1))
-    labelSubs2.config(text="Sustituições:" + str(subsTeam2))
-    labelTime1.config(text="Tempos:" + str(timeTeam1))
-    labelTime2.config(text="Tempos:" + str(timeTeam2))
+    labelSet1.config(text="Sets: " + str(setTeam1))
+    labelSet2.config(text="Sets:"  + str(setTeam2))
+    labelSubs1.config(text="Sustituições: " + str(subsTeam1))
+    labelSubs2.config(text="Sustituições: " + str(subsTeam2))
+    labelTime1.config(text="Tempos: " + str(timeTeam1))
+    labelTime2.config(text="Tempos: " + str(timeTeam2))
     labelChallenge1.config(text= f"Desafios: {challengeTeam1}/2")
     labelChallenge2.config(text= f"Desafios: {challengeTeam2}/2")
     
@@ -133,10 +133,10 @@ def prev_set():
 # Função para atualizar o ícone do saque
 def update_serve_icon():
     if serving_team == 1:
-        labelServe1.place(relx=0.30, rely=0.15, relwidth=0.1, relheight=0.1)
+        labelServe1.place(relx=0.30, rely=0.35, relwidth=0.05, relheight=0.1)
         labelServe2.place_forget()  # Remove o ícone da Equipe 2
     else:
-        labelServe2.place(relx=0.70, rely=0.15, relwidth=0.1, relheight=0.1, anchor="ne")
+        labelServe2.place(relx=0.71, rely=0.35, relwidth=0.05, relheight=0.1, anchor="ne")
         labelServe1.place_forget()  # Remove o ícone da Equipe 1
 
 # Função para alternar o time que está sacando
@@ -340,13 +340,13 @@ label_equipe2.place(relx=0.7, rely=0.25, relwidth=0.1, relheight=0.3)
 
 # Imagem para o time que está sacando
 serve_icon = PhotoImage(file="./Placar/white_ball.png")
-small_serve_icon = serve_icon.subsample(15, 15)  # Reduz o tamanho da imagem
+small_serve_icon = serve_icon.subsample(10, 10)  # Reduz o tamanho da imagem
 
 # Labels do placar
-labelTeam1 = tk.Label(root, text="Equipe 1", font=("Arial", 30), bg=colorBackground, fg=colorFont)
+labelTeam1 = tk.Label(root, text="Equipe 1", font=("Arial", 35), bg=colorBackground, fg=colorFont)
 labelScore1 = tk.Label(root, text=str(scoreTeam1), font=("Arial", 60), bg=colorBackground, fg=colorFont)
 
-labelTeam2 = tk.Label(root, text="Equipe 2", font=("Arial", 30), bg=colorBackground, fg=colorFont)
+labelTeam2 = tk.Label(root, text="Equipe 2", font=("Arial", 35), bg=colorBackground, fg=colorFont)
 labelScore2 = tk.Label(root, text=str(scoreTeam2), font=("Arial", 60), bg=colorBackground, fg=colorFont)
 
 # Labels dos sets
@@ -361,21 +361,21 @@ labelSet2 = tk.Label(root, text=f"Sets: {setTeam2}", font=("Arial", 25), bg=colo
 
 # Posicionar os labels do placar e sets
 # Labels do placar (centralizados)
-labelTeam1.place(relx=0.25, rely=0.20, relwidth=0.2, relheight=0.2, anchor="center")
+labelTeam1.place(relx=0.25, rely=0.20, relwidth=0.5, relheight=0.2, anchor="center")
 labelScore1.place(relx=0.4, rely=0.4, relwidth=0.18, relheight=0.2, anchor="center")
 labelSet1.place(relx=0.15, rely=0.6, relwidth=0.2, relheight=0.2, anchor="center")
 
 
-labelTeam2.place(relx=0.75, rely=0.20, relwidth=0.2, relheight=0.2, anchor="center")
+labelTeam2.place(relx=0.75, rely=0.20, relwidth=0.5, relheight=0.2, anchor="center")
 labelScore2.place(relx=0.6, rely=0.4, relwidth=0.18, relheight=0.2, anchor="center")
 labelSet2.place(relx=0.80, rely=0.6, relwidth=0.2, relheight=0.2, anchor="center")
 
-labelScore = Label(root, text=str(scoreTeam1) + " x " + str(scoreTeam2), font=("Helvetica", 80), bg=colorBackground, fg=colorFont)
+labelScore = Label(root, text=str(scoreTeam1) + " x " + str(scoreTeam2), font=("Helvetica", 120), bg=colorBackground, fg=colorFont)
 labelScore.place(relx=0.5, rely=0.4, relwidth=0.3, relheight=0.2, anchor="center")
 
 # Label do cronômetro
-timer_label = tk.Label(root, text="00:00", font=("Arial", 40), bg=colorBackground, fg=colorFont)
-timer_label.pack(pady=20)
+timer_label = tk.Label(root, text="00:00", font=("Arial", 60), bg=colorBackground, fg=colorFont)
+timer_label.pack(pady=13)
 
 # Label do número de sets no placar
 labelTotalSets = tk.Label(root, text=f"Número de sets: {setTeam1 + setTeam2}", font=("Arial", 15), bg="red", fg=colorFont)
@@ -396,12 +396,12 @@ label_patroc4.place(relx=0.75, rely=1, relwidth=0.25, relheight=0.15, anchor="sw
 
 # Labels para exibir o placar de cada set
 set_score_labels = []
-#for i in range(5):
-#    set_label = tk.Label(root, text=f"SET {i + 1}", font=("Arial", 15), bg=colorBackground, fg=colorFont)
-#   score_label = tk.Label(root, text="0 x 0", font=("Arial", 15), bg=colorBackground, fg=colorFont)
-#    set_label.place(relx=0.1 + i * 0.15, rely=0.82, relwidth=0.12, relheight=0.1)
-#    score_label.place(relx=0.1 + i * 0.15, rely=0.90, relwidth=0.12, relheight=0.1)
-#    set_score_labels.append((set_label, score_label))
+for i in range(4):
+    set_label = tk.Label(root, text=f"SET {i + 1}", font=("Arial", 28), bg=colorBackground, fg=colorFont)
+    score_label = tk.Label(root, text="0 x 0", font=("Arial", 28), bg=colorBackground, fg=colorFont)
+    set_label.place(relx=0.3 + i * 0.1, rely=0.62, relwidth=0.12, relheight=0.1)
+    score_label.place(relx=0.3 + i * 0.1, rely=0.70, relwidth=0.12, relheight=0.1)
+    set_score_labels.append((set_label, score_label))
 
 # Adicionar o label do set atual na janela principal
 labelCurrentSet = tk.Label(root, text=f"Set atual: {current_set_display}", font=("Arial", 20), bg=colorBackground, fg=colorFont)
