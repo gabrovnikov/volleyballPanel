@@ -379,7 +379,7 @@ label_equipe2.place(relx=0.71, rely=0.25, relwidth=0.12, relheight=0.33)
 
 
 # Imagem para o time que está sacando
-serve_icon = PhotoImage(file="white_ball.png")
+serve_icon = PhotoImage(file="./Placar/white_ball.png")
 small_serve_icon = serve_icon.subsample(10, 10)  # Reduz o tamanho da imagem
 
 # Labels do placar
