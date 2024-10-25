@@ -29,8 +29,8 @@ challengeTeam1 = 0
 challengeTeam2 = 0
 
 # variáveis de cor
-colorFont = "white"
-colorBackground = "black"
+colorFont = "black"
+colorBackground = "white"
 
 #definir o time que está sacando 
 serving_team = 1  # Começa com a Equipe 1 
@@ -133,10 +133,10 @@ def prev_set():
 # Função para atualizar o ícone do saque
 def update_serve_icon():
     if serving_team == 1:
-        labelServe1.place(relx=0.30, rely=0.35, relwidth=0.05, relheight=0.1)
+        labelServe1.place(relx=0.30, rely=0.35, relwidth=0.03, relheight=0.1)
         labelServe2.place_forget()  # Remove o ícone da Equipe 2
     else:
-        labelServe2.place(relx=0.71, rely=0.35, relwidth=0.05, relheight=0.1, anchor="ne")
+        labelServe2.place(relx=0.71, rely=0.35, relwidth=0.03, relheight=0.1, anchor="ne")
         labelServe1.place_forget()  # Remove o ícone da Equipe 1
 
 # Função para alternar o time que está sacando
@@ -235,7 +235,7 @@ def selecionar_equipe1():
     if caminho_equipe1:  # Se um arquivo for selecionado
         # Carregar e exibir a imagem usando PIL
         equipe1 = Image.open(caminho_equipe1)
-        equipe1 = equipe1.resize((100, 100))  # Redimensiona para ajustar ao Label
+        equipe1 = equipe1.resize((300, 150))  # Redimensiona para ajustar ao Label
         equipe1_tk = ImageTk.PhotoImage(equipe1)
 
         # Atualizar o Label com a imagem selecionada
@@ -250,7 +250,7 @@ def selecionar_equipe2():
     if caminho_equipe2:  # Se um arquivo for selecionado
         # Carregar e exibir a imagem usando PIL
         equipe2 = Image.open(caminho_equipe2)
-        equipe2 = equipe2.resize((100, 100))  # Redimensiona para ajustar ao Label
+        equipe2 = equipe2.resize((300, 150))  # Redimensiona para ajustar ao Label
         equipe2_tk = ImageTk.PhotoImage(equipe2)
 
         # Atualizar o Label com a imagem selecionada
@@ -339,7 +339,7 @@ label_equipe2.place(relx=0.7, rely=0.25, relwidth=0.1, relheight=0.3)
 
 
 # Imagem para o time que está sacando
-serve_icon = PhotoImage(file="./Placar/white_ball.png")
+serve_icon = PhotoImage(file="white_ball.png")
 small_serve_icon = serve_icon.subsample(10, 10)  # Reduz o tamanho da imagem
 
 # Labels do placar
@@ -363,15 +363,15 @@ labelSet2 = tk.Label(root, text=f"Sets: {setTeam2}", font=("Arial", 25), bg=colo
 # Labels do placar (centralizados)
 labelTeam1.place(relx=0.25, rely=0.20, relwidth=0.5, relheight=0.2, anchor="center")
 labelScore1.place(relx=0.4, rely=0.4, relwidth=0.18, relheight=0.2, anchor="center")
-labelSet1.place(relx=0.15, rely=0.6, relwidth=0.2, relheight=0.2, anchor="center")
+labelSet1.place(relx=0.30, rely=0.6, relwidth=0.08, relheight=0.05, anchor="e")
 
 
 labelTeam2.place(relx=0.75, rely=0.20, relwidth=0.5, relheight=0.2, anchor="center")
 labelScore2.place(relx=0.6, rely=0.4, relwidth=0.18, relheight=0.2, anchor="center")
-labelSet2.place(relx=0.80, rely=0.6, relwidth=0.2, relheight=0.2, anchor="center")
+labelSet2.place(relx=0.71, rely=0.6, relwidth=0.08, relheight=0.05, anchor="w")
 
 labelScore = Label(root, text=str(scoreTeam1) + " x " + str(scoreTeam2), font=("Helvetica", 120), bg=colorBackground, fg=colorFont)
-labelScore.place(relx=0.5, rely=0.4, relwidth=0.3, relheight=0.2, anchor="center")
+labelScore.place(relx=0.5, rely=0.4, relwidth=0.35, relheight=0.2, anchor="center")
 
 # Label do cronômetro
 timer_label = tk.Label(root, text="00:00", font=("Arial", 60), bg=colorBackground, fg=colorFont)
@@ -416,24 +416,24 @@ labelSubs1 = tk.Label(root, text=f"Substituições: {subsTeam1}", font=("Arial",
 labelSubs2 = tk.Label(root, text=f"Substituições: {subsTeam2}", font=("Arial", 25), bg=colorBackground, fg=colorFont)
 
 # Posicionar os labels das substituições ao lado dos nomes das equipes
-labelSubs1.place(relx=0.07, rely=0.65, relwidth=0.2, relheight=0.1)
-labelSubs2.place(relx=0.93, rely=0.65, relwidth=0.2, relheight=0.1, anchor="ne")
+labelSubs1.place(relx=0.3, rely=0.65, relwidth=0.16, relheight=0.05, anchor="ne")
+labelSubs2.place(relx=0.71, rely=0.65, relwidth=0.16, relheight=0.05, anchor="nw")
 
 # Labels para mostrar número de desafios de cada time
 labelChallenge1 = tk.Label(root, text=f"Desafios: 0/2", font=("Arial", 25), bg=colorBackground, fg=colorFont)
 labelChallenge2 = tk.Label(root, text=f"Desafios: 0/2", font=("Arial", 25), bg=colorBackground, fg=colorFont)
 
 # Posicionar os labels das substituições ao lado dos nomes das equipes
-labelChallenge1.place(relx=0.07, rely=0.45, relwidth=0.2, relheight=0.1)
-labelChallenge2.place(relx=0.93, rely=0.45, relwidth=0.2, relheight=0.1, anchor="ne")
+labelChallenge1.place(relx=0.3, rely=0.50, relwidth=0.13, relheight=0.05, anchor="ne")
+labelChallenge2.place(relx=0.71, rely=0.50, relwidth=0.13, relheight=0.05, anchor="nw")
 
 # Labels para mostrar número de tempos de cada time
 labelTime1 = tk.Label(root, text=f"Tempos: {timeTeam1}", font=("Arial", 25), bg=colorBackground, fg=colorFont)
 labelTime2 = tk.Label(root, text=f"Tempos: {timeTeam2}", font=("Arial", 25), bg=colorBackground, fg=colorFont)
 
 # Posicionar os labels das substituições ao lado dos nomes das equipes
-labelTime1.place(relx=0.07, rely=0.75, relwidth=0.2, relheight=0.1)
-labelTime2.place(relx=0.93, rely=0.75, relwidth=0.2, relheight=0.1, anchor="ne")
+labelTime1.place(relx=0.3, rely=0.72, relwidth=0.11, relheight=0.05, anchor="ne")
+labelTime2.place(relx=0.71, rely=0.72, relwidth=0.11, relheight=0.05, anchor="nw")
 
 
 ###############################################################
