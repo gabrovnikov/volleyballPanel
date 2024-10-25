@@ -117,6 +117,7 @@ def prev_set():
     update_current_set_label()  # Atualiza o label na janela principal
 
 # Função para atualizar o ícone do saque
+# Função para atualizar o ícone do saque
 def update_serve_icon():
     if serving_team == 1:
         labelServe1.place(relx=0.12, rely=0.05, relwidth=0.1, relheight=0.1)
@@ -284,7 +285,7 @@ label_equipe2.place(relx=0.7, rely=0.25, relwidth=0.1, relheight=0.3)
 
 
 # Imagem para o time que está sacando
-serve_icon = PhotoImage(file="white_ball.png")
+serve_icon = PhotoImage(file="./Placar/white_ball.png")
 small_serve_icon = serve_icon.subsample(15, 15)  # Reduz o tamanho da imagem
 
 # Labels do placar
@@ -386,16 +387,20 @@ entryTeam1.place(relx=0.2, rely=0.5, relwidth=0.2, relheight=0.05, anchor="cente
 entryTeam2 = tk.Entry(controlWindow, font=("Arial", 15))
 entryTeam2.place(relx=0.8, rely=0.5, relwidth=0.2, relheight=0.05, anchor="center")
 
-# Funções para aumentar/diminuir o placar
+# Funções para aumentar o placar e alternar o saque automaticamente
 def increaseTeam1():
-    global scoreTeam1
+    global scoreTeam1, serving_team
     scoreTeam1 += 1
+    serving_team = 1  # Time 1 marcou ponto, logo passa a ser o time sacando
     update_score()
+    update_serve_icon()  # Atualiza a bolinha para o lado do time que marcou
 
 def increaseTeam2():
-    global scoreTeam2
+    global scoreTeam2, serving_team
     scoreTeam2 += 1
+    serving_team = 2  # Time 2 marcou ponto, logo passa a ser o time sacando
     update_score()
+    update_serve_icon()  # Atualiza a bolinha para o lado do time que marcou
 
 def decreaseTeam1():
     global scoreTeam1
@@ -550,6 +555,21 @@ separator2 = tk.Frame(controlWindow, bg="black", width=2)  # Defina a altura com
 separator2.place(relx=0.7, rely=0, relheight=1)
 # Começar o ícone na Equipe 1
 update_serve_icon()
+
+def toggle_fullscreen(event=None):
+    is_fullscreen = root.attributes('-fullscreen')
+    root.attributes('-fullscreen', not is_fullscreen)
+
+def exit_fullscreen(event=None):
+    root.attributes('-fullscreen', False)
+
+# Bind a tecla F11 para alternar o modo fullscreen
+root.bind("<F11>", toggle_fullscreen)
+
+# Bind a tecla ESC para sair do modo fullscreen
+root.bind("<Escape>", exit_fullscreen)
+
+
 
 # Iniciar o loop principal
 root.mainloop()
