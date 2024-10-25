@@ -1,5 +1,6 @@
 import tkinter as tk
 from tkinter import *
+from tkinter import font
 from tkinter import filedialog
 from PIL import Image, ImageTk
 # Variáveis globais do cronômetro
@@ -34,6 +35,8 @@ colorBackground = "white"
 
 #definir o time que está sacando 
 serving_team = 1  # Começa com a Equipe 1 
+
+
 ####################################################
 
 # Função para atualizar o cronômetro
@@ -133,10 +136,10 @@ def prev_set():
 # Função para atualizar o ícone do saque
 def update_serve_icon():
     if serving_team == 1:
-        labelServe1.place(relx=0.30, rely=0.35, relwidth=0.03, relheight=0.1)
+        labelServe1.place(relx=0.29, rely=0.35, relwidth=0.03, relheight=0.1)
         labelServe2.place_forget()  # Remove o ícone da Equipe 2
     else:
-        labelServe2.place(relx=0.71, rely=0.35, relwidth=0.03, relheight=0.1, anchor="ne")
+        labelServe2.place(relx=0.72, rely=0.35, relwidth=0.03, relheight=0.1, anchor="ne")
         labelServe1.place_forget()  # Remove o ícone da Equipe 1
 
 # Função para alternar o time que está sacando
@@ -235,7 +238,7 @@ def selecionar_equipe1():
     if caminho_equipe1:  # Se um arquivo for selecionado
         # Carregar e exibir a imagem usando PIL
         equipe1 = Image.open(caminho_equipe1)
-        equipe1 = equipe1.resize((300, 150))  # Redimensiona para ajustar ao Label
+        equipe1 = equipe1.resize((350, 200))  # Redimensiona para ajustar ao Label
         equipe1_tk = ImageTk.PhotoImage(equipe1)
 
         # Atualizar o Label com a imagem selecionada
@@ -321,7 +324,38 @@ def selecionar_patroc4():
         # Atualizar o Label com a imagem selecionada
         label_patroc4.config(image=imagem_tk4)
         label_patroc4.image = imagem_tk4  # Manter a referência da imagem para não ser coletada pelo garbage collector
+def selecionar_patroc5():
+    # Abre a janela do sistema para selecionar a imagem
+    caminho_imagem5 = filedialog.askopenfilename(
+        title="Selecione uma imagem",
+        filetypes=[("Arquivos de Imagem", "*.png;*.jpg;*.jpeg;*.bmp;*.gif")])
+    
+    if caminho_imagem5:  # Se um arquivo for selecionado
+        # Carregar e exibir a imagem usando PIL
+        imagem5 = Image.open(caminho_imagem5)
+        imagem5 = imagem5.resize((250, 150))  # Redimensiona para ajustar ao Label
+        imagem_tk5 = ImageTk.PhotoImage(imagem5)
 
+        # Atualizar o Label com a imagem selecionada
+        label_patroc5.config(image=imagem_tk5)
+        label_patroc5.image = imagem_tk5  # Manter a referência da imagem para não ser coletada pelo garbage collector
+
+def selecionar_patroc6():
+    # Abre a janela do sistema para selecionar a imagem
+    caminho_imagem6 = filedialog.askopenfilename(
+        title="Selecione uma imagem",
+        filetypes=[("Arquivos de Imagem", "*.png;*.jpg;*.jpeg;*.bmp;*.gif")])
+    
+    if caminho_imagem6:  # Se um arquivo for selecionado
+        # Carregar e exibir a imagem usando PIL
+        imagem6 = Image.open(caminho_imagem6)
+        imagem6 = imagem6.resize((250, 150))  # Redimensiona para ajustar ao Label
+        imagem_tk6 = ImageTk.PhotoImage(imagem6)
+
+        # Atualizar o Label com a imagem selecionada
+        label_patroc6.config(image=imagem_tk6)
+        label_patroc6.image = imagem_tk6  # Manter a referência da imagem para não ser coletada pelo garbage collector
+       
 ###############################################################
 # Criar a janela principal
 root = tk.Tk()
@@ -332,10 +366,10 @@ root.configure(bg=colorBackground)  # Fundo preto
 # Brasão times
 
 label_equipe1 = tk.Label(root,  bg=colorBackground)
-label_equipe1.place(relx=0.2, rely=0.25, relwidth=0.1, relheight=0.3)
+label_equipe1.place(relx=0.17, rely=0.25, relwidth=0.12, relheight=0.33)
 
 label_equipe2 = tk.Label(root, bg=colorBackground)
-label_equipe2.place(relx=0.7, rely=0.25, relwidth=0.1, relheight=0.3)
+label_equipe2.place(relx=0.71, rely=0.25, relwidth=0.12, relheight=0.33)
 
 
 # Imagem para o time que está sacando
@@ -343,15 +377,15 @@ serve_icon = PhotoImage(file="white_ball.png")
 small_serve_icon = serve_icon.subsample(10, 10)  # Reduz o tamanho da imagem
 
 # Labels do placar
-labelTeam1 = tk.Label(root, text="Equipe 1", font=("Arial", 35), bg=colorBackground, fg=colorFont)
-labelScore1 = tk.Label(root, text=str(scoreTeam1), font=("Arial", 60), bg=colorBackground, fg=colorFont)
+labelTeam1 = tk.Label(root, text="Equipe 1", font=("Montserrat SemiBold", 35), bg=colorBackground, fg=colorFont)
+labelScore1 = tk.Label(root, text=str(scoreTeam1), font=("Montserrat SemiBold", 55), bg=colorBackground, fg=colorFont)
 
-labelTeam2 = tk.Label(root, text="Equipe 2", font=("Arial", 35), bg=colorBackground, fg=colorFont)
-labelScore2 = tk.Label(root, text=str(scoreTeam2), font=("Arial", 60), bg=colorBackground, fg=colorFont)
+labelTeam2 = tk.Label(root, text="Equipe 2", font=("Montserrat SemiBold", 35), bg=colorBackground, fg=colorFont)
+labelScore2 = tk.Label(root, text=str(scoreTeam2), font=("Montserrat SemiBold", 55), bg=colorBackground, fg=colorFont)
 
 # Labels dos sets
-labelSet1 = tk.Label(root, text=f"Sets: {setTeam1}", font=("Arial", 25), bg=colorBackground, fg=colorFont)
-labelSet2 = tk.Label(root, text=f"Sets: {setTeam2}", font=("Arial", 25), bg=colorBackground, fg=colorFont)
+labelSet1 = tk.Label(root, text=f"Sets: {setTeam1}", font=("Montserrat SemiBold", 20), bg=colorBackground, fg=colorFont)
+labelSet2 = tk.Label(root, text=f"Sets: {setTeam2}", font=("Montserrat SemiBold", 20), bg=colorBackground, fg=colorFont)
 
 
 # Posicionando label brasão dos times
@@ -361,24 +395,24 @@ labelSet2 = tk.Label(root, text=f"Sets: {setTeam2}", font=("Arial", 25), bg=colo
 
 # Posicionar os labels do placar e sets
 # Labels do placar (centralizados)
-labelTeam1.place(relx=0.25, rely=0.20, relwidth=0.5, relheight=0.2, anchor="center")
-labelScore1.place(relx=0.4, rely=0.4, relwidth=0.18, relheight=0.2, anchor="center")
-labelSet1.place(relx=0.30, rely=0.6, relwidth=0.08, relheight=0.05, anchor="e")
+labelTeam1.place(relx=0.24, rely=0.20, relwidth=0.5, relheight=0.2, anchor="center")
+labelScore1.place(relx=0.39, rely=0.45, relwidth=0.18, relheight=0.2, anchor="center")
+labelSet1.place(relx=0.29, rely=0.65, relwidth=0.08, relheight=0.05, anchor="e")
 
 
-labelTeam2.place(relx=0.75, rely=0.20, relwidth=0.5, relheight=0.2, anchor="center")
-labelScore2.place(relx=0.6, rely=0.4, relwidth=0.18, relheight=0.2, anchor="center")
-labelSet2.place(relx=0.71, rely=0.6, relwidth=0.08, relheight=0.05, anchor="w")
+labelTeam2.place(relx=0.76, rely=0.20, relwidth=0.5, relheight=0.2, anchor="center")
+labelScore2.place(relx=0.61, rely=0.45, relwidth=0.18, relheight=0.2, anchor="center")
+labelSet2.place(relx=0.72, rely=0.65, relwidth=0.08, relheight=0.05, anchor="w")
 
-labelScore = Label(root, text=str(scoreTeam1) + " x " + str(scoreTeam2), font=("Helvetica", 120), bg=colorBackground, fg=colorFont)
+labelScore = Label(root, text=str(scoreTeam1) + " x " + str(scoreTeam2), font=("Montserrat SemiBold", 110), bg=colorBackground, fg=colorFont)
 labelScore.place(relx=0.5, rely=0.4, relwidth=0.35, relheight=0.2, anchor="center")
 
 # Label do cronômetro
-timer_label = tk.Label(root, text="00:00", font=("Arial", 60), bg=colorBackground, fg=colorFont)
+timer_label = tk.Label(root, text="00:00", font=("Montserrat SemiBold", 60), bg=colorBackground, fg=colorFont)
 timer_label.pack(pady=13)
 
 # Label do número de sets no placar
-labelTotalSets = tk.Label(root, text=f"Número de sets: {setTeam1 + setTeam2}", font=("Arial", 15), bg="red", fg=colorFont)
+labelTotalSets = tk.Label(root, text=f"Número de sets: {setTeam1 + setTeam2}", font=("Montserrat SemiBold", 15), bg="red", fg=colorFont)
 #labelTotalSets.place(relx=0.4, rely=0.6, relwidth=0.25, relheight=0.1)
 
 
@@ -394,17 +428,23 @@ label_patroc3.place(relx=0.50, rely=1, relwidth=0.25, relheight=0.15, anchor="sw
 label_patroc4 = tk.Label(root, bg=colorBackground)
 label_patroc4.place(relx=0.75, rely=1, relwidth=0.25, relheight=0.15, anchor="sw")
 
+label_patroc5 = tk.Label(root, bg=colorBackground)
+label_patroc5.place(relx=0, rely=0.25, relwidth=0.15, relheight=0.15, anchor="nw")
+
+label_patroc6 = tk.Label(root, bg=colorBackground)
+label_patroc6.place(relx=1, rely=0.25, relwidth=0.15, relheight=0.15, anchor="ne")
+
 # Labels para exibir o placar de cada set
 set_score_labels = []
 for i in range(4):
-    set_label = tk.Label(root, text=f"SET {i + 1}", font=("Arial", 28), bg=colorBackground, fg=colorFont)
-    score_label = tk.Label(root, text="0 x 0", font=("Arial", 28), bg=colorBackground, fg=colorFont)
-    set_label.place(relx=0.3 + i * 0.1, rely=0.62, relwidth=0.12, relheight=0.1)
-    score_label.place(relx=0.3 + i * 0.1, rely=0.70, relwidth=0.12, relheight=0.1)
+    set_label = tk.Label(root, text=f"SET {i + 1}", font=("Montserrat SemiBold", 28), bg=colorBackground, fg=colorFont)
+    score_label = tk.Label(root, text="0 x 0", font=("Montserrat SemiBold", 28), bg=colorBackground, fg=colorFont)
+    set_label.place(relx=0.3 + i * 0.1, rely=0.71, relwidth=0.12, relheight=0.05)
+    score_label.place(relx=0.3 + i * 0.1, rely=0.76, relwidth=0.12, relheight=0.05)
     set_score_labels.append((set_label, score_label))
 
 # Adicionar o label do set atual na janela principal
-labelCurrentSet = tk.Label(root, text=f"Set atual: {current_set_display}", font=("Arial", 20), bg=colorBackground, fg=colorFont)
+labelCurrentSet = tk.Label(root, text=f"Set atual: {current_set_display}", font=("Montserrat SemiBold", 20), bg=colorBackground, fg=colorFont)
 labelCurrentSet.place(relx=0.5, rely=0.55, relwidth=0.25, relheight=0.1, anchor="center")  # Posicionamento centralizado abaixo do placar    
 
 # Labels para o ícone de saque
@@ -412,28 +452,28 @@ labelServe1 = tk.Label(root, image=small_serve_icon, bg=colorBackground)
 labelServe2 = tk.Label(root, image=small_serve_icon, bg=colorBackground)    
 
 # Labels para mostrar número de substituições de cada time
-labelSubs1 = tk.Label(root, text=f"Substituições: {subsTeam1}", font=("Arial", 25), bg=colorBackground, fg=colorFont)
-labelSubs2 = tk.Label(root, text=f"Substituições: {subsTeam2}", font=("Arial", 25), bg=colorBackground, fg=colorFont)
+labelSubs1 = tk.Label(root, text=f"Substituições: {subsTeam1}", font=("Montserrat SemiBold", 20), bg=colorBackground, fg=colorFont)
+labelSubs2 = tk.Label(root, text=f"Substituições: {subsTeam2}", font=("Montserrat SemiBold", 20), bg=colorBackground, fg=colorFont)
 
 # Posicionar os labels das substituições ao lado dos nomes das equipes
-labelSubs1.place(relx=0.3, rely=0.65, relwidth=0.16, relheight=0.05, anchor="ne")
-labelSubs2.place(relx=0.71, rely=0.65, relwidth=0.16, relheight=0.05, anchor="nw")
+labelSubs1.place(relx=0.29, rely=0.70, relwidth=0.16, relheight=0.05, anchor="ne")
+labelSubs2.place(relx=0.72, rely=0.70, relwidth=0.16, relheight=0.05, anchor="nw")
 
 # Labels para mostrar número de desafios de cada time
-labelChallenge1 = tk.Label(root, text=f"Desafios: 0/2", font=("Arial", 25), bg=colorBackground, fg=colorFont)
-labelChallenge2 = tk.Label(root, text=f"Desafios: 0/2", font=("Arial", 25), bg=colorBackground, fg=colorFont)
+labelChallenge1 = tk.Label(root, text=f"Desafios: 0/2", font=("Montserrat SemiBold", 20), bg=colorBackground, fg=colorFont)
+labelChallenge2 = tk.Label(root, text=f"Desafios: 0/2", font=("Montserrat SemiBold", 20), bg=colorBackground, fg=colorFont)
 
 # Posicionar os labels das substituições ao lado dos nomes das equipes
-labelChallenge1.place(relx=0.3, rely=0.50, relwidth=0.13, relheight=0.05, anchor="ne")
-labelChallenge2.place(relx=0.71, rely=0.50, relwidth=0.13, relheight=0.05, anchor="nw")
+labelChallenge1.place(relx=0.29, rely=0.55, relwidth=0.13, relheight=0.05, anchor="ne")
+labelChallenge2.place(relx=0.72, rely=0.55, relwidth=0.13, relheight=0.05, anchor="nw")
 
 # Labels para mostrar número de tempos de cada time
-labelTime1 = tk.Label(root, text=f"Tempos: {timeTeam1}", font=("Arial", 25), bg=colorBackground, fg=colorFont)
-labelTime2 = tk.Label(root, text=f"Tempos: {timeTeam2}", font=("Arial", 25), bg=colorBackground, fg=colorFont)
+labelTime1 = tk.Label(root, text=f"Tempos: {timeTeam1}", font=("Montserrat SemiBold", 20), bg=colorBackground, fg=colorFont)
+labelTime2 = tk.Label(root, text=f"Tempos: {timeTeam2}", font=("Montserrat SemiBold", 20), bg=colorBackground, fg=colorFont)
 
 # Posicionar os labels das substituições ao lado dos nomes das equipes
-labelTime1.place(relx=0.3, rely=0.72, relwidth=0.11, relheight=0.05, anchor="ne")
-labelTime2.place(relx=0.71, rely=0.72, relwidth=0.11, relheight=0.05, anchor="nw")
+labelTime1.place(relx=0.29, rely=0.77, relwidth=0.11, relheight=0.05, anchor="ne")
+labelTime2.place(relx=0.72, rely=0.77, relwidth=0.11, relheight=0.05, anchor="nw")
 
 
 ###############################################################
@@ -579,6 +619,12 @@ botao_selecionar3.place(relx=0.2, rely=1, relwidth=0.1, relheight=0.05, anchor="
 
 botao_selecionar4 = tk.Button(controlWindow, text="Patrocinador 4", command=selecionar_patroc4)
 botao_selecionar4.place(relx=0.3, rely=1, relwidth=0.1, relheight=0.05, anchor="sw")
+
+botao_selecionar5 = tk.Button(controlWindow, text="Patrocinador 5", command=selecionar_patroc5)
+botao_selecionar5.place(relx=0.4, rely=1, relwidth=0.1, relheight=0.05, anchor="sw")
+
+botao_selecionar6 = tk.Button(controlWindow, text="Patrocinador 6", command=selecionar_patroc6)
+botao_selecionar6.place(relx=0.5, rely=1, relwidth=0.1, relheight=0.05, anchor="sw")
 
 #### Textos para a janela de controle ###################
 title_label = tk.Label(controlWindow, text="Cronômetro", font=("Arial", 15), bg="lightgray", fg="black")
