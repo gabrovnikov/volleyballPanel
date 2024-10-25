@@ -14,6 +14,7 @@ scoreTeam2 = 0
 setTeam1 = 0
 setTeam2 = 0
 current_set = 0  # Para saber qual set está rodando
+
 set_scores = [[0, 0] for _ in range(5)]  # Armazena os placares de cada set
 current_set_display = 1  # Set atual, começa no 1
 
@@ -333,7 +334,7 @@ def selecionar_patroc5():
     if caminho_imagem5:  # Se um arquivo for selecionado
         # Carregar e exibir a imagem usando PIL
         imagem5 = Image.open(caminho_imagem5)
-        imagem5 = imagem5.resize((250, 150))  # Redimensiona para ajustar ao Label
+        imagem5 = imagem5.resize((250, 125))  # Redimensiona para ajustar ao Label
         imagem_tk5 = ImageTk.PhotoImage(imagem5)
 
         # Atualizar o Label com a imagem selecionada
@@ -349,7 +350,7 @@ def selecionar_patroc6():
     if caminho_imagem6:  # Se um arquivo for selecionado
         # Carregar e exibir a imagem usando PIL
         imagem6 = Image.open(caminho_imagem6)
-        imagem6 = imagem6.resize((250, 150))  # Redimensiona para ajustar ao Label
+        imagem6 = imagem6.resize((300, 150))  # Redimensiona para ajustar ao Label
         imagem_tk6 = ImageTk.PhotoImage(imagem6)
 
         # Atualizar o Label com a imagem selecionada
@@ -417,22 +418,22 @@ labelTotalSets = tk.Label(root, text=f"Número de sets: {setTeam1 + setTeam2}", 
 
 
 label_patroc1 = tk.Label(root, bg=colorBackground)
-label_patroc1.place(relx=0, rely=1, relwidth=0.25, relheight=0.15, anchor="sw")
+label_patroc1.place(relx=0, rely=1, relwidth=0.17, relheight=0.15, anchor="sw")
 
 label_patroc2 = tk.Label(root, bg=colorBackground)
-label_patroc2.place(relx=0.25, rely=1, relwidth=0.25, relheight=0.15, anchor="sw")
+label_patroc2.place(relx=0.17, rely=1, relwidth=0.17, relheight=0.15, anchor="sw")
 
 label_patroc3 = tk.Label(root, bg=colorBackground)
-label_patroc3.place(relx=0.50, rely=1, relwidth=0.25, relheight=0.15, anchor="sw")
+label_patroc3.place(relx=0.32, rely=1, relwidth=0.17, relheight=0.15, anchor="sw")
 
 label_patroc4 = tk.Label(root, bg=colorBackground)
-label_patroc4.place(relx=0.75, rely=1, relwidth=0.25, relheight=0.15, anchor="sw")
+label_patroc4.place(relx=0.45, rely=1, relwidth=0.17, relheight=0.15, anchor="sw")
 
 label_patroc5 = tk.Label(root, bg=colorBackground)
-label_patroc5.place(relx=0, rely=0.25, relwidth=0.15, relheight=0.15, anchor="nw")
+label_patroc5.place(relx=0.61, rely=1, relwidth=0.17, relheight=0.15, anchor="sw")
 
 label_patroc6 = tk.Label(root, bg=colorBackground)
-label_patroc6.place(relx=1, rely=0.25, relwidth=0.15, relheight=0.15, anchor="ne")
+label_patroc6.place(relx=0.80, rely=1, relwidth=0.19, relheight=0.15, anchor="sw")
 
 # Labels para exibir o placar de cada set
 set_score_labels = []
@@ -484,10 +485,10 @@ controlWindow.geometry("700x600")
 
 # Caixas de texto para entrada de nome das equipes
 entryTeam1 = tk.Entry(controlWindow, font=("Arial", 15))
-entryTeam1.place(relx=0.2, rely=0.5, relwidth=0.2, relheight=0.05, anchor="center")
+entryTeam1.place(relx=0.15, rely=0.45, relwidth=0.2, relheight=0.05, anchor="center")
 
 entryTeam2 = tk.Entry(controlWindow, font=("Arial", 15))
-entryTeam2.place(relx=0.8, rely=0.5, relwidth=0.2, relheight=0.05, anchor="center")
+entryTeam2.place(relx=0.85, rely=0.45, relwidth=0.2, relheight=0.05, anchor="center")
 
 # Funções para aumentar o placar e alternar o saque automaticamente
 def increaseTeam1():
@@ -559,28 +560,28 @@ buttonTeam1Down = tk.Button(controlWindow, text="1 -", command=decreaseTeam1)
 buttonTeam2Down = tk.Button(controlWindow, text="2 -", command=decreaseTeam2)
 
 # Botões para controle dos sets
-buttonSet1Up = tk.Button(controlWindow, text="Set 1 +", command=increaseSet1)
-buttonSet1Down = tk.Button(controlWindow, text="Set 1 -", command=decreaseSet1)
-buttonSet2Up = tk.Button(controlWindow, text="Set 2 +", command=increaseSet2)
-buttonSet2Down = tk.Button(controlWindow, text="Set 2 -", command=decreaseSet2)
+buttonSet1Up = tk.Button(controlWindow, text="+ Set Time 1", command=increaseSet1)
+buttonSet1Down = tk.Button(controlWindow, text="- Set Time 1", command=decreaseSet1)
+buttonSet2Up = tk.Button(controlWindow, text="+ Set Time 2", command=increaseSet2)
+buttonSet2Down = tk.Button(controlWindow, text="- Set Time 2", command=decreaseSet2)
 
 # Botões para controle de substituição
-buttonSubs1Up = tk.Button(controlWindow, text="Sub 1 +", command=increaseSubsTeam1)
-buttonSubs1Down = tk.Button(controlWindow, text="Sub 1 -", command=decreaseSubsTeam1)
-buttonSubs2Up = tk.Button(controlWindow, text="Sub 2 +", command=increaseSubsTeam2)
-buttonSubs2Down = tk.Button(controlWindow, text="Sub 2 -", command=decreaseSubsTeam2)
+buttonSubs1Up = tk.Button(controlWindow, text="+ Substituição Time 1", command=increaseSubsTeam1)
+buttonSubs1Down = tk.Button(controlWindow, text="- Substituição Time 1", command=decreaseSubsTeam1)
+buttonSubs2Up = tk.Button(controlWindow, text="+ Substituição Time 2", command=increaseSubsTeam2)
+buttonSubs2Down = tk.Button(controlWindow, text="- Substituição Time 2", command=decreaseSubsTeam2)
 
 # Botões para controle de substituição
-buttonTime1Up = tk.Button(controlWindow, text="Time 1 +", command=increaseTimeTeam1)
-buttonTime1Down = tk.Button(controlWindow, text="Time 1 -", command=decreaseTimeTeam1)
-buttonTime2Up = tk.Button(controlWindow, text="Time 2 +", command=increaseTimeTeam2)
-buttonTime2Down = tk.Button(controlWindow, text="Time 2 -", command=decreaseTimeTeam2)
+buttonTime1Up = tk.Button(controlWindow, text="+ Tempo Time 1", command=increaseTimeTeam1)
+buttonTime1Down = tk.Button(controlWindow, text="- Tempo Time 1", command=decreaseTimeTeam1)
+buttonTime2Up = tk.Button(controlWindow, text="+ Tempo Time 2", command=increaseTimeTeam2)
+buttonTime2Down = tk.Button(controlWindow, text="- Tempo Time 2", command=decreaseTimeTeam2)
 
 # Botões para controle de desafio
-buttonChallenge1Up = tk.Button(controlWindow, text="Des 1 +", command=increaseChallengeTeam1)
-buttonChallenge1Down = tk.Button(controlWindow, text="Des 1 -", command=decreaseChallengeTeam1)
-buttonChallenge2Up = tk.Button(controlWindow, text="Des 2 +", command=increaseChallengeTeam2)
-buttonChallenge2Down = tk.Button(controlWindow, text="Des 2 -", command=decreaseChallengeTeam2)
+buttonChallenge1Up = tk.Button(controlWindow, text="+ Desafio Time 1", command=increaseChallengeTeam1)
+buttonChallenge1Down = tk.Button(controlWindow, text="- Desafio Time 1", command=decreaseChallengeTeam1)
+buttonChallenge2Up = tk.Button(controlWindow, text="+ Desafio Time 2", command=increaseChallengeTeam2)
+buttonChallenge2Down = tk.Button(controlWindow, text="- Desafio Time 2", command=decreaseChallengeTeam2)
 
 # Funções dos botões para selecionar manualmente o set atual
 buttonSet1 = tk.Button(controlWindow, text="1", command=lambda: set_current_set(1))
@@ -599,32 +600,32 @@ buttonPrevSet = tk.Button(controlWindow, text="Set Anterior", command=prev_set)
 buttonResetSets = tk.Button(controlWindow, text="Zerar Sets", command=reset_sets)
 
 #Botão para selecionar imagem do time
-botao_equipe1 = tk.Button(controlWindow, text="equipe 1", command=selecionar_equipe1)
-botao_equipe1.place(relx=0.1, rely=0.5, relwidth=0.1, relheight=0.05, anchor="center")
+botao_equipe1 = tk.Button(controlWindow, text="Logo Equipe 1", command=selecionar_equipe1)
+botao_equipe1.place(relx=0.15, rely=0.4, relwidth=0.1, relheight=0.05, anchor="center")
 
-botao_equipe1 = tk.Button(controlWindow, text="equipe 2", command=selecionar_equipe2)
-botao_equipe1.place(relx=0.2, rely=0.5, relwidth=0.1, relheight=0.05, anchor="center")
+botao_equipe2 = tk.Button(controlWindow, text="Logo Equipe 2", command=selecionar_equipe2)
+botao_equipe2.place(relx=0.85, rely=0.4, relwidth=0.1, relheight=0.05, anchor="center")
 
 
 
 #Botão para selecionar imagem de patrocinadores
 botao_selecionar1 = tk.Button(controlWindow, text="Patrocinador 1", command=selecionar_patroc1)
-botao_selecionar1.place(relx=0, rely=1, relwidth=0.1, relheight=0.05, anchor="sw")
+botao_selecionar1.place(relx=0.2, rely=1, relwidth=0.1, relheight=0.05, anchor="sw")
 
 botao_selecionar2 = tk.Button(controlWindow, text="Patrocinador 2", command=selecionar_patroc2)
-botao_selecionar2.place(relx=0.1, rely=1, relwidth=0.1, relheight=0.05, anchor="sw")
+botao_selecionar2.place(relx=0.3, rely=1, relwidth=0.1, relheight=0.05, anchor="sw")
 
 botao_selecionar3 = tk.Button(controlWindow, text="Patrocinador 3", command=selecionar_patroc3)
-botao_selecionar3.place(relx=0.2, rely=1, relwidth=0.1, relheight=0.05, anchor="sw")
+botao_selecionar3.place(relx=0.4, rely=1, relwidth=0.1, relheight=0.05, anchor="sw")
 
 botao_selecionar4 = tk.Button(controlWindow, text="Patrocinador 4", command=selecionar_patroc4)
-botao_selecionar4.place(relx=0.3, rely=1, relwidth=0.1, relheight=0.05, anchor="sw")
+botao_selecionar4.place(relx=0.5, rely=1, relwidth=0.1, relheight=0.05, anchor="sw")
 
 botao_selecionar5 = tk.Button(controlWindow, text="Patrocinador 5", command=selecionar_patroc5)
-botao_selecionar5.place(relx=0.4, rely=1, relwidth=0.1, relheight=0.05, anchor="sw")
+botao_selecionar5.place(relx=0.6, rely=1, relwidth=0.1, relheight=0.05, anchor="sw")
 
 botao_selecionar6 = tk.Button(controlWindow, text="Patrocinador 6", command=selecionar_patroc6)
-botao_selecionar6.place(relx=0.5, rely=1, relwidth=0.1, relheight=0.05, anchor="sw")
+botao_selecionar6.place(relx=0.7, rely=1, relwidth=0.1, relheight=0.05, anchor="sw")
 
 #### Textos para a janela de controle ###################
 title_label = tk.Label(controlWindow, text="Cronômetro", font=("Arial", 15), bg="lightgray", fg="black")
@@ -643,34 +644,34 @@ timer_label_control.place(relx=0.4, rely=0.08, relwidth=0.2, relheight=0.1, anch
 #-----------------------------------#
 
 # Posicionar os botões do placar
-buttonTeam1Up.place(relx=0.1, rely=0.6, relwidth=0.1, relheight=0.1)
-buttonTeam2Up.place(relx=0.8, rely=0.6, relwidth=0.1, relheight=0.1, anchor="ne")
-buttonTeam1Down.place(relx=0.2, rely=0.6, relwidth=0.1, relheight=0.1)
-buttonTeam2Down.place(relx=0.9, rely=0.6, relwidth=0.1, relheight=0.1, anchor="ne")
+buttonTeam1Up.place(relx=0.15, rely=0.5, relwidth=0.1, relheight=0.05, anchor="ne")
+buttonTeam2Up.place(relx=0.85, rely=0.5, relwidth=0.1, relheight=0.05, anchor="ne")
+buttonTeam1Down.place(relx=0.15, rely=0.5, relwidth=0.1, relheight=0.05, anchor="nw")
+buttonTeam2Down.place(relx=0.85, rely=0.5, relwidth=0.1, relheight=0.05, anchor="nw")
 
 # Posicionar os botões dos sets
-buttonSet1Up.place(relx=0.1, rely=0.7, relwidth=0.1, relheight=0.1)
-buttonSet2Up.place(relx=0.8, rely=0.7, relwidth=0.1, relheight=0.1, anchor="ne")
-buttonSet1Down.place(relx=0.2, rely=0.7, relwidth=0.1, relheight=0.1)
-buttonSet2Down.place(relx=0.9, rely=0.7, relwidth=0.1, relheight=0.1, anchor="ne")
+buttonSet1Up.place(relx=0.15, rely=0.55, relwidth=0.1, relheight=0.05, anchor="ne")
+buttonSet2Up.place(relx=0.85, rely=0.55, relwidth=0.1, relheight=0.05, anchor="ne")
+buttonSet1Down.place(relx=0.15, rely=0.55, relwidth=0.1, relheight=0.05, anchor="nw")
+buttonSet2Down.place(relx=0.85, rely=0.55, relwidth=0.1, relheight=0.05, anchor="nw")
 
 # Posicionar os botões das subs
-buttonSubs1Up.place(relx=0.1, rely=0.8, relwidth=0.1, relheight=0.1)
-buttonSubs2Up.place(relx=0.8, rely=0.8, relwidth=0.1, relheight=0.1, anchor="ne")
-buttonSubs1Down.place(relx=0.2, rely=0.8, relwidth=0.1, relheight=0.1)
-buttonSubs2Down.place(relx=0.9, rely=0.8, relwidth=0.1, relheight=0.1, anchor="ne")
+buttonSubs1Up.place(relx=0.15, rely=0.6, relwidth=0.1, relheight=0.05, anchor="ne")
+buttonSubs2Up.place(relx=0.85, rely=0.6, relwidth=0.1, relheight=0.05, anchor="ne")
+buttonSubs1Down.place(relx=0.15, rely=0.6, relwidth=0.1, relheight=0.05, anchor="nw")
+buttonSubs2Down.place(relx=0.85, rely=0.6, relwidth=0.1, relheight=0.05, anchor="nw")
 
 # Posicionar os botões dos challenges
-buttonChallenge1Up.place(relx=0.1, rely=0.9, relwidth=0.1, relheight=0.1)
-buttonChallenge2Up.place(relx=0.8, rely=0.9, relwidth=0.1, relheight=0.1, anchor="ne")
-buttonChallenge1Down.place(relx=0.2, rely=0.9, relwidth=0.1, relheight=0.1)
-buttonChallenge2Down.place(relx=0.9, rely=0.9, relwidth=0.1, relheight=0.1, anchor="ne")
+buttonChallenge1Up.place(relx=0.15, rely=0.65, relwidth=0.1, relheight=0.05, anchor="ne")
+buttonChallenge2Up.place(relx=0.85, rely=0.65, relwidth=0.1, relheight=0.05, anchor="ne")
+buttonChallenge1Down.place(relx=0.15, rely=0.65, relwidth=0.1, relheight=0.05, anchor="nw")
+buttonChallenge2Down.place(relx=0.85, rely=0.65, relwidth=0.1, relheight=0.05, anchor="nw")
 
 # Posicionar os botões dos tempos
-buttonTime1Up.place(relx=0.1, rely=0.7, relwidth=0.1, relheight=0.1)
-buttonTime2Up.place(relx=0.8, rely=0.7, relwidth=0.1, relheight=0.1, anchor="ne")
-buttonTime1Down.place(relx=0.2, rely=0.9, relwidth=0.1, relheight=0.1)
-buttonTime2Down.place(relx=0.9, rely=0.9, relwidth=0.1, relheight=0.1, anchor="ne")
+buttonTime1Up.place(relx=0.15, rely=0.7, relwidth=0.1, relheight=0.05, anchor="ne")
+buttonTime2Up.place(relx=0.85, rely=0.7, relwidth=0.1, relheight=0.05, anchor="ne")
+buttonTime1Down.place(relx=0.15, rely=0.7, relwidth=0.1, relheight=0.05, anchor="nw")
+buttonTime2Down.place(relx=0.85, rely=0.7, relwidth=0.1, relheight=0.05, anchor="nw")
 
 # Botões de controle do cronômetro
 buttonStartTimer = tk.Button(controlWindow, text="Iniciar Cronômetro", command=start_timer)
