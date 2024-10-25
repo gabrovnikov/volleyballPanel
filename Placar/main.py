@@ -78,6 +78,12 @@ def update_score():
     labelScore.config(text= str(scoreTeam1)+" x "+ str(scoreTeam2))
     # Atualizar o label com o número total de sets
     labelTotalSets.config(text=f"Número de sets: {setTeam1 + setTeam2}")
+    labelSet1.config(text="Sets:" + str(setTeam1))
+    labelSet2.config(text="Sets:" + str(setTeam2))
+    labelSubs1.config(text="Sustituições:" + str(subsTeam1))
+    labelSubs2.config(text="Sustituições:" + str(subsTeam2))
+    labelTime1.config(text="Tempos:" + str(timeTeam1))
+    labelTime2.config(text="Tempos:" + str(timeTeam2))
 
 # Update visualização set atual na janela de comando
 def update_current_set_control_label():
@@ -120,10 +126,10 @@ def prev_set():
 # Função para atualizar o ícone do saque
 def update_serve_icon():
     if serving_team == 1:
-        labelServe1.place(relx=0.12, rely=0.05, relwidth=0.1, relheight=0.1)
+        labelServe1.place(relx=0.30, rely=0.15, relwidth=0.1, relheight=0.1)
         labelServe2.place_forget()  # Remove o ícone da Equipe 2
     else:
-        labelServe2.place(relx=0.88, rely=0.05, relwidth=0.1, relheight=0.1, anchor="ne")
+        labelServe2.place(relx=0.70, rely=0.15, relwidth=0.1, relheight=0.1, anchor="ne")
         labelServe1.place_forget()  # Remove o ícone da Equipe 1
 
 # Função para alternar o time que está sacando
@@ -160,6 +166,16 @@ def increaseSubsTeam2():
     subsTeam2 += 1
     update_score()    
 
+def decreaseSubsTeam1():
+    global subsTeam1
+    subsTeam1 -= 1
+    update_score()
+
+def decreaseSubsTeam2():
+    global subsTeam2
+    subsTeam2 -= 1
+    update_score()    
+
 # Funções para aumentar o número de substituições
 def increaseTimeTeam1():
     global timeTeam1
@@ -170,6 +186,16 @@ def increaseTimeTeam2():
     global timeTeam2
     timeTeam2 += 1
     update_score()  
+
+def decreaseTimeTeam1():
+    global timeTeam1
+    timeTeam1 -= 1
+    update_score()   
+
+def decreaseTimeTeam2():
+    global timeTeam2
+    timeTeam2 -= 1
+    update_score() 
 
 #Função para selecionar imagem do time
 def selecionar_equipe1():
@@ -316,7 +342,7 @@ labelTeam2.place(relx=0.75, rely=0.20, relwidth=0.2, relheight=0.2, anchor="cent
 labelScore2.place(relx=0.6, rely=0.4, relwidth=0.18, relheight=0.2, anchor="center")
 labelSet2.place(relx=0.75, rely=0.6, relwidth=0.2, relheight=0.2, anchor="center")
 
-labelScore = Label(root, text=str(scoreTeam1) + "x" + str(scoreTeam2), font=("Helvetica", 80), bg=colorBackground, fg=colorFont)
+labelScore = Label(root, text=str(scoreTeam1) + " x " + str(scoreTeam2), font=("Helvetica", 80), bg=colorBackground, fg=colorFont)
 labelScore.place(relx=0.5, rely=0.4, relwidth=0.3, relheight=0.2, anchor="center")
 
 # Label do cronômetro
@@ -325,7 +351,7 @@ timer_label.pack(pady=20)
 
 # Label do número de sets no placar
 labelTotalSets = tk.Label(root, text=f"Número de sets: {setTeam1 + setTeam2}", font=("Arial", 15), bg="red", fg=colorFont)
-labelTotalSets.place(relx=0.4, rely=0.6, relwidth=0.25, relheight=0.1)
+#labelTotalSets.place(relx=0.4, rely=0.6, relwidth=0.25, relheight=0.1)
 
 
 label_patroc1 = tk.Label(root, bg=colorBackground)
@@ -462,6 +488,18 @@ buttonSet1Down = tk.Button(controlWindow, text="Set 1 -", command=decreaseSet1)
 buttonSet2Up = tk.Button(controlWindow, text="Set 2 +", command=increaseSet2)
 buttonSet2Down = tk.Button(controlWindow, text="Set 2 -", command=decreaseSet2)
 
+# Botões para controle de substituição
+buttonSubs1Up = tk.Button(controlWindow, text="Sub 1 +", command=increaseSubsTeam1)
+buttonSubs1Down = tk.Button(controlWindow, text="Sub 1 -", command=decreaseSubsTeam1)
+buttonSubs2Up = tk.Button(controlWindow, text="Sub 2 +", command=increaseSubsTeam2)
+buttonSubs2Down = tk.Button(controlWindow, text="Sub 2 -", command=decreaseSubsTeam2)
+
+# Botões para controle de substituição
+buttonTime1Up = tk.Button(controlWindow, text="Time 1 +", command=increaseTimeTeam1)
+buttonTime1Down = tk.Button(controlWindow, text="Time 1 -", command=decreaseTimeTeam1)
+buttonTime2Up = tk.Button(controlWindow, text="Time 2 +", command=increaseTimeTeam2)
+buttonTime2Down = tk.Button(controlWindow, text="Time 2 -", command=decreaseTimeTeam2)
+
 # Funções dos botões para selecionar manualmente o set atual
 buttonSet1 = tk.Button(controlWindow, text="1", command=lambda: set_current_set(1))
 buttonSet2 = tk.Button(controlWindow, text="2", command=lambda: set_current_set(2))
@@ -527,6 +565,18 @@ buttonSet1Up.place(relx=0.1, rely=0.7, relwidth=0.1, relheight=0.1)
 buttonSet2Up.place(relx=0.8, rely=0.7, relwidth=0.1, relheight=0.1, anchor="ne")
 buttonSet1Down.place(relx=0.2, rely=0.7, relwidth=0.1, relheight=0.1)
 buttonSet2Down.place(relx=0.9, rely=0.7, relwidth=0.1, relheight=0.1, anchor="ne")
+
+# Posicionar os botões das subs
+buttonSubs1Up.place(relx=0.1, rely=0.8, relwidth=0.1, relheight=0.1)
+buttonSubs2Up.place(relx=0.8, rely=0.8, relwidth=0.1, relheight=0.1, anchor="ne")
+buttonSubs1Down.place(relx=0.2, rely=0.8, relwidth=0.1, relheight=0.1)
+buttonSubs2Down.place(relx=0.9, rely=0.8, relwidth=0.1, relheight=0.1, anchor="ne")
+
+# Posicionar os botões dos tempos
+buttonTime1Up.place(relx=0.1, rely=0.7, relwidth=0.1, relheight=0.1)
+buttonTime2Up.place(relx=0.8, rely=0.7, relwidth=0.1, relheight=0.1, anchor="ne")
+buttonTime1Down.place(relx=0.2, rely=0.9, relwidth=0.1, relheight=0.1)
+buttonTime2Down.place(relx=0.9, rely=0.9, relwidth=0.1, relheight=0.1, anchor="ne")
 
 # Botões de controle do cronômetro
 buttonStartTimer = tk.Button(controlWindow, text="Iniciar Cronômetro", command=start_timer)
