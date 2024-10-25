@@ -24,6 +24,10 @@ subsTeam2 = 0
 timeTeam1 = 0
 timeTeam2 = 0
 
+# Variáveis de desafio
+challengeTeam1 = 0
+challengeTeam2 = 0
+
 # variáveis de cor
 colorFont = "white"
 colorBackground = "black"
@@ -84,6 +88,9 @@ def update_score():
     labelSubs2.config(text="Sustituições:" + str(subsTeam2))
     labelTime1.config(text="Tempos:" + str(timeTeam1))
     labelTime2.config(text="Tempos:" + str(timeTeam2))
+    labelChallenge1.config(text= f"Desafios: {challengeTeam1}/2")
+    labelChallenge2.config(text= f"Desafios: {challengeTeam2}/2")
+    
 
 # Update visualização set atual na janela de comando
 def update_current_set_control_label():
@@ -196,6 +203,27 @@ def decreaseTimeTeam2():
     global timeTeam2
     timeTeam2 -= 1
     update_score() 
+
+# Funções para aumentar o número de desafios
+def increaseChallengeTeam1():
+    global challengeTeam1
+    challengeTeam1 += 1
+    update_score()
+
+def increaseChallengeTeam2():
+    global challengeTeam2
+    challengeTeam2 += 1
+    update_score()
+
+def decreaseChallengeTeam1():
+    global challengeTeam1
+    challengeTeam1 -= 1
+    update_score()  
+
+def decreaseChallengeTeam2():
+    global challengeTeam2
+    challengeTeam2 -= 1
+    update_score()
 
 #Função para selecionar imagem do time
 def selecionar_equipe1():
@@ -335,12 +363,12 @@ labelSet2 = tk.Label(root, text=f"Sets: {setTeam2}", font=("Arial", 25), bg=colo
 # Labels do placar (centralizados)
 labelTeam1.place(relx=0.25, rely=0.20, relwidth=0.2, relheight=0.2, anchor="center")
 labelScore1.place(relx=0.4, rely=0.4, relwidth=0.18, relheight=0.2, anchor="center")
-labelSet1.place(relx=0.25, rely=0.6, relwidth=0.2, relheight=0.2, anchor="center")
+labelSet1.place(relx=0.15, rely=0.6, relwidth=0.2, relheight=0.2, anchor="center")
 
 
 labelTeam2.place(relx=0.75, rely=0.20, relwidth=0.2, relheight=0.2, anchor="center")
 labelScore2.place(relx=0.6, rely=0.4, relwidth=0.18, relheight=0.2, anchor="center")
-labelSet2.place(relx=0.75, rely=0.6, relwidth=0.2, relheight=0.2, anchor="center")
+labelSet2.place(relx=0.80, rely=0.6, relwidth=0.2, relheight=0.2, anchor="center")
 
 labelScore = Label(root, text=str(scoreTeam1) + " x " + str(scoreTeam2), font=("Helvetica", 80), bg=colorBackground, fg=colorFont)
 labelScore.place(relx=0.5, rely=0.4, relwidth=0.3, relheight=0.2, anchor="center")
@@ -391,7 +419,15 @@ labelSubs2 = tk.Label(root, text=f"Substituições: {subsTeam2}", font=("Arial",
 labelSubs1.place(relx=0.07, rely=0.65, relwidth=0.2, relheight=0.1)
 labelSubs2.place(relx=0.93, rely=0.65, relwidth=0.2, relheight=0.1, anchor="ne")
 
-# Labels para mostrar número de substituições de cada time
+# Labels para mostrar número de desafios de cada time
+labelChallenge1 = tk.Label(root, text=f"Desafios: 0/2", font=("Arial", 25), bg=colorBackground, fg=colorFont)
+labelChallenge2 = tk.Label(root, text=f"Desafios: 0/2", font=("Arial", 25), bg=colorBackground, fg=colorFont)
+
+# Posicionar os labels das substituições ao lado dos nomes das equipes
+labelChallenge1.place(relx=0.07, rely=0.45, relwidth=0.2, relheight=0.1)
+labelChallenge2.place(relx=0.93, rely=0.45, relwidth=0.2, relheight=0.1, anchor="ne")
+
+# Labels para mostrar número de tempos de cada time
 labelTime1 = tk.Label(root, text=f"Tempos: {timeTeam1}", font=("Arial", 25), bg=colorBackground, fg=colorFont)
 labelTime2 = tk.Label(root, text=f"Tempos: {timeTeam2}", font=("Arial", 25), bg=colorBackground, fg=colorFont)
 
@@ -500,6 +536,12 @@ buttonTime1Down = tk.Button(controlWindow, text="Time 1 -", command=decreaseTime
 buttonTime2Up = tk.Button(controlWindow, text="Time 2 +", command=increaseTimeTeam2)
 buttonTime2Down = tk.Button(controlWindow, text="Time 2 -", command=decreaseTimeTeam2)
 
+# Botões para controle de desafio
+buttonChallenge1Up = tk.Button(controlWindow, text="Des 1 +", command=increaseChallengeTeam1)
+buttonChallenge1Down = tk.Button(controlWindow, text="Des 1 -", command=decreaseChallengeTeam1)
+buttonChallenge2Up = tk.Button(controlWindow, text="Des 2 +", command=increaseChallengeTeam2)
+buttonChallenge2Down = tk.Button(controlWindow, text="Des 2 -", command=decreaseChallengeTeam2)
+
 # Funções dos botões para selecionar manualmente o set atual
 buttonSet1 = tk.Button(controlWindow, text="1", command=lambda: set_current_set(1))
 buttonSet2 = tk.Button(controlWindow, text="2", command=lambda: set_current_set(2))
@@ -571,6 +613,12 @@ buttonSubs1Up.place(relx=0.1, rely=0.8, relwidth=0.1, relheight=0.1)
 buttonSubs2Up.place(relx=0.8, rely=0.8, relwidth=0.1, relheight=0.1, anchor="ne")
 buttonSubs1Down.place(relx=0.2, rely=0.8, relwidth=0.1, relheight=0.1)
 buttonSubs2Down.place(relx=0.9, rely=0.8, relwidth=0.1, relheight=0.1, anchor="ne")
+
+# Posicionar os botões dos challenges
+buttonChallenge1Up.place(relx=0.1, rely=0.9, relwidth=0.1, relheight=0.1)
+buttonChallenge2Up.place(relx=0.8, rely=0.9, relwidth=0.1, relheight=0.1, anchor="ne")
+buttonChallenge1Down.place(relx=0.2, rely=0.9, relwidth=0.1, relheight=0.1)
+buttonChallenge2Down.place(relx=0.9, rely=0.9, relwidth=0.1, relheight=0.1, anchor="ne")
 
 # Posicionar os botões dos tempos
 buttonTime1Up.place(relx=0.1, rely=0.7, relwidth=0.1, relheight=0.1)
