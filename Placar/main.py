@@ -3,6 +3,8 @@ from tkinter import *
 from tkinter import font
 from tkinter import filedialog
 from PIL import Image, ImageTk
+from screeninfo import get_monitors
+
 # Variáveis globais do cronômetro
 timer_running = False
 time_seconds = 0
@@ -365,6 +367,7 @@ def selecionar_patroc6():
        
 ###############################################################
 # Criar a janela principal
+
 root = tk.Tk()
 root.title("Placar e Cronômetro")
 root.geometry("768x384")
@@ -558,13 +561,16 @@ def reset_sets():
 
 
 label_equipe1_controlWindow = tk.Label(controlWindow,  bg=colorBackground)
-label_equipe1_controlWindow.place(relx=0.17, rely=0.25, relwidth=0.12, relheight=0.33)
+label_equipe1_controlWindow.place(relx=0.15, rely=0, relwidth=0.2, relheight=0.3, anchor="n")
+
+label_equipe2_controlWindow = tk.Label(controlWindow,  bg=colorBackground)
+label_equipe2_controlWindow.place(relx=0.85, rely=0, relwidth=0.2, relheight=0.3, anchor="n")
 
 # Botões para controle do placar
-buttonTeam1Up = tk.Button(controlWindow, text="1 +", command=increaseTeam1)
-buttonTeam2Up = tk.Button(controlWindow, text="2 +", command=increaseTeam2)
-buttonTeam1Down = tk.Button(controlWindow, text="1 -", command=decreaseTeam1)
-buttonTeam2Down = tk.Button(controlWindow, text="2 -", command=decreaseTeam2)
+buttonTeam1Up = tk.Button(controlWindow, text="1 +", font=("Montserrat SemiBold", 10), command=increaseTeam1)
+buttonTeam2Up = tk.Button(controlWindow, text="2 +", font=("Montserrat SemiBold", 10), command=increaseTeam2)
+buttonTeam1Down = tk.Button(controlWindow, text="1 -", font=("Montserrat SemiBold", 10), command=decreaseTeam1)
+buttonTeam2Down = tk.Button(controlWindow, text="2 -", font=("Montserrat SemiBold", 10), command=decreaseTeam2)
 
 # Botões para controle dos sets
 buttonSet1Up = tk.Button(controlWindow, text="+ Set Time 1", command=increaseSet1)
@@ -598,51 +604,51 @@ buttonSet4 = tk.Button(controlWindow, text="4", command=lambda: set_current_set(
 buttonSet5 = tk.Button(controlWindow, text="5", command=lambda: set_current_set(5))
 
 # Botão para atualizar os nomes das equipes
-buttonUpdateNames = tk.Button(controlWindow, text="Atualizar Nomes", command=lambda: update_team_names())
-buttonUpdateNames.place(relx=0.5, rely=0.45, relwidth=0.2, relheight=0.05, anchor="n")
+buttonUpdateNames = tk.Button(controlWindow, text="Atualizar Nomes", font=("Montserrat SemiBold", 10), command=lambda: update_team_names())
+buttonUpdateNames.place(relx=0, rely=1, relwidth=0.2, relheight=0.05, anchor="sw")
 
 
 title_label = tk.Label(controlWindow, text="Set atual", font=("Arial", 25), bg="lightgray", fg="black")
-title_label.place(relx=0.5, rely=0.5, relwidth=0.4, relheight=0.05, anchor="n")  # Posiciona no topo centralizado
+title_label.place(relx=0.5, rely=0.45, relwidth=0.4, relheight=0.05, anchor="n")  # Posiciona no topo centralizado
 
 labelCurrentSetControl = tk.Label(controlWindow, text=current_set_display, font=("Montserrat SemiBold", 40), bg="white", fg="black")
-labelCurrentSetControl.place(relx=0.5, rely=0.55, relwidth=0.2, relheight=0.1, anchor="n")  # Posiciona entre os botões de set
+labelCurrentSetControl.place(relx=0.5, rely=0.5, relwidth=0.2, relheight=0.1, anchor="n")  # Posiciona entre os botões de set
 # Botão para controlar SETS
 buttonNextSet = tk.Button(controlWindow, text="Próximo \nSet", font=("Montserrat SemiBold", 18), command=next_set)
 buttonPrevSet = tk.Button(controlWindow, text="Set \nAnterior", font=("Montserrat SemiBold", 18), command=prev_set)
 buttonResetSets = tk.Button(controlWindow, text="Zerar Sets", font=("Montserrat SemiBold", 10), command=reset_sets)
 # Posicionar o botão de avançar set
-buttonNextSet.place(relx=0.6, rely=0.55, relwidth=0.1, relheight=0.15, anchor="nw")
-buttonPrevSet.place(relx=0.4, rely=0.55, relwidth=0.1, relheight=0.15, anchor="ne")
-buttonResetSets.place(relx=0.5, rely=0.65, relwidth=0.2, relheight=0.05, anchor="n")
+buttonNextSet.place(relx=0.6, rely=0.5, relwidth=0.1, relheight=0.15, anchor="nw")
+buttonPrevSet.place(relx=0.4, rely=0.5, relwidth=0.1, relheight=0.15, anchor="ne")
+buttonResetSets.place(relx=0.5, rely=0.6, relwidth=0.2, relheight=0.05, anchor="n")
 
 
 #Botão para selecionar imagem do time
-botao_equipe1 = tk.Button(controlWindow, text="Logo Equipe 1", command=selecionar_equipe1)
-botao_equipe1.place(relx=0.15, rely=0.4, relwidth=0.1, relheight=0.05, anchor="center")
+botao_equipe1 = tk.Button(controlWindow, text="Logo Equipe 1", font=("Montserrat SemiBold", 10), command=selecionar_equipe1)
+botao_equipe1.place(relx=0.15, rely=0.35, relwidth=0.2, relheight=0.05, anchor="n")
 
-botao_equipe2 = tk.Button(controlWindow, text="Logo Equipe 2", command=selecionar_equipe2)
-botao_equipe2.place(relx=0.85, rely=0.4, relwidth=0.1, relheight=0.05, anchor="center")
+botao_equipe2 = tk.Button(controlWindow, text="Logo Equipe 2", font=("Montserrat SemiBold", 10), command=selecionar_equipe2)
+botao_equipe2.place(relx=0.85, rely=0.35, relwidth=0.2, relheight=0.05, anchor="n")
 
 
 
 #Botão para selecionar imagem de patrocinadores
-botao_selecionar1 = tk.Button(controlWindow, text="Patrocinador 1", command=selecionar_patroc1)
+botao_selecionar1 = tk.Button(controlWindow, text="Patrocinador 1", font=("Montserrat SemiBold", 10), command=selecionar_patroc1)
 botao_selecionar1.place(relx=0.2, rely=1, relwidth=0.1, relheight=0.05, anchor="sw")
 
-botao_selecionar2 = tk.Button(controlWindow, text="Patrocinador 2", command=selecionar_patroc2)
+botao_selecionar2 = tk.Button(controlWindow, text="Patrocinador 2", font=("Montserrat SemiBold", 10), command=selecionar_patroc2)
 botao_selecionar2.place(relx=0.3, rely=1, relwidth=0.1, relheight=0.05, anchor="sw")
 
-botao_selecionar3 = tk.Button(controlWindow, text="Patrocinador 3", command=selecionar_patroc3)
+botao_selecionar3 = tk.Button(controlWindow, text="Patrocinador 3", font=("Montserrat SemiBold", 10), command=selecionar_patroc3)
 botao_selecionar3.place(relx=0.4, rely=1, relwidth=0.1, relheight=0.05, anchor="sw")
 
-botao_selecionar4 = tk.Button(controlWindow, text="Patrocinador 4", command=selecionar_patroc4)
+botao_selecionar4 = tk.Button(controlWindow, text="Patrocinador 4", font=("Montserrat SemiBold", 10), command=selecionar_patroc4)
 botao_selecionar4.place(relx=0.5, rely=1, relwidth=0.1, relheight=0.05, anchor="sw")
 
-botao_selecionar5 = tk.Button(controlWindow, text="Patrocinador 5", command=selecionar_patroc5)
+botao_selecionar5 = tk.Button(controlWindow, text="Patrocinador 5", font=("Montserrat SemiBold", 10), command=selecionar_patroc5)
 botao_selecionar5.place(relx=0.6, rely=1, relwidth=0.1, relheight=0.05, anchor="sw")
 
-botao_selecionar6 = tk.Button(controlWindow, text="Patrocinador 6", command=selecionar_patroc6)
+botao_selecionar6 = tk.Button(controlWindow, text="Patrocinador 6", font=("Montserrat SemiBold", 10), command=selecionar_patroc6)
 botao_selecionar6.place(relx=0.7, rely=1, relwidth=0.1, relheight=0.05, anchor="sw")
 
 #### Textos para a janela de controle ###################
@@ -657,10 +663,10 @@ labelScore_control.place(relx=0.5, rely=0.2, relwidth=0.4, relheight=0.2, anchor
 #labelScore2_control.place(relx=0.85, rely=0.5, relwidth=0.2, relheight=0.05, anchor="s")
 
 entryTeam1 = tk.Entry(controlWindow, font=("Arial", 15))
-entryTeam1.place(relx=0.15, rely=0.5, relwidth=0.2, relheight=0.05, anchor="s")
+entryTeam1.place(relx=0.15, rely=0.3, relwidth=0.2, relheight=0.05, anchor="n")
 
 entryTeam2 = tk.Entry(controlWindow, font=("Arial", 15))
-entryTeam2.place(relx=0.85, rely=0.5, relwidth=0.2, relheight=0.05, anchor="s")
+entryTeam2.place(relx=0.85, rely=0.3, relwidth=0.2, relheight=0.05, anchor="n")
 
 
 
@@ -685,34 +691,34 @@ buttonResetTimer.place(relx=0.5, rely=0.15, relwidth=0.2, relheight=0.05, anchor
 #-----------------------------------#
 
 # Posicionar os botões do placar
-buttonTeam1Up.place(relx=0.15, rely=0.5, relwidth=0.1, relheight=0.05, anchor="nw")
-buttonTeam2Up.place(relx=0.85, rely=0.5, relwidth=0.1, relheight=0.05, anchor="nw")
-buttonTeam1Down.place(relx=0.15, rely=0.5, relwidth=0.1, relheight=0.05, anchor="ne")
-buttonTeam2Down.place(relx=0.85, rely=0.5, relwidth=0.1, relheight=0.05, anchor="ne")
+buttonTeam1Up.place(relx=0.15, rely=0.4, relwidth=0.1, relheight=0.05, anchor="nw")
+buttonTeam2Up.place(relx=0.85, rely=0.4, relwidth=0.1, relheight=0.05, anchor="nw")
+buttonTeam1Down.place(relx=0.15, rely=0.4, relwidth=0.1, relheight=0.05, anchor="ne")
+buttonTeam2Down.place(relx=0.85, rely=0.4, relwidth=0.1, relheight=0.05, anchor="ne")
 
 # Posicionar os botões dos sets
-buttonSet1Up.place(relx=0.15, rely=0.55, relwidth=0.1, relheight=0.05, anchor="nw")
-buttonSet2Up.place(relx=0.85, rely=0.55, relwidth=0.1, relheight=0.05, anchor="nw")
-buttonSet1Down.place(relx=0.15, rely=0.55, relwidth=0.1, relheight=0.05, anchor="ne")
-buttonSet2Down.place(relx=0.85, rely=0.55, relwidth=0.1, relheight=0.05, anchor="ne")
+buttonSet1Up.place(relx=0.15, rely=0.45, relwidth=0.1, relheight=0.05, anchor="nw")
+buttonSet2Up.place(relx=0.85, rely=0.45, relwidth=0.1, relheight=0.05, anchor="nw")
+buttonSet1Down.place(relx=0.15, rely=0.45, relwidth=0.1, relheight=0.05, anchor="ne")
+buttonSet2Down.place(relx=0.85, rely=0.45, relwidth=0.1, relheight=0.05, anchor="ne")
 
 # Posicionar os botões das subs
-buttonSubs1Up.place(relx=0.15, rely=0.6, relwidth=0.1, relheight=0.05, anchor="nw")
-buttonSubs2Up.place(relx=0.85, rely=0.6, relwidth=0.1, relheight=0.05, anchor="nw")
-buttonSubs1Down.place(relx=0.15, rely=0.6, relwidth=0.1, relheight=0.05, anchor="ne")
-buttonSubs2Down.place(relx=0.85, rely=0.6, relwidth=0.1, relheight=0.05, anchor="ne")
+buttonSubs1Up.place(relx=0.15, rely=0.55, relwidth=0.1, relheight=0.05, anchor="nw")
+buttonSubs2Up.place(relx=0.85, rely=0.55, relwidth=0.1, relheight=0.05, anchor="nw")
+buttonSubs1Down.place(relx=0.15, rely=0.55, relwidth=0.1, relheight=0.05, anchor="ne")
+buttonSubs2Down.place(relx=0.85, rely=0.55, relwidth=0.1, relheight=0.05, anchor="ne")
 
 # Posicionar os botões dos challenges
-buttonChallenge1Up.place(relx=0.15, rely=0.65, relwidth=0.1, relheight=0.05, anchor="nw")
-buttonChallenge2Up.place(relx=0.85, rely=0.65, relwidth=0.1, relheight=0.05, anchor="nw")
-buttonChallenge1Down.place(relx=0.15, rely=0.65, relwidth=0.1, relheight=0.05, anchor="ne")
-buttonChallenge2Down.place(relx=0.85, rely=0.65, relwidth=0.1, relheight=0.05, anchor="ne")
+buttonChallenge1Up.place(relx=0.15, rely=0.5, relwidth=0.1, relheight=0.05, anchor="nw")
+buttonChallenge2Up.place(relx=0.85, rely=0.5, relwidth=0.1, relheight=0.05, anchor="nw")
+buttonChallenge1Down.place(relx=0.15, rely=0.5, relwidth=0.1, relheight=0.05, anchor="ne")
+buttonChallenge2Down.place(relx=0.85, rely=0.5, relwidth=0.1, relheight=0.05, anchor="ne")
 
 # Posicionar os botões dos tempos
-buttonTime1Up.place(relx=0.15, rely=0.7, relwidth=0.1, relheight=0.05, anchor="nw")
-buttonTime2Up.place(relx=0.85, rely=0.7, relwidth=0.1, relheight=0.05, anchor="nw")
-buttonTime1Down.place(relx=0.15, rely=0.7, relwidth=0.1, relheight=0.05, anchor="ne")
-buttonTime2Down.place(relx=0.85, rely=0.7, relwidth=0.1, relheight=0.05, anchor="ne")
+buttonTime1Up.place(relx=0.15, rely=0.6, relwidth=0.1, relheight=0.05, anchor="nw")
+buttonTime2Up.place(relx=0.85, rely=0.6, relwidth=0.1, relheight=0.05, anchor="nw")
+buttonTime1Down.place(relx=0.15, rely=0.6, relwidth=0.1, relheight=0.05, anchor="ne")
+buttonTime2Down.place(relx=0.85, rely=0.6, relwidth=0.1, relheight=0.05, anchor="ne")
 
 
 
@@ -727,9 +733,11 @@ buttonToggleServe.place(relx=0.5, rely=0.4, relwidth=0.4, relheight=0.05, anchor
 #Desenhando linhas para separar as áreas nas telas
 #Janela de comando
 separator1 = tk.Frame(controlWindow, bg="black", width=2)  # Defina a altura como 2 para uma linha fina
-separator1.place(relx=0.3, rely=0, relheight=1)
+separator1.place(relx=0.3, rely=0, relheight=0.8)
 separator2 = tk.Frame(controlWindow, bg="black", width=2)  # Defina a altura como 2 para uma linha fina
-separator2.place(relx=0.7, rely=0, relheight=1)
+separator2.place(relx=0.7, rely=0, relheight=0.8)
+separator3 = tk.Frame(controlWindow, bg="black", height=2)  # Defina a altura como 2 para uma linha fina
+separator3.place(relx=0, rely=0.8, relwidth=1)
 # Começar o ícone na Equipe 1
 update_serve_icon()
 
@@ -745,8 +753,6 @@ root.bind("<F11>", toggle_fullscreen)
 
 # Bind a tecla ESC para sair do modo fullscreen
 root.bind("<Escape>", exit_fullscreen)
-
-
 
 # Iniciar o loop principal
 root.mainloop()
