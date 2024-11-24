@@ -44,41 +44,6 @@ colorBackground = "white"
 #definir o time que está sacando 
 serving_team = 1  # Começa com a Equipe 1 
 
-
-
-def play_all_videos():
-    # Caminho para o diretório onde os arquivos de vídeo estão
-    directory = r"C:\Users\Vinic\Documents\Placar\Patrocinadores"  # Substitua com o caminho do seu diretório de vídeos
-    
-    # Lista todos os arquivos no diretório com as extensões de vídeo
-    video_files = [os.path.join(directory, file) for file in os.listdir(directory) if file.endswith(('.mp4', '.avi', '.mkv'))]
-    
-    # Verifica se há vídeos na pasta
-    if not video_files:
-        print("Nenhum vídeo encontrado no diretório.")
-        return
-    
-    # Tenta obter informações do segundo monitor
-    monitors = get_monitors()
-    if len(monitors) < 2:
-        print("Monitor secundário não encontrado.")
-        return
-    
-    # Obtenha as coordenadas do monitor secundário
-    secondary_monitor = monitors[1]
-    secondary_x = secondary_monitor.x
-    secondary_y = secondary_monitor.y
-
-    # Usa o VLC para reproduzir todos os vídeos no monitor secundário em fullscreen
-    try:
-        subprocess.Popen([
-            'vlc', '--fullscreen', '--no-embedded-video', '--playlist-autostart',
-            '--play-and-exit', f'--video-x={secondary_x}', f'--video-y={secondary_y}'
-        ] + video_files)
-    except FileNotFoundError:
-        print("VLC não encontrado. Certifique-se de que o VLC está instalado e no PATH do sistema.")
-
-
 # Função que configura a primeira janela
 def configure_window_primary(controlWindow, primary_monitor):
     controlWindow.title("Controles")
@@ -195,12 +160,17 @@ def open_windows_on_monitors():
         if caminho_equipe1:  # Se um arquivo for selecionado
             # Carregar e exibir a imagem usando PIL
             equipe1 = Image.open(caminho_equipe1)
-            equipe1 = equipe1.resize((400, 250))  # Redimensiona para ajustar ao Label
+            equipe1 = equipe1.resize((800, 400))  # Redimensiona para ajustar ao Label
+            equipe1_controlWindow = equipe1.resize((500, 250))  # Redimensiona para ajustar ao Label
             equipe1_tk = ImageTk.PhotoImage(equipe1)
-            equipe1_controlWindow_tk = ImageTk.PhotoImage(equipe1)
+            equipe1_tk_controlWindow = ImageTk.PhotoImage(equipe1_controlWindow)
             # Atualizar o Label com a imagem selecionada
             label_equipe1.config(image=equipe1_tk)
-            label_equipe1.image = equipe1_tk  # Manter a referência da imagem para não ser coletada pelo garbage collector      
+            label_equipe1.image = equipe1_tk  # Manter a referência da imagem para não ser coletada pelo garbage collector
+            
+            label_equipe1_controlWindow.config(image=equipe1_tk_controlWindow)
+            label_equipe1_controlWindow.image = equipe1_tk_controlWindow  # Manter a referência da imagem para não ser coletada pelo garbage collector         
+
     def selecionar_equipe2():
         # Abre a janela do sistema para selecionar a imagem
         caminho_equipe2 = filedialog.askopenfilename(
@@ -210,12 +180,18 @@ def open_windows_on_monitors():
         if caminho_equipe2:  # Se um arquivo for selecionado
             # Carregar e exibir a imagem usando PIL
             equipe2 = Image.open(caminho_equipe2)
-            equipe2 = equipe2.resize((400, 250))  # Redimensiona para ajustar ao Label
+            equipe2 = equipe2.resize((650, 350))  # Redimensiona para ajustar ao Label
+            equipe2_controlWindow = equipe2.resize((500, 250))  # Redimensiona para ajustar ao Label
             equipe2_tk = ImageTk.PhotoImage(equipe2)
-
+            equipe2_tk_controlWindow = ImageTk.PhotoImage(equipe2_controlWindow)
             # Atualizar o Label com a imagem selecionada
+
             label_equipe2.config(image=equipe2_tk)
             label_equipe2.image = equipe2_tk  # Manter a referência da imagem para não ser coletada pelo garbage collector
+            
+            label_equipe2_controlWindow.config(image=equipe2_tk_controlWindow)
+            label_equipe2_controlWindow.image = equipe2_tk_controlWindow  # Manter a referência da imagem para não ser coletada pelo garbage collector
+
     # Função para selecionar e exibir a imagem dos patrocinadores
     def selecionar_patroc1():
         # Abre a janela do sistema para selecionar a imagem
@@ -346,20 +322,19 @@ def open_windows_on_monitors():
     def update_score():
         labelScore1.config(text=str(scoreTeam1))
         labelScore2.config(text=str(scoreTeam2))
-        labelSet1.config(text=f"Sets: {setTeam1}")
-        labelSet2.config(text=f"Sets: {setTeam2}")
+
         #labelScore.config(text= str(scoreTeam1)+" x "+ str(scoreTeam2))
         labelScore_control.config(text= str(scoreTeam1_control)+" x "+ str(scoreTeam2_control))
         # Atualizar o label com o número total de sets
         labelTotalSets.config(text=f"Número de sets: {setTeam1 + setTeam2}")
-        labelSet1.config(text="Sets: " + str(setTeam1))
-        labelSet2.config(text="Sets: "  + str(setTeam2))
-        labelSubs1.config(text="Subst.: " + str(subsTeam1))
-        labelSubs2.config(text="Subst.: " + str(subsTeam2))
-        labelTime1.config(text="Tempos: " + str(timeTeam1))
-        labelTime2.config(text="Tempos: " + str(timeTeam2))
-        labelChallenge1.config(text= f"Desafios: {challengeTeam1}/2")
-        labelChallenge2.config(text= f"Desafios: {challengeTeam2}/2")
+        labelSet1.config(text=str(setTeam1))
+        labelSet2.config(text=str(setTeam2))
+        labelSubs1.config(text=str(subsTeam1))
+        labelSubs2.config(text=str(subsTeam2))
+        labelTime1.config(text=str(timeTeam1))
+        labelTime2.config(text=str(timeTeam2))
+        labelChallenge1.config(text= f"{challengeTeam1}/2")
+        labelChallenge2.config(text= f"{challengeTeam2}/2")
     # Update visualização set atual na janela de comando
     def update_current_set_control_label():
         labelCurrentSetControl.config(text=current_set_display)
@@ -402,7 +377,7 @@ def open_windows_on_monitors():
             labelServe1.place(relx=0.29, rely=0.35, relwidth=0.03, relheight=0.1)
             labelServe2.place_forget()  # Remove o ícone da Equipe 2
         else:
-            labelServe2.place(relx=0.72, rely=0.35, relwidth=0.03, relheight=0.1, anchor="ne")
+            labelServe2.place(relx=0.71, rely=0.35, relwidth=0.03, relheight=0.1, anchor="ne")
             labelServe1.place_forget()  # Remove o ícone da Equipe 1
 
     # Função para alternar o time que está sacando
@@ -431,62 +406,56 @@ def open_windows_on_monitors():
         labelTeam2.config(text=team2_name)  # Atualiza o label da Equipe 2 na janela principal
     # Brasão times
 
-    label_equipe1 = tk.Label(root,  bg="blue")
-    label_equipe1.place(relx=0.1, rely=0.55, relwidth=0.22, relheight=0.33, anchor="sw")
+    label_equipe1 = tk.Label(root,  bg=colorBackground)
+    label_equipe1.place(relx=0.29, rely=0.55, relwidth=0.19, relheight=0.35, anchor="se")
 
-    label_equipe2 = tk.Label(root, bg="blue")
-    label_equipe2.place(relx=0.91, rely=0.55, relwidth=0.22, relheight=0.33, anchor="se")
-
-
+    label_equipe2 = tk.Label(root, bg=colorBackground)
+    label_equipe2.place(relx=0.71, rely=0.55, relwidth=0.19, relheight=0.35, anchor="sw")
+    
     # Imagem para o time que está sacando
     serve_icon = PhotoImage(file="white_ball.png")
     small_serve_icon = serve_icon.subsample(10, 10)  # Reduz o tamanho da imagem
 
     # Labels do placar
-    labelCross = tk.Label(root, text = "X", font=("Montserrat SemiBold", 50), bg="blue", fg=colorFont)
+    labelCross = tk.Label(root, text = "X", font=("Montserrat SemiBold", 50), bg=colorBackground, fg=colorFont)
 
-    labelTeam1 = tk.Label(root, text="Equipe 1", font=("Montserrat SemiBold", 55), bg=colorBackground, fg=colorFont)
-    labelScore1 = tk.Label(root, text=str(scoreTeam1), font=("Montserrat SemiBold", 100), bg="red", fg=colorFont)
+    labelTeam1 = tk.Label(root, text="Equipe 1", font=("Montserrat Bold", 40), bg=colorBackground, fg=colorFont)
+    labelScore1 = tk.Label(root, text=str(scoreTeam1), font=("Montserrat SemiBold", 100), bg=colorBackground, fg=colorFont)
 
-    
-    
-    
-    labelTeam2 = tk.Label(root, text="Equipe 2", font=("Montserrat SemiBold", 55), bg=colorBackground, fg=colorFont)
-    labelScore2 = tk.Label(root, text=str(scoreTeam2), font=("Montserrat SemiBold", 100), bg="red", fg=colorFont)
+    labelTeam2 = tk.Label(root, text="Equipe 2", font=("Montserrat Bold", 40), bg=colorBackground, fg=colorFont)
+    labelScore2 = tk.Label(root, text=str(scoreTeam2), font=("Montserrat SemiBold", 100), bg=colorBackground, fg=colorFont)
 
     # Labels dos sets
-    labelSet1 = tk.Label(root, text=f"Sets: {setTeam1}", font=("Montserrat SemiBold", 40), bg=colorBackground, fg=colorFont)
-    labelSet2 = tk.Label(root, text=f"Sets: {setTeam2}", font=("Montserrat SemiBold", 40), bg=colorBackground, fg=colorFont)
+    labelwordSet1 = tk.Label(root, text=f"Sets:", font=("Montserrat SemiBold", 35), bg=colorBackground, fg=colorFont)
+    labelSet1 = tk.Label(root, text=f"{setTeam1}", font=("Montserrat SemiBold", 35), bg=colorBackground, fg=colorFont)
+    labelwordSet2 = tk.Label(root, text=f"Sets:", font=("Montserrat SemiBold", 35), bg=colorBackground, fg=colorFont)
+    labelSet2 = tk.Label(root, text=f"{setTeam2}", font=("Montserrat SemiBold", 35), bg=colorBackground, fg=colorFont)
 
-    # Posicionar os labels do placar e sets
-    # Labels do placar (centralizados)
-   
-    labelTeam1.place(relx=0, rely=0.20, relwidth=0.5, relheight=0.2, anchor="sw")
+    
+    # Labels do placar
+    labelTeam1.place(relx=0, rely=0.025, relwidth=0.4, relheight=0.1, anchor="nw")
     labelScore1.place(relx=0.39, rely=0.4, relwidth=0.18, relheight=0.2, anchor="center")
-    labelSet1.place(relx=0.20, rely=0.55, relwidth=0.1, relheight=0.05, anchor="ne")
+    labelwordSet1.place(relx=0.1, rely=0.59, relwidth=0.075, relheight=0.05, anchor="nw")
+    labelSet1.place(relx=0.29, rely=0.59, relwidth=0.03, relheight=0.05, anchor="ne")
 
     labelCross.place(relx=0.5, rely=0.4, relwidth=0.05, relheight=0.2, anchor="center")
 
-    labelTeam2.place(relx=1, rely=0.20, relwidth=0.5, relheight=0.2, anchor="se")
+    labelTeam2.place(relx=1, rely=0.025, relwidth=0.4, relheight=0.1, anchor="ne")
     labelScore2.place(relx=0.61, rely=0.4, relwidth=0.18, relheight=0.2, anchor="center")
-    labelSet2.place(relx=0.91, rely=0.55, relwidth=0.1, relheight=0.05, anchor="ne")
-
-    #labelScore = Label(root, text=str(scoreTeam1) + " x " + str(scoreTeam2), font=("Montserrat SemiBold", 110), bg=colorBackground, fg=colorFont)
-    #labelScore.place(relx=0.5, rely=0.4, relwidth=0.35, relheight=0.2, anchor="center")
+    labelwordSet2.place(relx=0.71, rely=0.59, relwidth=0.075, relheight=0.05, anchor="nw")
+    labelSet2.place(relx=0.9, rely=0.59, relwidth=0.03, relheight=0.05, anchor="ne")
 
     # Label do cronômetro
-    timer_label = tk.Label(root, text="00:00", font=("Montserrat SemiBold", 60), bg="green", fg=colorFont)
-    timer_label.place(relx=0.5, rely=0, relwidth=0.25, relheight=0.15, anchor="n")
-    separator_inferior_timer = tk.Frame(root, bg="black", height=2)  # Defina a altura como 2 para uma linha fina
-    separator_inferior_timer.place(relx=0, rely=0.15, relwidth=2)
-    separator_lateral_esquerda = tk.Frame(root, bg="black", width=2)  # Defina a altura como 2 para uma linha fina
-    separator_lateral_esquerda.place(relx=0.375, rely=0, relheight=0.15)
-    separator_lateral_direita = tk.Frame(root, bg="black", width=2)  # Defina a altura como 2 para uma linha fina
-    separator_lateral_direita.place(relx=0.625, rely=0, relheight=0.15)
+    timer_label = tk.Label(root, text="00:00", font=("Montserrat SemiBold", 60), bg=colorBackground, fg=colorFont)
+    timer_label.place(relx=0.5, rely=0, relwidth=0.2, relheight=0.15, anchor="n")
+    separator_inferior_timer = tk.Frame(root, bg="black", height=4)  # Defina a altura como 2 para uma linha fina
+    separator_inferior_timer.place(relx=0, rely=0.15, relwidth=4)
+    separator_lateral_esquerda = tk.Frame(root, bg="black", width=4)  # Defina a altura como 2 para uma linha fina
+    separator_lateral_esquerda.place(relx=0.398, rely=0, relheight=0.15)
+    separator_lateral_direita = tk.Frame(root, bg="black", width=4)  # Defina a altura como 2 para uma linha fina
+    separator_lateral_direita.place(relx=0.6, rely=0, relheight=0.15)
     # Label do número de sets no placar
-    labelTotalSets = tk.Label(root, text=f"Número de sets: {setTeam1 + setTeam2}", font=("Montserrat SemiBold", 45), bg="red", fg=colorFont)
-    #labelTotalSets.place(relx=0.4, rely=0.6, relwidth=0.25, relheight=0.1)
-
+    labelTotalSets = tk.Label(root, text=f"Número de sets: {setTeam1 + setTeam2}", font=("Montserrat SemiBold", 45), bg=colorBackground, fg=colorFont)
 
     label_patroc1 = tk.Label(root, bg=colorBackground)
     label_patroc1.place(relx=0, rely=1, relwidth=0.17, relheight=0.15, anchor="sw")
@@ -511,44 +480,85 @@ def open_windows_on_monitors():
     for i in range(4):
     
         set_label = tk.Label(root, text=f"SET {i + 1}", font=("Montserrat SemiBold", 35), bg=colorBackground, fg=colorFont)
-        score_label = tk.Label(root, text="0 x 0", font=("Montserrat SemiBold", 35), bg=colorBackground, fg=colorFont)
-        set_label.place(relx=0.3 + i * 0.1, rely=0.71, relwidth=0.12, relheight=0.05)
-        score_label.place(relx=0.3 + i * 0.1, rely=0.76, relwidth=0.12, relheight=0.05)
+        score_label = tk.Label(root, text="0 x 0", font=("Montserrat SemiBold", 30), bg=colorBackground, fg=colorFont)
+        set_label.place(relx=0.29 + i * 0.1, rely=0.72, relwidth=0.12, relheight=0.05)
+        score_label.place(relx=0.29 + i * 0.1, rely=0.77, relwidth=0.12, relheight=0.05)
         set_score_labels.append((set_label, score_label))
 
     # Adicionar o label do set atual na janela principal
     labelCurrentSet = tk.Label(root, text=f"Set atual: {current_set_display}", font=("Montserrat SemiBold", 40), bg=colorBackground, fg=colorFont)
-    labelCurrentSet.place(relx=0.5, rely=0.55, relwidth=0.25, relheight=0.1, anchor="center")  # Posicionamento centralizado abaixo do placar    
+    labelCurrentSet.place(relx=0.5, rely=0.57, relwidth=0.25, relheight=0.1, anchor="center")  # Posicionamento centralizado abaixo do placar    
 
     # Labels para o ícone de saque
     labelServe1 = tk.Label(root, image=small_serve_icon, bg=colorBackground)
     labelServe2 = tk.Label(root, image=small_serve_icon, bg=colorBackground)    
 
     # Labels para mostrar número de substituições de cada time
-    labelSubs1 = tk.Label(root, text=f"Subst.: {subsTeam1}", font=("Montserrat SemiBold", 40), bg=colorBackground, fg=colorFont)
-    labelSubs2 = tk.Label(root, text=f"Subst.: {subsTeam2}", font=("Montserrat SemiBold", 40), bg=colorBackground, fg=colorFont)
+    labelwordSubst1 = tk.Label(root, text=f"Subst.: ", font=("Montserrat SemiBold", 35), bg=colorBackground, fg=colorFont)
+    labelSubs1 = tk.Label(root, text=f"{subsTeam1}", font=("Montserrat SemiBold", 35), bg=colorBackground, fg=colorFont)
+    labelwordSubst2 = tk.Label(root, text=f"Subst.: ", font=("Montserrat SemiBold", 35), bg=colorBackground, fg=colorFont)
+    labelSubs2 = tk.Label(root, text=f"{subsTeam2}", font=("Montserrat SemiBold", 35), bg=colorBackground, fg=colorFont)
 
     # Posicionar os labels das substituições ao lado dos nomes das equipes
-    labelSubs1.place(relx=0.23, rely=0.70, relwidth=0.13, relheight=0.05, anchor="ne")
-    labelSubs2.place(relx=0.91, rely=0.70, relwidth=0.13, relheight=0.05, anchor="ne")
+    
+
+    #labelServe1.place(relx=0.29, rely=0.35, relwidth=0.03, relheight=0.1)
+    labelwordSubst1.place(relx=0.1, rely=0.71, relwidth=0.11, relheight=0.05, anchor="nw")
+    labelSubs1.place(relx=0.29, rely=0.71, relwidth=0.03, relheight=0.05, anchor="ne")
+    labelwordSubst2.place(relx=0.71, rely=0.71, relwidth=0.11, relheight=0.05, anchor="nw")
+    labelSubs2.place(relx=0.9, rely=0.71, relwidth=0.03, relheight=0.05, anchor="ne")
 
     # Labels para mostrar número de desafios de cada time
-    labelChallenge1 = tk.Label(root, text=f"Desafios: 0/2", font=("Montserrat SemiBold", 40), bg=colorBackground, fg=colorFont)
-    labelChallenge2 = tk.Label(root, text=f"Desafios: 0/2", font=("Montserrat SemiBold", 40), bg=colorBackground, fg=colorFont)
+    labelwordChallenge1 = tk.Label(root, text=f"Desafios: ", font=("Montserrat SemiBold", 35), bg=colorBackground, fg=colorFont)
+    labelChallenge1 = tk.Label(root, text=f"{challengeTeam1}/2", font=("Montserrat SemiBold", 35), bg=colorBackground, fg=colorFont)
+    labelwordChallenge2 = tk.Label(root, text=f"Desafios: ", font=("Montserrat SemiBold", 35), bg=colorBackground, fg=colorFont)
+    labelChallenge2 = tk.Label(root, text=f"{challengeTeam2}/2", font=("Montserrat SemiBold", 35), bg=colorBackground, fg=colorFont)
 
     # Posicionar os labels das substituições ao lado dos nomes das equipes
-    labelChallenge1.place(relx=0.29, rely=0.65, relwidth=0.19, relheight=0.05, anchor="e")
-    labelChallenge2.place(relx=0.72, rely=0.65, relwidth=0.19, relheight=0.05, anchor="w")
+    labelwordChallenge1.place(relx=0.1, rely=0.675, relwidth=0.145, relheight=0.05, anchor="w")
+    labelChallenge1.place(relx=0.29, rely=0.675, relwidth=0.05, relheight=0.05, anchor="e")
+    labelwordChallenge2.place(relx=0.71, rely=0.675, relwidth=0.145, relheight=0.05, anchor="w")
+    labelChallenge2.place(relx=0.85, rely=0.675, relwidth=0.05, relheight=0.05, anchor="w")
 
     # Labels para mostrar número de tempos de cada time
-    labelTime1 = tk.Label(root, text=f"Tempos: {timeTeam1}", font=("Montserrat SemiBold", 40), bg=colorBackground, fg=colorFont)
-    labelTime2 = tk.Label(root, text=f"Tempos: {timeTeam2}", font=("Montserrat SemiBold", 40), bg=colorBackground, fg=colorFont)
+    labelwordTime1 = tk.Label(root, text=f"Tempos:", font=("Montserrat SemiBold", 35), bg=colorBackground, fg=colorFont)
+    labelTime1 = tk.Label(root, text=f"{timeTeam1}", font=("Montserrat SemiBold", 35), bg=colorBackground, fg=colorFont)
+    labelwordTime2 = tk.Label(root, text=f"Tempos:", font=("Montserrat SemiBold", 35), bg=colorBackground, fg=colorFont)
+    labelTime2 = tk.Label(root, text=f"{timeTeam2}", font=("Montserrat SemiBold", 35), bg=colorBackground, fg=colorFont)
 
     # Posicionar os labels das substituições ao lado dos nomes das equipes
-    labelTime1.place(relx=0.26, rely=0.76, relwidth=0.16, relheight=0.07, anchor="ne")
-    labelTime2.place(relx=0.91, rely=0.76, relwidth=0.16, relheight=0.07, anchor="ne")
+    labelwordTime1.place(relx=0.1, rely=0.77, relwidth=0.135, relheight=0.05, anchor="nw")
+    labelTime1.place(relx=0.29, rely=0.77, relwidth=0.03, relheight=0.05, anchor="ne")
+    labelwordTime2.place(relx=0.71, rely=0.77, relwidth=0.135, relheight=0.05, anchor="nw")
+    labelTime2.place(relx=0.9, rely=0.77, relwidth=0.03, relheight=0.05, anchor="ne")
+
+    #verticalLine1 = tk.Frame(root, bg="black", width=4)  # Defina a altura como 2 para uma linha fina
+    #verticalLine1.place(relx=0.099, rely=0, relheight=1)
+
+    #verticalLine2 = tk.Frame(root, bg="black", width=4)  # Defina a altura como 2 para uma linha fina
+    #verticalLine2.place(relx=0.29, rely=0, relheight=1)
+
+    #verticalLine3 = tk.Frame(root, bg="black", width=4)  # Defina a altura como 2 para uma linha fina
+    #verticalLine3.place(relx=0.709, rely=0, relheight=1)
+
+    #verticalLine4 = tk.Frame(root, bg="black", width=4)  # Defina a altura como 2 para uma linha fina
+    #verticalLine4.place(relx=0.9, rely=0, relheight=1)
 
 
+    #horizontalLine1 = tk.Frame(root, bg="black", height=4)  # Defina a altura como 2 para uma linha fina
+    #horizontalLine1.place(relx=0.1, rely=0.55, relwidth=0.19) 
+    
+    #horizontalLine2 = tk.Frame(root, bg="black", height=4)  # Defina a altura como 2 para uma linha fina
+    #horizontalLine2.place(relx=0.1, rely=0.615, relwidth=0.19) 
+    
+    #horizontalLine3 = tk.Frame(root, bg="black", height=4)  # Defina a altura como 2 para uma linha fina
+    #horizontalLine3.place(relx=0.1, rely=0.69, relwidth=0.19) 
+    
+    #horizontalLine4 = tk.Frame(root, bg="black", height=4)  # Defina a altura como 2 para uma linha fina
+    #horizontalLine4.place(relx=0.1, rely=0.76, relwidth=0.19) 
+
+    #bottomLine = tk.Frame(root, bg="black", height=4)  # Defina a altura como 2 para uma linha fina
+    #bottomLine.place(relx=0, rely=0.82, relwidth=1)    
 #########################################################################################################
 
 ##########################################################################################################
@@ -799,7 +809,6 @@ def open_windows_on_monitors():
 
 # Chamar a função para abrir as janelas
 open_windows_on_monitors()
-
 
 
 
