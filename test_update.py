@@ -14,8 +14,8 @@ timer_label_control = None  # Label para o cronômetro na janela de controle
 labelScore_control = None
 
 # Variáveis do placar e sets
-team1_name = "Equipe 1"
-team2_name = "Equipe 2"
+team1_name = "Home Team"
+team2_name = "Away Team"
 scoreTeam1 = 0
 scoreTeam2 = 0
 setTeam1 = 0
@@ -316,16 +316,16 @@ def open_windows_on_monitors():
         timer_label_control.config(text="00:00")
         stop_timer()
     def update_team_names():
-        global team1_name, team2_name, name_team1
-        #name_team1 = team1_name.get()
+        global team1_name, team2_name
         team1_name = entryTeam1.get()  # Captura o nome da equipe 1
+        canvas.itemconfig(canvasTeam1, text=str(team1_name))
         team2_name = entryTeam2.get()  # Captura o nome da equipe 2
+        canvas.itemconfig(canvasTeam2, text=str(team2_name))
+        #labelTeam1.config(text=team1_name)  # Atualiza o label da Equipe 1 na janela principal
+        #labelTeam2.config(text=team2_name)  # Atualiza o label da Equipe 2 na janela principal
 
-        labelTeam1.config(text=team1_name)  # Atualiza o label da Equipe 1 na janela principal
-        labelTeam2.config(text=team2_name)  # Atualiza o label da Equipe 2 na janela principal
     # Atualizar o placar e os sets
     def update_score():
-        
         labelScore1.config(text=str(scoreTeam1))
         labelScore2.config(text=str(scoreTeam2))
         scoreTeam1ControlWindow.config(text=str(f"Pontos: {scoreTeam1}"))
@@ -343,20 +343,28 @@ def open_windows_on_monitors():
         # Atualizar o label com o número total de sets
         labelTotalSets.config(text=f"Número de sets: {setTeam1 + setTeam2}")
         #labelSet1.config(text=str(setTeam1))
-        labelSet2.config(text=str(setTeam2))
+        #labelSet2.config(text=str(setTeam2))
         #labelSubs1.config(text=str(subsTeam1))
-        labelSubs2.config(text=str(subsTeam2))
+        #labelSubs2.config(text=str(subsTeam2))
         #labelTime1.config(text=str(timeTeam1))
-        labelTime2.config(text=str(timeTeam2))
+        #labelTime2.config(text=str(timeTeam2))
         #labelChallenge1.config(text= f"{challengeTeam1}/2")
-        labelChallenge2.config(text= f"{challengeTeam2}/2")
+        #labelChallenge2.config(text= f"{challengeTeam2}/2")
 
-        canvas.itemconfig(canvasTeam1, text=str(name_team1))
+
         canvas.itemconfig(canvasscoreTeam1, text=f"{scoreTeam1}")
         canvas.itemconfig(canvassetTeam1,text=str(setTeam1))
         canvas.itemconfig(canvassubsTeam1,text=str(subsTeam1))
         canvas.itemconfig(canvastimeTeam1,text=str(timeTeam1))
         canvas.itemconfig(canvaschallengeTeam1,text=f"{challengeTeam1}/2")
+
+        canvas.itemconfig(canvasscoreTeam2, text=f"{scoreTeam2}")
+        canvas.itemconfig(canvassetTeam2,text=str(setTeam2))
+        canvas.itemconfig(canvassubsTeam2,text=str(subsTeam2))
+        canvas.itemconfig(canvastimeTeam2,text=str(timeTeam2))
+        canvas.itemconfig(canvaschallengeTeam2, text=f"{challengeTeam2}/2")
+
+
     # Update visualização set atual na janela de comando
     def update_current_set_control_label():
         labelCurrentSetControl.config(text=current_set_display)
@@ -452,17 +460,29 @@ def open_windows_on_monitors():
     labelwordSet2 = tk.Label(root, text=f"Sets:", font=("Montserrat SemiBold", 35), bg=colorBackground, fg=colorFont)
     labelSet2 = tk.Label(root, text=f"{setTeam2}", font=("Montserrat SemiBold", 35), bg=colorBackground, fg=colorFont)
     
-    canvasTeam1 = canvas.create_text(500, 30, text=f"{team1_name}", font=("Montserrat Bold", 40), anchor="ne" )
-    canvasscoreTeam1 = canvas.create_text(900, 225, text=f"{scoreTeam1}", font=("Montserrat SemiBold", 165), anchor="ne" )
-    canvas.create_text(190, 575, text = "Sets: ", font=("Montserrat SemiBold", 35), anchor="nw")
-    canvassetTeam1 = canvas.create_text(520, 575, text=f"{setTeam1}", font=("Montserrat SemiBold", 35), anchor="nw" )
-    canvas.create_text(190, 635, text = "Desafios: ", font=("Montserrat SemiBold", 35) , anchor="nw")
-    canvaschallengeTeam1 = canvas.create_text(520, 635, text = f"{challengeTeam1}", font=("Montserrat SemiBold", 35), anchor="nw")
-    canvas.create_text(190, 695, text = "Subst.: ", font=("Montserrat SemiBold", 35) , anchor="nw")
-    canvassubsTeam1 = canvas.create_text(520, 700, text = f"{subsTeam1}", font=("Montserrat SemiBold", 35), anchor="nw")
-    canvas.create_text(190, 755, text = "Tempos: ", font=("Montserrat SemiBold", 35), anchor="nw" )
-    canvastimeTeam1 = canvas.create_text(520, 755, text = f"{timeTeam1}", font=("Montserrat SemiBold", 35), anchor="nw")
+    canvasTeam1 = canvas.create_text(385, 90, text=f"{team1_name}", font=("Montserrat Bold", 40), fill=colorFont, anchor="center" )
+    canvasscoreTeam1 = canvas.create_text(900, 240, text=f"{scoreTeam1}", font=("Montserrat SemiBold", 165), fill=colorFont, anchor="ne" )
+    canvas.create_text(190, 625, text = "Sets: ", font=("Montserrat SemiBold", 35), fill=colorFont, anchor="nw")
+    canvassetTeam1 = canvas.create_text(520, 625, text=f"{setTeam1}", font=("Montserrat SemiBold", 35), fill=colorFont, anchor="nw" )
+    canvas.create_text(190, 690, text = "Desafios: ", font=("Montserrat SemiBold", 35), fill=colorFont , anchor="nw")
+    canvaschallengeTeam1 = canvas.create_text(520, 690, text = f"{challengeTeam1}", font=("Montserrat SemiBold", 35), fill=colorFont, anchor="nw")
+    canvas.create_text(190, 755, text = "Subst.: ", font=("Montserrat SemiBold", 35), fill=colorFont , anchor="nw")
+    canvassubsTeam1 = canvas.create_text(520, 755, text = f"{subsTeam1}", font=("Montserrat SemiBold", 35), fill=colorFont, anchor="nw")
+    canvas.create_text(190, 820, text = "Tempos: ", font=("Montserrat SemiBold", 35), fill=colorFont, anchor="nw" )
+    canvastimeTeam1 = canvas.create_text(520, 820, text = f"{timeTeam1}", font=("Montserrat SemiBold", 35), fill=colorFont, anchor="nw")
     
+    canvasCross = canvas.create_text(960, 450, text = "X", font=("Montserrat SemiBold", 100), fill=colorFont, anchor="center")
+
+    canvasTeam2 = canvas.create_text(1700, 30, text=f"{team2_name}", font=("Montserrat Bold", 40), fill=colorFont, anchor="ne" )
+    canvasscoreTeam2 = canvas.create_text(1020, 240, text=f"{scoreTeam2}", font=("Montserrat SemiBold", 165), fill=colorFont, anchor="nw" )
+    canvas.create_text(1360, 625, text = "Sets: ", font=("Montserrat SemiBold", 35), fill=colorFont, anchor="nw")
+    canvassetTeam2 = canvas.create_text(1730, 625, text=f"{setTeam2}", font=("Montserrat SemiBold", 35), fill=colorFont, anchor="ne" )
+    canvas.create_text(1360, 690, text = "Desafios: ", font=("Montserrat SemiBold", 35), fill=colorFont , anchor="nw")
+    canvaschallengeTeam2 = canvas.create_text(1730, 690, text = f"{challengeTeam2}", font=("Montserrat SemiBold", 35), fill=colorFont, anchor="ne")
+    canvas.create_text(1360, 755, text = "Subst.: ", font=("Montserrat SemiBold", 35), fill=colorFont , anchor="nw")
+    canvassubsTeam2 = canvas.create_text(1730, 755, text = f"{subsTeam2}", font=("Montserrat SemiBold", 35), fill=colorFont, anchor="ne")
+    canvas.create_text(1360, 820, text = "Tempos: ", font=("Montserrat SemiBold", 35), fill=colorFont, anchor="nw" )
+    canvastimeTeam2 = canvas.create_text(1730, 820, text = f"{timeTeam2}", font=("Montserrat SemiBold", 35), fill=colorFont, anchor="ne")
 
     # Labels do placar
     #labelTeam1.place(relx=0, rely=0, relwidth=0.4, relheight=0.15, anchor="nw")
@@ -470,12 +490,12 @@ def open_windows_on_monitors():
     #labelwordSet1.place(relx=0.1, rely=0.59, relwidth=0.075, relheight=0.05, anchor="nw")
     #labelSet1.place(relx=0.29, rely=0.59, relwidth=0.03, relheight=0.05, anchor="ne")
 
-    labelCross.place(relx=0.5, rely=0.4, relwidth=0.05, relheight=0.2, anchor="center")
+    #labelCross.place(relx=0.5, rely=0.4, relwidth=0.05, relheight=0.2, anchor="center")
 
-    labelTeam2.place(relx=1, rely=0, relwidth=0.4, relheight=0.15, anchor="ne")
-    labelScore2.place(relx=0.61, rely=0.4, relwidth=0.18, relheight=0.30, anchor="center")
-    labelwordSet2.place(relx=0.71, rely=0.59, relwidth=0.075, relheight=0.05, anchor="nw")
-    labelSet2.place(relx=0.9, rely=0.59, relwidth=0.03, relheight=0.05, anchor="ne")
+    #labelTeam2.place(relx=1, rely=0, relwidth=0.4, relheight=0.15, anchor="ne")
+    #labelScore2.place(relx=0.61, rely=0.4, relwidth=0.18, relheight=0.30, anchor="center")
+    #labelwordSet2.place(relx=0.71, rely=0.59, relwidth=0.075, relheight=0.05, anchor="nw")
+    #labelSet2.place(relx=0.9, rely=0.59, relwidth=0.03, relheight=0.05, anchor="ne")
 
     # Label do cronômetro
     timer_label = tk.Label(root, text="00:00", font=("Montserrat SemiBold", 60), relief="solid", borderwidth = 4, bg=colorBackground, fg=colorFont)
@@ -537,8 +557,8 @@ def open_windows_on_monitors():
     # Labels para mostrar número de substituições de cada time
     #labelwordSubst1 = tk.Label(root, text=f"Subst.: ", font=("Montserrat SemiBold", 35), bg=colorBackground, fg=colorFont)
     #labelSubs1 = tk.Label(root, text=f"{subsTeam1}", font=("Montserrat SemiBold", 35), bg=colorBackground, fg=colorFont)
-    labelwordSubst2 = tk.Label(root, text=f"Subst.: ", font=("Montserrat SemiBold", 35), bg=colorBackground, fg=colorFont)
-    labelSubs2 = tk.Label(root, text=f"{subsTeam2}", font=("Montserrat SemiBold", 35), bg=colorBackground, fg=colorFont)
+    #labelwordSubst2 = tk.Label(root, text=f"Subst.: ", font=("Montserrat SemiBold", 35), bg=colorBackground, fg=colorFont)
+    #labelSubs2 = tk.Label(root, text=f"{subsTeam2}", font=("Montserrat SemiBold", 35), bg=colorBackground, fg=colorFont)
 
     # Posicionar os labels das substituições ao lado dos nomes das equipes
     
@@ -546,32 +566,32 @@ def open_windows_on_monitors():
     #labelServe1.place(relx=0.29, rely=0.35, relwidth=0.03, relheight=0.1)
     #labelwordSubst1.place(relx=0.1, rely=0.71, relwidth=0.11, relheight=0.05, anchor="nw")
     #labelSubs1.place(relx=0.29, rely=0.71, relwidth=0.03, relheight=0.05, anchor="ne")
-    labelwordSubst2.place(relx=0.71, rely=0.71, relwidth=0.11, relheight=0.05, anchor="nw")
-    labelSubs2.place(relx=0.9, rely=0.71, relwidth=0.03, relheight=0.05, anchor="ne")
+    #labelwordSubst2.place(relx=0.71, rely=0.71, relwidth=0.11, relheight=0.05, anchor="nw")
+    #labelSubs2.place(relx=0.9, rely=0.71, relwidth=0.03, relheight=0.05, anchor="ne")
 
     # Labels para mostrar número de desafios de cada time
     #labelwordChallenge1 = tk.Label(root, text=f"Desafios: ", font=("Montserrat SemiBold", 35), bg=colorBackground, fg=colorFont)
     #labelChallenge1 = tk.Label(root, text=f"{challengeTeam1}/2", font=("Montserrat SemiBold", 35), bg=colorBackground, fg=colorFont)
-    labelwordChallenge2 = tk.Label(root, text=f"Desafios: ", font=("Montserrat SemiBold", 35), bg=colorBackground, fg=colorFont)
-    labelChallenge2 = tk.Label(root, text=f"{challengeTeam2}/2", font=("Montserrat SemiBold", 35), bg=colorBackground, fg=colorFont)
+    #labelwordChallenge2 = tk.Label(root, text=f"Desafios: ", font=("Montserrat SemiBold", 35), bg=colorBackground, fg=colorFont)
+    #labelChallenge2 = tk.Label(root, text=f"{challengeTeam2}/2", font=("Montserrat SemiBold", 35), bg=colorBackground, fg=colorFont)
 
     # Posicionar os labels das substituições ao lado dos nomes das equipes
     #labelwordChallenge1.place(relx=0.1, rely=0.675, relwidth=0.145, relheight=0.05, anchor="w")
     #labelChallenge1.place(relx=0.29, rely=0.675, relwidth=0.05, relheight=0.05, anchor="e")
-    labelwordChallenge2.place(relx=0.71, rely=0.675, relwidth=0.145, relheight=0.05, anchor="w")
-    labelChallenge2.place(relx=0.85, rely=0.675, relwidth=0.05, relheight=0.05, anchor="w")
+    #labelwordChallenge2.place(relx=0.71, rely=0.675, relwidth=0.145, relheight=0.05, anchor="w")
+    #labelChallenge2.place(relx=0.85, rely=0.675, relwidth=0.05, relheight=0.05, anchor="w")
 
     # Labels para mostrar número de tempos de cada time
     #labelwordTime1 = tk.Label(root, text=f"Tempos:", font=("Montserrat SemiBold", 35), bg=colorBackground, fg=colorFont)
     #labelTime1 = tk.Label(root, text=f"{timeTeam1}", font=("Montserrat SemiBold", 35), bg=colorBackground, fg=colorFont)
-    labelwordTime2 = tk.Label(root, text=f"Tempos:", font=("Montserrat SemiBold", 35), bg=colorBackground, fg=colorFont)
-    labelTime2 = tk.Label(root, text=f"{timeTeam2}", font=("Montserrat SemiBold", 35), bg=colorBackground, fg=colorFont)
+    #labelwordTime2 = tk.Label(root, text=f"Tempos:", font=("Montserrat SemiBold", 35), bg=colorBackground, fg=colorFont)
+    #labelTime2 = tk.Label(root, text=f"{timeTeam2}", font=("Montserrat SemiBold", 35), bg=colorBackground, fg=colorFont)
 
     # Posicionar os labels das substituições ao lado dos nomes das equipes
     #labelwordTime1.place(relx=0.1, rely=0.77, relwidth=0.135, relheight=0.05, anchor="nw")
     #labelTime1.place(relx=0.29, rely=0.77, relwidth=0.03, relheight=0.05, anchor="ne")
-    labelwordTime2.place(relx=0.71, rely=0.77, relwidth=0.135, relheight=0.05, anchor="nw")
-    labelTime2.place(relx=0.9, rely=0.77, relwidth=0.03, relheight=0.05, anchor="ne")
+    #labelwordTime2.place(relx=0.71, rely=0.77, relwidth=0.135, relheight=0.05, anchor="nw")
+    #labelTime2.place(relx=0.9, rely=0.77, relwidth=0.03, relheight=0.05, anchor="ne")
 
     #verticalLine1 = tk.Frame(root, bg="black", width=4)  # Defina a altura como 2 para uma linha fina
     #verticalLine1.place(relx=0.099, rely=0, relheight=1)
