@@ -14,6 +14,7 @@ timer_label_control = None  # Label para o cronômetro na janela de controle
 labelScore_control = None
 
 # Variáveis do placar e sets
+serveTeam = True
 team1_name = "Home Team"
 team2_name = "Away Team"
 scoreTeam1 = 0
@@ -101,16 +102,21 @@ def open_windows_on_monitors():
     canvas = tk.Canvas(root, width=1920, height=1080, bg="white")  # Criar o Canvas
     canvas.pack(fill="both", expand=True)  # Adicionar o Canvas à janela
 
-    # Carregar uma imagem
-    imagem = Image.open("C:/Users/Vinic/OneDrive/Documentos/Placar/Volei/Imagens/BACKGROUND SUPERLIGA-01.png")
-    imagem_fundo = ImageTk.PhotoImage(imagem.resize((1920, 1080)))
-    
-    # Adicionar a imagem no canto inferior esquerdo
-    canvas.create_image(0, 0, image=imagem_fundo, anchor="nw")
-
     # Criar e configurar a segunda janela no monitor secundário
     controlWindow = tk.Toplevel(root)  # Usando Toplevel para manter a hierarquia
     configure_window_primary(controlWindow, primary_monitor)
+        #Funcao para selecionar fundo do telao
+    def selecionar_background():
+        global background_ref
+        # Abre a janela do sistema para selecionar a imagem
+        caminho_background = filedialog.askopenfilename(parent = controlWindow,title="Selecione uma imagem",filetypes=[("Arquivos de Imagem", "*.png;*.jpg;*.jpeg;*.bmp;*.gif")])
+        if caminho_background:  # Se um arquivo for selecionado
+            # Carregar e exibir a imagem usando PIL
+            background = Image.open(caminho_background)
+
+            background_ref = ImageTk.PhotoImage(background.resize((1920, 1080)))
+            background_id = canvas.create_image(0, 0, image=background_ref, anchor=tk.NW)
+            canvas.tag_lower(background_id)
 #########################################################################################################
     # Funções para aumentar o número de substituições
     def increaseSubsTeam1():
@@ -163,9 +169,10 @@ def open_windows_on_monitors():
         global challengeTeam2
         challengeTeam2 -= 1
         update_score()
-    #Função para selecionar imagem do time
 
+    #Função para selecionar imagem do time
     def selecionar_equipe1():
+        global equipe1_tk_ref
         # Abre a janela do sistema para selecionar a imagem
         caminho_equipe1 = filedialog.askopenfilename(parent = controlWindow,title="Selecione uma imagem",filetypes=[("Arquivos de Imagem", "*.png;*.jpg;*.jpeg;*.bmp;*.gif")])
         if caminho_equipe1:  # Se um arquivo for selecionado
@@ -173,16 +180,17 @@ def open_windows_on_monitors():
             equipe1 = Image.open(caminho_equipe1)
             equipe1 = equipe1.resize((800, 400))  # Redimensiona para ajustar ao Label
             equipe1_controlWindow = equipe1.resize((500, 250))  # Redimensiona para ajustar ao Label
-            equipe1_tk = ImageTk.PhotoImage(equipe1)
+            equipe1_tk_ref = ImageTk.PhotoImage(equipe1)
             equipe1_tk_controlWindow = ImageTk.PhotoImage(equipe1_controlWindow)
             # Atualizar o Label com a imagem selecionada
-            label_equipe1.config(image=equipe1_tk)
-            label_equipe1.image = equipe1_tk  # Manter a referência da imagem para não ser coletada pelo garbage collector
-            
+            #label_equipe1.config(image=equipe1_tk)
+            #label_equipe1.image = equipe1_tk  # Manter a referência da imagem para não ser coletada pelo garbage collector
+            canvas.create_image(385, 385, image=equipe1_tk_ref, anchor=CENTER)
             label_equipe1_controlWindow.config(image=equipe1_tk_controlWindow)
             label_equipe1_controlWindow.image = equipe1_tk_controlWindow  # Manter a referência da imagem para não ser coletada pelo garbage collector         
 
     def selecionar_equipe2():
+        global equipe2_tk_ref
         # Abre a janela do sistema para selecionar a imagem
         caminho_equipe2 = filedialog.askopenfilename(parent = controlWindow, title="Selecione uma imagem", filetypes=[("Arquivos de Imagem", "*.png;*.jpg;*.jpeg;*.bmp;*.gif")])
         
@@ -191,44 +199,47 @@ def open_windows_on_monitors():
             equipe2 = Image.open(caminho_equipe2)
             equipe2 = equipe2.resize((650, 350))  # Redimensiona para ajustar ao Label
             equipe2_controlWindow = equipe2.resize((500, 250))  # Redimensiona para ajustar ao Label
-            equipe2_tk = ImageTk.PhotoImage(equipe2)
+            equipe2_tk_ref = ImageTk.PhotoImage(equipe2)
             equipe2_tk_controlWindow = ImageTk.PhotoImage(equipe2_controlWindow)
             # Atualizar o Label com a imagem selecionada
 
-            label_equipe2.config(image=equipe2_tk)
-            label_equipe2.image = equipe2_tk  # Manter a referência da imagem para não ser coletada pelo garbage collector
-            
+            #label_equipe2.config(image=equipe2_tk)
+            #label_equipe2.image = equipe2_tk  # Manter a referência da imagem para não ser coletada pelo garbage collector
+            canvas.create_image(1550, 385, image=equipe2_tk_ref, anchor=CENTER)
             label_equipe2_controlWindow.config(image=equipe2_tk_controlWindow)
             label_equipe2_controlWindow.image = equipe2_tk_controlWindow  # Manter a referência da imagem para não ser coletada pelo garbage collector
 
     # Função para selecionar e exibir a imagem dos patrocinadores
     def selecionar_patroc1():
+        global imagem_tk1_ref
         # Abre a janela do sistema para selecionar a imagem
         caminho_imagem1 = filedialog.askopenfilename(parent = controlWindow, title="Selecione uma imagem", filetypes=[("Arquivos de Imagem", "*.png;*.jpg;*.jpeg;*.bmp;*.gif")])
-        
         if caminho_imagem1:  # Se um arquivo for selecionado
             # Carregar e exibir a imagem usando PIL
             imagem1 = Image.open(caminho_imagem1)
             imagem1 = imagem1.resize((300, 150))  # Redimensiona para ajustar ao Label
-            imagem_tk1 = ImageTk.PhotoImage(imagem1)
+            imagem_tk1_ref = ImageTk.PhotoImage(imagem1)
 
+            canvas.create_image(0, 1070,image= imagem_tk1_ref, anchor=SW)
             # Atualizar o Label com a imagem selecionada
-            label_patroc1.config(image=imagem_tk1)
-            label_patroc1.image = imagem_tk1  # Manter a referência da imagem para não ser coletada pelo garbage collector
+            #label_patroc1.config(image=imagem_tk1)
+            #label_patroc1.image = imagem_tk1  # Manter a referência da imagem para não ser coletada pelo garbage collector
     def selecionar_patroc2():
+        global imagem_tk2_ref
         # Abre a janela do sistema para selecionar a imagem
         caminho_imagem2 = filedialog.askopenfilename(parent = controlWindow, title="Selecione uma imagem", filetypes=[("Arquivos de Imagem", "*.png;*.jpg;*.jpeg;*.bmp;*.gif")])
-        
         if caminho_imagem2:  # Se um arquivo for selecionado
             # Carregar e exibir a imagem usando PIL
             imagem2 = Image.open(caminho_imagem2)
             imagem2 = imagem2.resize((300, 150))  # Redimensiona para ajustar ao Label
-            imagem_tk2 = ImageTk.PhotoImage(imagem2)
+            imagem_tk2_ref = ImageTk.PhotoImage(imagem2)
 
+            canvas.create_image(320, 1070,image= imagem_tk2_ref, anchor=SW)
             # Atualizar o Label com a imagem selecionada
-            label_patroc2.config(image=imagem_tk2)
-            label_patroc2.image = imagem_tk2  # Manter a referência da imagem para não ser coletada pelo garbage collector
+            #label_patroc2.config(image=imagem_tk2)
+            #label_patroc2.image = imagem_tk2  # Manter a referência da imagem para não ser coletada pelo garbage collector
     def selecionar_patroc3():
+        global imagem_tk3_ref
         # Abre a janela do sistema para selecionar a imagem
         caminho_imagem = filedialog.askopenfilename(parent = controlWindow, title="Selecione uma imagem", filetypes=[("Arquivos de Imagem", "*.png;*.jpg;*.jpeg;*.bmp;*.gif")])
         
@@ -236,12 +247,14 @@ def open_windows_on_monitors():
             # Carregar e exibir a imagem usando PIL
             imagem3 = Image.open(caminho_imagem)
             imagem3 = imagem3.resize((300, 150))  # Redimensiona para ajustar ao Label
-            imagem_tk3 = ImageTk.PhotoImage(imagem3)
-
+            imagem_tk3_ref = ImageTk.PhotoImage(imagem3)
+            
+            canvas.create_image(640, 1070,image= imagem_tk3_ref, anchor=SW)
             # Atualizar o Label com a imagem selecionada
-            label_patroc3.config(image=imagem_tk3)
-            label_patroc3.image = imagem_tk3 # Manter a referência da imagem para não ser coletada pelo garbage collector
+            #label_patroc3.config(image=imagem_tk3)
+            #label_patroc3.image = imagem_tk3 # Manter a referência da imagem para não ser coletada pelo garbage collector
     def selecionar_patroc4():
+        global imagem_tk4_ref
         # Abre a janela do sistema para selecionar a imagem
         caminho_imagem4 = filedialog.askopenfilename(parent = controlWindow, title="Selecione uma imagem", filetypes=[("Arquivos de Imagem", "*.png;*.jpg;*.jpeg;*.bmp;*.gif")])
         
@@ -249,38 +262,41 @@ def open_windows_on_monitors():
             # Carregar e exibir a imagem usando PIL
             imagem4 = Image.open(caminho_imagem4)
             imagem4 = imagem4.resize((300, 150))  # Redimensiona para ajustar ao Label
-            imagem_tk4 = ImageTk.PhotoImage(imagem4)
+            imagem_tk4_ref = ImageTk.PhotoImage(imagem4)
 
+            canvas.create_image(960, 1070,image= imagem_tk4_ref, anchor=SW)
             # Atualizar o Label com a imagem selecionada
-            label_patroc4.config(image=imagem_tk4)
-            label_patroc4.image = imagem_tk4  # Manter a referência da imagem para não ser coletada pelo garbage collector
+            #label_patroc4.config(image=imagem_tk4)
+            #label_patroc4.image = imagem_tk4  # Manter a referência da imagem para não ser coletada pelo garbage collector
     def selecionar_patroc5():
+        global imagem_tk5_ref
         # Abre a janela do sistema para selecionar a imagem
         caminho_imagem5 = filedialog.askopenfilename(parent = controlWindow, title="Selecione uma imagem", filetypes=[("Arquivos de Imagem", "*.png;*.jpg;*.jpeg;*.bmp;*.gif")])
-        
         if caminho_imagem5:  # Se um arquivo for selecionado
             # Carregar e exibir a imagem usando PIL
             imagem5 = Image.open(caminho_imagem5)
             imagem5 = imagem5.resize((250, 125))  # Redimensiona para ajustar ao Label
-            imagem_tk5 = ImageTk.PhotoImage(imagem5)
-
+            imagem_tk5_ref = ImageTk.PhotoImage(imagem5)
+            
+            canvas.create_image(1280, 1070,image= imagem_tk5_ref, anchor=SW)
             # Atualizar o Label com a imagem selecionada
-            label_patroc5.config(image=imagem_tk5)
-            label_patroc5.image = imagem_tk5  # Manter a referência da imagem para não ser coletada pelo garbage collector
+            #label_patroc5.config(image=imagem_tk5)
+            #label_patroc5.image = imagem_tk5  # Manter a referência da imagem para não ser coletada pelo garbage collector
 
     def selecionar_patroc6():
+        global imagem_tk6_ref
         # Abre a janela do sistema para selecionar a imagem
         caminho_imagem6 = filedialog.askopenfilename(parent = controlWindow, title="Selecione uma imagem", filetypes=[("Arquivos de Imagem", "*.png;*.jpg;*.jpeg;*.bmp;*.gif")])
-        
         if caminho_imagem6:  # Se um arquivo for selecionado
             # Carregar e exibir a imagem usando PIL
             imagem6 = Image.open(caminho_imagem6)
             imagem6 = imagem6.resize((300, 150))  # Redimensiona para ajustar ao Label
-            imagem_tk6 = ImageTk.PhotoImage(imagem6)
+            imagem_tk6_ref = ImageTk.PhotoImage(imagem6)
 
+            canvas.create_image(1600, 1070,image=imagem_tk6_ref, anchor=SW)
             # Atualizar o Label com a imagem selecionada
-            label_patroc6.config(image=imagem_tk6)
-            label_patroc6.image = imagem_tk6  # Manter a referência da imagem para não ser coletada pelo garbage collector
+            #label_patroc6.config(image=imagem_tk6)
+            #label_patroc6.image = imagem_tk6  # Manter a referência da imagem para não ser coletada pelo garbage collector
     #Funções gerais
     # Função para atualizar o cronômetro
     def update_timer():
@@ -351,7 +367,6 @@ def open_windows_on_monitors():
         #labelChallenge1.config(text= f"{challengeTeam1}/2")
         #labelChallenge2.config(text= f"{challengeTeam2}/2")
 
-
         canvas.itemconfig(canvasscoreTeam1, text=f"{scoreTeam1}")
         canvas.itemconfig(canvassetTeam1,text=str(setTeam1))
         canvas.itemconfig(canvassubsTeam1,text=str(subsTeam1))
@@ -404,14 +419,22 @@ def open_windows_on_monitors():
         update_current_set_control_label()  # Atualiza o label na janela de controle
         update_current_set_label()  # Atualiza o label na janela principal
 
+    # Imagem para o time que está sacando
+    serve_icon = PhotoImage(file="C:/Users/Vinic/OneDrive/Documentos/Placar/Volei/Imagens/volley_ball.png")
+    small_serve_icon = serve_icon.subsample(10, 10)  # Reduz o tamanho da imagem
+    serveBall = canvas.create_image(720, 210, image=small_serve_icon)
     # Função para atualizar o ícone do saque
     def update_serve_icon():
-        if serving_team == 1:
-            labelServe1.place(relx=0.4, rely=0.15, relwidth=0.04, relheight=0.08, anchor="ne")
-            labelServe2.place_forget()  # Remove o ícone da Equipe 2
+        global serveTeam
+        if serveTeam:
+            #labelServe1.place(relx=0.4, rely=0.15, relwidth=0.04, relheight=0.08, anchor="ne")
+            #labelServe2.place_forget()  # Remove o ícone da Equipe 2
+            canvas.coords(serveBall, 720, 210)  # Move to initial position
         else:
-            labelServe2.place(relx=0.6, rely=0.15, relwidth=0.04, relheight=0.08, anchor="nw")
-            labelServe1.place_forget()  # Remove o ícone da Equipe 1
+            #labelServe2.place(relx=0.6, rely=0.15, relwidth=0.04, relheight=0.08, anchor="nw")
+            #labelServe1.place_forget()  # Remove o ícone da Equipe 1
+            canvas.coords(serveBall, 1200, 210)  # Move to target position
+        serveTeam = not serveTeam  # Toggle the flag
 
     # Função para alternar o time que está sacando
     def toggle_serving_team():
@@ -434,16 +457,13 @@ def open_windows_on_monitors():
     # Brasão times
 
     label_equipe1 = tk.Label(root,  bg=colorBackground)
-    label_equipe1.place(relx=0.29, rely=0.55, relwidth=0.19, relheight=0.35, anchor="se")
+    #label_equipe1.place(relx=0.29, rely=0.55, relwidth=0.19, relheight=0.35, anchor="se")
     
 
     
     label_equipe2 = tk.Label(root, bg=colorBackground)
-    label_equipe2.place(relx=0.71, rely=0.55, relwidth=0.19, relheight=0.35, anchor="sw")
-    
-    # Imagem para o time que está sacando
-    serve_icon = PhotoImage(file="C:/Users/Vinic/OneDrive/Documentos/Placar/Volei/Imagens/volley_ball.png")
-    small_serve_icon = serve_icon.subsample(10, 10)  # Reduz o tamanho da imagem
+    #label_equipe2.place(relx=0.71, rely=0.55, relwidth=0.19, relheight=0.35, anchor="sw")
+
 
     # Labels do placar
     labelCross = tk.Label(root, text = "X", font=("Montserrat SemiBold", 70), bg=colorBackground, fg=colorFont)
@@ -465,7 +485,7 @@ def open_windows_on_monitors():
     canvas.create_text(190, 625, text = "Sets: ", font=("Montserrat SemiBold", 35), fill=colorFont, anchor="nw")
     canvassetTeam1 = canvas.create_text(520, 625, text=f"{setTeam1}", font=("Montserrat SemiBold", 35), fill=colorFont, anchor="nw" )
     canvas.create_text(190, 690, text = "Desafios: ", font=("Montserrat SemiBold", 35), fill=colorFont , anchor="nw")
-    canvaschallengeTeam1 = canvas.create_text(520, 690, text = f"{challengeTeam1}", font=("Montserrat SemiBold", 35), fill=colorFont, anchor="nw")
+    canvaschallengeTeam1 = canvas.create_text(560, 690, text = f"{challengeTeam1}/2", font=("Montserrat SemiBold", 35), fill=colorFont, anchor="ne")
     canvas.create_text(190, 755, text = "Subst.: ", font=("Montserrat SemiBold", 35), fill=colorFont , anchor="nw")
     canvassubsTeam1 = canvas.create_text(520, 755, text = f"{subsTeam1}", font=("Montserrat SemiBold", 35), fill=colorFont, anchor="nw")
     canvas.create_text(190, 820, text = "Tempos: ", font=("Montserrat SemiBold", 35), fill=colorFont, anchor="nw" )
@@ -473,12 +493,12 @@ def open_windows_on_monitors():
     
     canvasCross = canvas.create_text(960, 450, text = "X", font=("Montserrat SemiBold", 100), fill=colorFont, anchor="center")
 
-    canvasTeam2 = canvas.create_text(1700, 30, text=f"{team2_name}", font=("Montserrat Bold", 40), fill=colorFont, anchor="ne" )
+    canvasTeam2 = canvas.create_text(1550, 90, text=f"{team2_name}", font=("Montserrat Bold", 40), fill=colorFont, anchor="center" )
     canvasscoreTeam2 = canvas.create_text(1020, 240, text=f"{scoreTeam2}", font=("Montserrat SemiBold", 165), fill=colorFont, anchor="nw" )
     canvas.create_text(1360, 625, text = "Sets: ", font=("Montserrat SemiBold", 35), fill=colorFont, anchor="nw")
     canvassetTeam2 = canvas.create_text(1730, 625, text=f"{setTeam2}", font=("Montserrat SemiBold", 35), fill=colorFont, anchor="ne" )
     canvas.create_text(1360, 690, text = "Desafios: ", font=("Montserrat SemiBold", 35), fill=colorFont , anchor="nw")
-    canvaschallengeTeam2 = canvas.create_text(1730, 690, text = f"{challengeTeam2}", font=("Montserrat SemiBold", 35), fill=colorFont, anchor="ne")
+    canvaschallengeTeam2 = canvas.create_text(1730, 690, text = f"{challengeTeam2}/2", font=("Montserrat SemiBold", 35), fill=colorFont, anchor="ne")
     canvas.create_text(1360, 755, text = "Subst.: ", font=("Montserrat SemiBold", 35), fill=colorFont , anchor="nw")
     canvassubsTeam2 = canvas.create_text(1730, 755, text = f"{subsTeam2}", font=("Montserrat SemiBold", 35), fill=colorFont, anchor="ne")
     canvas.create_text(1360, 820, text = "Tempos: ", font=("Montserrat SemiBold", 35), fill=colorFont, anchor="nw" )
@@ -513,22 +533,23 @@ def open_windows_on_monitors():
     labelTotalSets = tk.Label(root, text=f"Número de sets: {setTeam1 + setTeam2}", font=("Montserrat SemiBold", 45), bg=colorBackground, fg=colorFont)
 
     label_patroc1 = tk.Label(root, relief="solid", bg=colorBackground)
-    label_patroc1.place(relx=0, rely=1, relwidth=0.168, relheight=0.15, anchor="sw")
+    #label_patroc1.place(relx=0, rely=1, relwidth=0.168, relheight=0.15, anchor="sw")
     
+
     label_patroc2 = tk.Label(root, relief="solid", bg=colorBackground)
-    label_patroc2.place(relx=0.334, rely=1, relwidth=0.166, relheight=0.15, anchor="se")
+    #label_patroc2.place(relx=0.334, rely=1, relwidth=0.166, relheight=0.15, anchor="se")
 
     label_patroc3 = tk.Label(root, relief="solid", bg=colorBackground)
-    label_patroc3.place(relx=0.5, rely=1, relwidth=0.166, relheight=0.15, anchor="se")
+    #label_patroc3.place(relx=0.5, rely=1, relwidth=0.166, relheight=0.15, anchor="se")
 
     label_patroc4 = tk.Label(root, relief="solid", bg=colorBackground)
-    label_patroc4.place(relx=0.5, rely=1, relwidth=0.166, relheight=0.15, anchor="sw")
+    #label_patroc4.place(relx=0.5, rely=1, relwidth=0.166, relheight=0.15, anchor="sw")
 
     label_patroc5 = tk.Label(root, relief="solid", bg=colorBackground)
-    label_patroc5.place(relx=0.666, rely=1, relwidth=0.166, relheight=0.15, anchor="sw")
+    #label_patroc5.place(relx=0.666, rely=1, relwidth=0.166, relheight=0.15, anchor="sw")
 
     label_patroc6 = tk.Label(root, relief="solid", bg=colorBackground)
-    label_patroc6.place(relx=1, rely=1, relwidth=0.168, relheight=0.15, anchor="se")
+    #label_patroc6.place(relx=1, rely=1, relwidth=0.168, relheight=0.15, anchor="se")
 
     # Labels para exibir o placar de cada set
     set_score_labels = []
@@ -766,7 +787,10 @@ def open_windows_on_monitors():
     # Botão para atualizar os nomes das equipes
     buttonUpdateNames = tk.Button(controlWindow, text="Atualizar Nomes", font=("Montserrat SemiBold", 10), command=lambda: update_team_names())
     buttonUpdateNames.place(relx=0, rely=1, relwidth=0.2, relheight=0.05, anchor="sw")
-
+    
+    #Botão para mudar o fundo
+    buttonselectBackground = tk.Button(controlWindow, text="Selecionar Background", font=("Montserrat SemiBold", 10), command=lambda: selecionar_background())
+    buttonselectBackground.place(relx=0, rely=0.9, relwidth=0.2, relheight=0.05, anchor="sw")
 
     title_label = tk.Label(controlWindow, text="Set atual", font=("Arial", 25), relief = "solid", bg="lightgray", fg="black")
     title_label.place(relx=0.5, rely=0.45, relwidth=0.4, relheight=0.05, anchor="n")  # Posiciona no topo centralizado
@@ -884,6 +908,9 @@ def open_windows_on_monitors():
     buttonToggleServe = tk.Button(controlWindow, text="Alternar Saque",font=("Montserrat SemiBold", 20), command=toggle_serving_team)
     buttonToggleServe.place(relx=0.5, rely=0.4, relwidth=0.4, relheight=0.05, anchor="n")
     #Desenhando linhas para separar as áreas nas telas
+    #Telão
+    separatorTop = tk.Frame(root, bg="black", height=8)
+    separatorTop.place(relx=0, rely=0.145, relwidth=1)
     #Janela de comando
     separator1 = tk.Frame(controlWindow, bg="black", width=4)  # Defina a altura como 2 para uma linha fina
     separator1.place(relx=0.3, rely=0, relheight=0.8)
