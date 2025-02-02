@@ -185,7 +185,7 @@ def open_windows_on_monitors():
             # Atualizar o Label com a imagem selecionada
             #label_equipe1.config(image=equipe1_tk)
             #label_equipe1.image = equipe1_tk  # Manter a referência da imagem para não ser coletada pelo garbage collector
-            canvas.create_image(385, 385, image=equipe1_tk_ref, anchor=CENTER)
+            canvas.create_image(375, 385, image=equipe1_tk_ref, anchor=CENTER)
             label_equipe1_controlWindow.config(image=equipe1_tk_controlWindow)
             label_equipe1_controlWindow.image = equipe1_tk_controlWindow  # Manter a referência da imagem para não ser coletada pelo garbage collector         
 
@@ -193,7 +193,6 @@ def open_windows_on_monitors():
         global equipe2_tk_ref
         # Abre a janela do sistema para selecionar a imagem
         caminho_equipe2 = filedialog.askopenfilename(parent = controlWindow, title="Selecione uma imagem", filetypes=[("Arquivos de Imagem", "*.png;*.jpg;*.jpeg;*.bmp;*.gif")])
-        
         if caminho_equipe2:  # Se um arquivo for selecionado
             # Carregar e exibir a imagem usando PIL
             equipe2 = Image.open(caminho_equipe2)
@@ -219,7 +218,6 @@ def open_windows_on_monitors():
             imagem1 = Image.open(caminho_imagem1)
             imagem1 = imagem1.resize((300, 150))  # Redimensiona para ajustar ao Label
             imagem_tk1_ref = ImageTk.PhotoImage(imagem1)
-
             canvas.create_image(0, 1070,image= imagem_tk1_ref, anchor=SW)
             # Atualizar o Label com a imagem selecionada
             #label_patroc1.config(image=imagem_tk1)
@@ -242,7 +240,6 @@ def open_windows_on_monitors():
         global imagem_tk3_ref
         # Abre a janela do sistema para selecionar a imagem
         caminho_imagem = filedialog.askopenfilename(parent = controlWindow, title="Selecione uma imagem", filetypes=[("Arquivos de Imagem", "*.png;*.jpg;*.jpeg;*.bmp;*.gif")])
-        
         if caminho_imagem:  # Se um arquivo for selecionado
             # Carregar e exibir a imagem usando PIL
             imagem3 = Image.open(caminho_imagem)
@@ -257,13 +254,11 @@ def open_windows_on_monitors():
         global imagem_tk4_ref
         # Abre a janela do sistema para selecionar a imagem
         caminho_imagem4 = filedialog.askopenfilename(parent = controlWindow, title="Selecione uma imagem", filetypes=[("Arquivos de Imagem", "*.png;*.jpg;*.jpeg;*.bmp;*.gif")])
-        
         if caminho_imagem4:  # Se um arquivo for selecionado
             # Carregar e exibir a imagem usando PIL
             imagem4 = Image.open(caminho_imagem4)
             imagem4 = imagem4.resize((300, 150))  # Redimensiona para ajustar ao Label
             imagem_tk4_ref = ImageTk.PhotoImage(imagem4)
-
             canvas.create_image(960, 1070,image= imagem_tk4_ref, anchor=SW)
             # Atualizar o Label com a imagem selecionada
             #label_patroc4.config(image=imagem_tk4)
@@ -277,7 +272,6 @@ def open_windows_on_monitors():
             imagem5 = Image.open(caminho_imagem5)
             imagem5 = imagem5.resize((250, 125))  # Redimensiona para ajustar ao Label
             imagem_tk5_ref = ImageTk.PhotoImage(imagem5)
-            
             canvas.create_image(1280, 1070,image= imagem_tk5_ref, anchor=SW)
             # Atualizar o Label com a imagem selecionada
             #label_patroc5.config(image=imagem_tk5)
@@ -292,7 +286,6 @@ def open_windows_on_monitors():
             imagem6 = Image.open(caminho_imagem6)
             imagem6 = imagem6.resize((300, 150))  # Redimensiona para ajustar ao Label
             imagem_tk6_ref = ImageTk.PhotoImage(imagem6)
-
             canvas.create_image(1600, 1070,image=imagem_tk6_ref, anchor=SW)
             # Atualizar o Label com a imagem selecionada
             #label_patroc6.config(image=imagem_tk6)
@@ -306,12 +299,9 @@ def open_windows_on_monitors():
             # Converter os segundos em minutos e segundos
             minutes, seconds = divmod(time_seconds, 60)
             time_formatted = f"{minutes:02d}:{seconds:02d}"
-
             # Atualiza o cronômetro nas duas janelas
             timer_label.config(text=time_formatted)
             timer_label_control.config(text=time_formatted)  # Atualiza também na janela de controle
-
-
             # Atualizar o cronômetro a cada 1000ms (1 segundo)
             root.after(1000, update_timer)
     # Função para iniciar o cronômetro
@@ -342,8 +332,8 @@ def open_windows_on_monitors():
 
     # Atualizar o placar e os sets
     def update_score():
-        labelScore1.config(text=str(scoreTeam1))
-        labelScore2.config(text=str(scoreTeam2))
+        #labelScore1.config(text=str(scoreTeam1))
+        #labelScore2.config(text=str(scoreTeam2))
         scoreTeam1ControlWindow.config(text=str(f"Pontos: {scoreTeam1}"))
         setTeam1ControlWindow.config(text=str(f"Sets: {setTeam1}"))        
         challengeTeam1ControlWindow.config(text=str(f"Desafios: {challengeTeam1}/2"))
@@ -367,6 +357,10 @@ def open_windows_on_monitors():
         #labelChallenge1.config(text= f"{challengeTeam1}/2")
         #labelChallenge2.config(text= f"{challengeTeam2}/2")
 
+
+        canvas.itemconfig( canvasCurrentSet, text=f"Set atual: {current_set_display}")
+        canvas.itemconfig(set_score_labels[current_set][1], text=f"{scoreTeam1} x {scoreTeam2}")
+
         canvas.itemconfig(canvasscoreTeam1, text=f"{scoreTeam1}")
         canvas.itemconfig(canvassetTeam1,text=str(setTeam1))
         canvas.itemconfig(canvassubsTeam1,text=str(subsTeam1))
@@ -388,7 +382,7 @@ def open_windows_on_monitors():
         global set_scores, current_set
         set_scores[current_set][0] = scoreTeam1
         set_scores[current_set][1] = scoreTeam2
-        set_score_labels[current_set][1].config(text=f"{scoreTeam1} x {scoreTeam2}")
+        #set_score_labels[current_set][1].config(text=f"{scoreTeam1} x {scoreTeam2}")
 
     # Função para mudar o set
     def next_set():
@@ -422,19 +416,21 @@ def open_windows_on_monitors():
     # Imagem para o time que está sacando
     serve_icon = PhotoImage(file="C:/Users/Vinic/OneDrive/Documentos/Placar/Volei/Imagens/volley_ball.png")
     small_serve_icon = serve_icon.subsample(10, 10)  # Reduz o tamanho da imagem
-    serveBall = canvas.create_image(720, 210, image=small_serve_icon)
+    #serveBall = canvas.create_image(720, 210, image=small_serve_icon)
+    serveBall = canvas.create_image(800, 200, image=small_serve_icon)
+
     # Função para atualizar o ícone do saque
     def update_serve_icon():
-        global serveTeam
-        if serveTeam:
+        global serving_team
+        if serving_team == 1 :
             #labelServe1.place(relx=0.4, rely=0.15, relwidth=0.04, relheight=0.08, anchor="ne")
             #labelServe2.place_forget()  # Remove o ícone da Equipe 2
-            canvas.coords(serveBall, 720, 210)  # Move to initial position
+            canvas.coords(serveBall, 800, 200)  # Move to initial position
         else:
             #labelServe2.place(relx=0.6, rely=0.15, relwidth=0.04, relheight=0.08, anchor="nw")
             #labelServe1.place_forget()  # Remove o ícone da Equipe 1
-            canvas.coords(serveBall, 1200, 210)  # Move to target position
-        serveTeam = not serveTeam  # Toggle the flag
+            canvas.coords(serveBall, 1120, 200)  # Move to target position
+
 
     # Função para alternar o time que está sacando
     def toggle_serving_team():
@@ -456,32 +452,32 @@ def open_windows_on_monitors():
 
     # Brasão times
 
-    label_equipe1 = tk.Label(root,  bg=colorBackground)
+    #label_equipe1 = tk.Label(root,  bg=colorBackground)
     #label_equipe1.place(relx=0.29, rely=0.55, relwidth=0.19, relheight=0.35, anchor="se")
     
 
     
-    label_equipe2 = tk.Label(root, bg=colorBackground)
+    #label_equipe2 = tk.Label(root, bg=colorBackground)
     #label_equipe2.place(relx=0.71, rely=0.55, relwidth=0.19, relheight=0.35, anchor="sw")
 
 
     # Labels do placar
-    labelCross = tk.Label(root, text = "X", font=("Montserrat SemiBold", 70), bg=colorBackground, fg=colorFont)
+    #labelCross = tk.Label(root, text = "X", font=("Montserrat SemiBold", 70), bg=colorBackground, fg=colorFont)
 
-    labelTeam1 = tk.Label(root, text="Equipe 1", font=("Montserrat Bold", 40), relief = "solid", borderwidth = 4, bg=colorBackground, fg=colorFont)
-    labelScore1 = tk.Label(root, text=str(scoreTeam1), font=("Montserrat SemiBold", 165), bg=colorBackground, fg=colorFont)
+    #labelTeam1 = tk.Label(root, text="Equipe 1", font=("Montserrat Bold", 40), relief = "solid", borderwidth = 4, bg=colorBackground, fg=colorFont)
+    #labelScore1 = tk.Label(root, text=str(scoreTeam1), font=("Montserrat SemiBold", 165), bg=colorBackground, fg=colorFont)
 
-    labelTeam2 = tk.Label(root, text=f"{team2_name}", font=("Montserrat Bold", 40), relief = "solid", borderwidth = 4, bg=colorBackground, fg=colorFont)
-    labelScore2 = tk.Label(root, text=str(scoreTeam2), font=("Montserrat SemiBold", 165), bg=colorBackground, fg=colorFont)
+    #labelTeam2 = tk.Label(root, text=f"{team2_name}", font=("Montserrat Bold", 40), relief = "solid", borderwidth = 4, bg=colorBackground, fg=colorFont)
+    #labelScore2 = tk.Label(root, text=str(scoreTeam2), font=("Montserrat SemiBold", 165), bg=colorBackground, fg=colorFont)
 
     # Labels dos sets
     #labelwordSet1 = tk.Label(root, text=f"Sets:", font=("Montserrat SemiBold", 35), bg=colorBackground, fg=colorFont)
     #labelSet1 = tk.Label(root, text=f"{setTeam1}", font=("Montserrat SemiBold", 35), bg=colorBackground, fg=colorFont)
-    labelwordSet2 = tk.Label(root, text=f"Sets:", font=("Montserrat SemiBold", 35), bg=colorBackground, fg=colorFont)
-    labelSet2 = tk.Label(root, text=f"{setTeam2}", font=("Montserrat SemiBold", 35), bg=colorBackground, fg=colorFont)
+    #labelwordSet2 = tk.Label(root, text=f"Sets:", font=("Montserrat SemiBold", 35), bg=colorBackground, fg=colorFont)
+    #labelSet2 = tk.Label(root, text=f"{setTeam2}", font=("Montserrat SemiBold", 35), bg=colorBackground, fg=colorFont)
     
     canvasTeam1 = canvas.create_text(385, 90, text=f"{team1_name}", font=("Montserrat Bold", 40), fill=colorFont, anchor="center" )
-    canvasscoreTeam1 = canvas.create_text(900, 240, text=f"{scoreTeam1}", font=("Montserrat SemiBold", 165), fill=colorFont, anchor="ne" )
+    canvasscoreTeam1 = canvas.create_text(900, 130, text=f"{scoreTeam1}", font=("Anton", 200), fill=colorFont, anchor="ne" )
     canvas.create_text(190, 625, text = "Sets: ", font=("Montserrat SemiBold", 35), fill=colorFont, anchor="nw")
     canvassetTeam1 = canvas.create_text(520, 625, text=f"{setTeam1}", font=("Montserrat SemiBold", 35), fill=colorFont, anchor="nw" )
     canvas.create_text(190, 690, text = "Desafios: ", font=("Montserrat SemiBold", 35), fill=colorFont , anchor="nw")
@@ -494,7 +490,7 @@ def open_windows_on_monitors():
     canvasCross = canvas.create_text(960, 450, text = "X", font=("Montserrat SemiBold", 100), fill=colorFont, anchor="center")
 
     canvasTeam2 = canvas.create_text(1550, 90, text=f"{team2_name}", font=("Montserrat Bold", 40), fill=colorFont, anchor="center" )
-    canvasscoreTeam2 = canvas.create_text(1020, 240, text=f"{scoreTeam2}", font=("Montserrat SemiBold", 165), fill=colorFont, anchor="nw" )
+    canvasscoreTeam2 = canvas.create_text(1020, 130, text=f"{scoreTeam2}", font=("Anton", 200), fill=colorFont, anchor="nw" )
     canvas.create_text(1360, 625, text = "Sets: ", font=("Montserrat SemiBold", 35), fill=colorFont, anchor="nw")
     canvassetTeam2 = canvas.create_text(1730, 625, text=f"{setTeam2}", font=("Montserrat SemiBold", 35), fill=colorFont, anchor="ne" )
     canvas.create_text(1360, 690, text = "Desafios: ", font=("Montserrat SemiBold", 35), fill=colorFont , anchor="nw")
@@ -518,11 +514,11 @@ def open_windows_on_monitors():
     #labelSet2.place(relx=0.9, rely=0.59, relwidth=0.03, relheight=0.05, anchor="ne")
 
     # Label do cronômetro
-    timer_label = tk.Label(root, text="00:00", font=("Montserrat SemiBold", 60), relief="solid", borderwidth = 4, bg=colorBackground, fg=colorFont)
-    timer_label.place(relx=0.5, rely=0, relwidth=0.2, relheight=0.15, anchor="n")
+    timer_label = tk.Label(root, text="00:00", font=("Montserrat SemiBold", 60), relief="solid", borderwidth = 4, bg="#dddddd", fg=colorFont)
+    timer_label.place(relx=0.5, rely=0.015, relwidth=0.2, relheight=0.13, anchor="n")
 
-    saque_label = tk.Label(root, text="SAQUE", font=("Montserrat Bold", 40), relief = "solid", borderwidth = 4, bg=colorBackground, fg=colorFont)
-    saque_label.place(relx=0.5, rely=0.15, relwidth=0.2, relheight=0.08, anchor="n")
+    #saque_label = tk.Label(root, text="SAQUE", font=("Montserrat Bold", 40), relief = "solid", borderwidth = 4, bg="#dddddd", fg=colorFont)
+    #saque_label.place(relx=0.5, rely=0.15, relwidth=0.2, relheight=0.08, anchor="n")
     #separator_inferior_timer = tk.Frame(root, bg="black", height=4)  # Defina a altura como 2 para uma linha fina
     #separator_inferior_timer.place(relx=0, rely=0.15, relwidth=4)
     #separator_lateral_esquerda = tk.Frame(root, bg="black", width=4)  # Defina a altura como 2 para uma linha fina
@@ -535,7 +531,6 @@ def open_windows_on_monitors():
     label_patroc1 = tk.Label(root, relief="solid", bg=colorBackground)
     #label_patroc1.place(relx=0, rely=1, relwidth=0.168, relheight=0.15, anchor="sw")
     
-
     label_patroc2 = tk.Label(root, relief="solid", bg=colorBackground)
     #label_patroc2.place(relx=0.334, rely=1, relwidth=0.166, relheight=0.15, anchor="se")
 
@@ -554,22 +549,20 @@ def open_windows_on_monitors():
     # Labels para exibir o placar de cada set
     set_score_labels = []
     for i in range(4):
-    
-        set_label = tk.Label(root, text=f"SET {i + 1}", font=("Montserrat SemiBold", 35), bg=colorBackground, fg=colorFont)
-        #set_label_CW = tk.Label(controlWindow, text=f"SET {i + 1}", font=("Montserrat SemiBold", 35), bg=colorBackground, fg=colorFont)
-        score_label = tk.Label(root, text="0 x 0", font=("Montserrat SemiBold", 30), bg=colorBackground, fg=colorFont)
-        #score_label_CW = tk.Label(controlWindow, text="0 x 0", font=("Montserrat SemiBold", 30), bg=colorBackground, fg=colorFont)
-        set_label.place(relx=0.29 + i * 0.1, rely=0.72, relwidth=0.12, relheight=0.05)
-        #set_label_CW.place(relx=0.29 + i * 0.1, rely=0.72, relwidth=0.12, relheight=0.05)
-        score_label.place(relx=0.29 + i * 0.1, rely=0.77, relwidth=0.12, relheight=0.05)
-        #score_label_CW.place(relx=0.29 + i * 0.1, rely=0.77, relwidth=0.12, relheight=0.05)
+        # Posições normalizadas no Canvas
+        x_set_label = 0.85 + i * 0.235
+        x_score_label = 0.85 + i * 0.235
+        y_set_label = 1.325
+        y_score_label = 1.435
+        # Criar textos no Canvas
+        set_label = canvas.create_text(x_set_label * 800, y_set_label * 600, text=f"SET {i + 1}", font=("Montserrat SemiBold", 35), fill=colorFont, anchor="center")
+        score_label = canvas.create_text(x_score_label * 800, y_score_label * 600, text="0 x 0", font=("Montserrat SemiBold", 25), fill=colorFont, anchor="center")
         set_score_labels.append((set_label, score_label))
 
     # Adicionar o label do set atual na janela principal
     labelCurrentSet = tk.Label(root, text=f"Set atual: {current_set_display}", font=("Montserrat SemiBold", 40), bg=colorBackground, fg=colorFont)
-    labelCurrentSet.place(relx=0.5, rely=0.67, relwidth=0.25, relheight=0.1, anchor="center")  # Posicionamento centralizado abaixo do placar    
-    
-
+    #labelCurrentSet.place(relx=0.5, rely=0.67, relwidth=0.25, relheight=0.1, anchor="center")  # Posicionamento centralizado abaixo do placar
+    canvasCurrentSet = canvas.create_text(970, 700, text=f"Set atual: {current_set_display}", font=("Montserrat SemiBold", 40))
     
     # Labels para o ícone de saque
     labelServe1 = tk.Label(root, image=small_serve_icon, bg=colorBackground)
