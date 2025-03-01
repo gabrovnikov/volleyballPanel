@@ -26,6 +26,9 @@ current_quarter = 0  # Para saber qual quarter está rodando
 quarter_scores = [[0, 0] for _ in range(10)]  # Armazena os placares de cada quarter
 current_quarter_display = 1  # quarter atual, começa no 1
 
+team1_name = "TIME DA CASA"
+team2_name = "TIME VISITANTE"
+
 # Variáveis para contagem de substituições
 subsTeam1 = 0
 subsTeam2 = 0
@@ -101,35 +104,42 @@ def open_windows_on_monitors():
         print("Segundo Monitor não conectado.")
     primary_monitor = monitors[0]
     secondary_monitor = monitors[1]
+
     # Criar e configurar a primeira janela no monitor secundário
     root = tk.Tk()
     configure_window_secondary(root, secondary_monitor)
+    canvas = tk.Canvas(root, width=1920, height=1080, bg="white")  # Criar o Canvas
+    canvas.pack(fill="both", expand=True)  # Adicionar o Canvas à janela
+
     # Criar e configurar a segunda janela no monitor secundário
     controlWindow = tk.Toplevel(root)  # Usando Toplevel para manter a hierarquia
     configure_window_primary(controlWindow, primary_monitor)
 
+
+
 # Atualizar o placar e os quarters
     def update_score():
-        labelScore1.config(text=str(scoreTeam1))
-        labelScore2.config(text=str(scoreTeam2))
-        labelScore_control.config(text= str(scoreTeam1_control)+" x "+ str(scoreTeam2_control))
-        # Atualizar o label com o número total de quarters
-        labelfaltas1.config(text=str(faltasTeam1))
-        labelfaltas2.config(text=str(faltasTeam2))
-        
-    # Funções para aumentar o número de substituições
+        #labelScore_control.config(text= str(scoreTeam1_control)+" x "+ str(scoreTeam2_control))
+
+        canvas.itemconfig(canvasscoreTeam1, text=f"{scoreTeam1}")
+        canvas.itemconfig(canvasfaltas1, text=str(faltasTeam1))
+        canvas.itemconfig(canvasscoreTeam2, text=f"{scoreTeam2}")
+        canvas.itemconfig(canvasfaltas2, text=str(faltasTeam2))
+
+    # Funções para aumentar o número de faltas
     def increasefaltasTeam1():
         global faltasTeam1
         faltasTeam1 += 1
         update_score()
+    def decreasefaltasTeam1():
+        global faltasTeam1
+        faltasTeam1 -= 1
+        update_score()
+
     def increasefaltasTeam2():
         global faltasTeam2
         faltasTeam2 += 1
         update_score()  
-    def decreasefaltasTeam1():
-        global faltasTeam1
-        faltasTeam1 -= 1
-        update_score()   
     def decreasefaltasTeam2():
         global faltasTeam2
         faltasTeam2 -= 1
@@ -155,7 +165,7 @@ def open_windows_on_monitors():
         scoreTeam1_control, scoreTeam2_control = 0, 0
         update_score()
         update_current_quarter_control_label()  # Atualiza o label na janela de controle
-        update_current_quarter_label()  # Atualiza o label na janela principal
+        update_current_quarter()  # Atualiza o label na janela principal
         
     def prev_quarter():
         global scoreTeam1, scoreTeam2, current_quarter, current_quarter_display
@@ -168,122 +178,89 @@ def open_windows_on_monitors():
         scoreTeam1, scoreTeam2 = 0, 0
         update_score()
         update_current_quarter_control_label()  # Atualiza o label na janela de controle
-        update_current_quarter_label()  # Atualiza o label na janela principal
+        update_current_quarter()  # Atualiza o label na janela principal
 
     # Função para atualizar o label do quarter atual
-    def update_current_quarter_label():
-        labelCurrentQuarter.config(text=f"Quarter atual: {current_quarter_display}")
+    def update_current_quarter():
+        canvascurrentQuarter.config(text=f"Quarter atual: {current_quarter_display}")
     # Função para atualizar os nomes das equipes
     def update_team_names():
-        
+        global team1_name, team2_name
         team1_name = entryTeam1.get()  # Captura o nome da equipe 1
+        canvas.itemconfig(canvasTeam1, text=str(team1_name))
         team2_name = entryTeam2.get()  # Captura o nome da equipe 2
-
-        labelTeam1.config(text=team1_name)  # Atualiza o label da Equipe 1 na janela principal
-        labelTeam2.config(text=team2_name)  # Atualiza o label da Equipe 2 na janela principal
+        canvas.itemconfig(canvasTeam2, text=str(team2_name))
 
     #Função para selecionar imagem do time
     def selecionar_equipe1():
+        global equipe1_tk_ref
         # Abre a janela do sistema para selecionar a imagem
-        caminho_equipe1 = filedialog.askopenfilename(
-            title="Selecione uma imagem",
-            filetypes=[("Arquivos de Imagem", "*.png;*.jpg;*.jpeg;*.bmp;*.gif")])
-        
+        caminho_equipe1 = filedialog.askopenfilename(parent = controlWindow, initialdir="./Equipes",title="Selecione uma imagem",filetypes=[("Arquivos de Imagem", "*.png;*.jpg;*.jpeg;*.bmp;*.gif")])
         if caminho_equipe1:  # Se um arquivo for selecionado
             # Carregar e exibir a imagem usando PIL
             equipe1 = Image.open(caminho_equipe1)
             equipe1 = equipe1.resize((800, 400))  # Redimensiona para ajustar ao Label
             equipe1_controlWindow = equipe1.resize((500, 250))  # Redimensiona para ajustar ao Label
-            equipe1_tk = ImageTk.PhotoImage(equipe1)
+            equipe1_tk_ref = ImageTk.PhotoImage(equipe1)
             equipe1_tk_controlWindow = ImageTk.PhotoImage(equipe1_controlWindow)
-            # Atualizar o Label com a imagem selecionada
-            label_equipe1.config(image=equipe1_tk)
-            label_equipe1.image = equipe1_tk  # Manter a referência da imagem para não ser coletada pelo garbage collector
-            
+            canvas.create_image((secondary_monitor.width)/10, 385, image=equipe1_tk_ref, anchor=CENTER)
             label_equipe1_controlWindow.config(image=equipe1_tk_controlWindow)
             label_equipe1_controlWindow.image = equipe1_tk_controlWindow  # Manter a referência da imagem para não ser coletada pelo garbage collector         
 
     def selecionar_equipe2():
+        global equipe2_tk_ref
         # Abre a janela do sistema para selecionar a imagem
-        caminho_equipe2 = filedialog.askopenfilename(
-            title="Selecione uma imagem",
-            filetypes=[("Arquivos de Imagem", "*.png;*.jpg;*.jpeg;*.bmp;*.gif")])
-        
+        caminho_equipe2 = filedialog.askopenfilename(parent = controlWindow, initialdir="./Equipes", title="Selecione uma imagem", filetypes=[("Arquivos de Imagem", "*.png;*.jpg;*.jpeg;*.bmp;*.gif")])
         if caminho_equipe2:  # Se um arquivo for selecionado
             # Carregar e exibir a imagem usando PIL
             equipe2 = Image.open(caminho_equipe2)
-            equipe2 = equipe2.resize((350, 350))  # Redimensiona para ajustar ao Label
-            equipe2_controlWindow = equipe2.resize((250, 250))  # Redimensiona para ajustar ao Label
-            equipe2_tk = ImageTk.PhotoImage(equipe2)
+            equipe2 = equipe2.resize((800, 400))  # Redimensiona para ajustar ao Label
+            equipe2_controlWindow = equipe2.resize((500, 250))  # Redimensiona para ajustar ao Label
+            equipe2_tk_ref = ImageTk.PhotoImage(equipe2)
             equipe2_tk_controlWindow = ImageTk.PhotoImage(equipe2_controlWindow)
-            # Atualizar o Label com a imagem selecionada
-
-            label_equipe2.config(image=equipe2_tk)
-            label_equipe2.image = equipe2_tk  # Manter a referência da imagem para não ser coletada pelo garbage collector
-            
+            canvas.create_image(9*(secondary_monitor.width)/10, 385, image=equipe2_tk_ref, anchor=CENTER)
             label_equipe2_controlWindow.config(image=equipe2_tk_controlWindow)
             label_equipe2_controlWindow.image = equipe2_tk_controlWindow  # Manter a referência da imagem para não ser coletada pelo garbage collector
 
+    # Labels para exibir o placar de cada set
+    quarter_score_labels = []
+    for i in range(5):
+        x_quarter_label = 0.36 + i * 0.55
+        x_score_label = 0.36 + i * 0.55
+        y_quarter_label = 1.5
+        y_score_label = 1.67
+        if i < 4:  # Apenas os 4 primeiros sets aparecem na tela
+            quarter_label = canvas.create_text(x_quarter_label * 800, y_quarter_label * 600, text=f"QUARTER {i + 1}", font=("Anton", 60), fill=colorFont, anchor="center")
+            score_label = canvas.create_text(x_score_label * 800, y_score_label * 600, text="0x0", font=("Anton", 55), fill=colorFont, anchor="center")
+        else:
+            quarter_label = None
+            score_label = None
+        quarter_score_labels.append((quarter_label, score_label))
+
+
+    canvasTeam1 = canvas.create_text(18*(secondary_monitor.width)/100, 90, text=f"{team1_name}", font=("Anton", 55), fill=colorFont, anchor="center" )
+    canvasscoreTeam1 = canvas.create_text(48*(secondary_monitor.width)/100, 37*(secondary_monitor.height)/100, text=f"{scoreTeam1}", font=("Anton", 200), fill=colorFont, anchor="e" )
+    canvas.create_text(5*(secondary_monitor.width)/100, 70*(secondary_monitor.height)/100, text=f"FALTAS: ", font=("Anton", 60), fill=colorFont, anchor="w" )
+    canvasfaltas1 = canvas.create_text(25*(secondary_monitor.width)/100, 70*(secondary_monitor.height)/100, text=f"{faltasTeam1}", font=("Anton", 60), fill=colorFont, anchor="w" )
     
-# Brasão times
-    label_equipe1 = tk.Label(root,  bg=colorBackground)
-    label_equipe1.place(relx=0.05, rely=0.55, relwidth=0.19, relheight=0.35, anchor="sw")
+    canvasCross = canvas.create_text(50*(secondary_monitor.width)/100, 39*(secondary_monitor.height)/100, text = "X", font=("Anton", 80), fill=colorFont, anchor="center")
 
-    label_equipe2 = tk.Label(root, bg=colorBackground)
-    label_equipe2.place(relx=0.95, rely=0.55, relwidth=0.19, relheight=0.35, anchor="se")
+    canvasTeam2 = canvas.create_text(82*(secondary_monitor.width)/100, 90, text=f"{team2_name}", font=("Anton", 55), fill=colorFont, anchor="center" )
+    canvasscoreTeam2 = canvas.create_text(52*(secondary_monitor.width)/100, 37*(secondary_monitor.height)/100, text=f"{scoreTeam2}", font=("Anton", 200), fill=colorFont, anchor="w" )
+    canvas.create_text(72*(secondary_monitor.width)/100, 70*(secondary_monitor.height)/100, text=f"FALTAS: ", font=("Anton", 60), fill=colorFont, anchor="w" )
+    canvasfaltas2 = canvas.create_text(92*(secondary_monitor.width)/100, 70*(secondary_monitor.height)/100, text=f"{faltasTeam2}", font=("Anton", 60), fill=colorFont, anchor="w" )
 
+    canvascurrentQuarter = canvas.create_text(50*(secondary_monitor.width)/100, 70*(secondary_monitor.height)/100, text=f"QUARTER ATUAL: {current_quarter_display}", font=("Anton", 60), fill=colorFont, anchor="center" )
+    
 # Labels do placar
 
-    #Declaração
-    labelTeam1 = tk.Label(root, text="Equipe 1", font=("Anton", 40), bg="red", fg=colorFont)
-    labelScore1 = tk.Label(root, text=str(scoreTeam1), font=("Anton", 200), bg="red", fg=colorFont)
-    labelCross = tk.Label(root, text = "X", font=("Anton", 50), bg="cyan", fg=colorFont)
-    labelTeam2 = tk.Label(root, text="Equipe 2", font=("Anton", 40), bg="blue", fg=colorFont)
-    labelScore2 = tk.Label(root, text=str(scoreTeam2), font=("Anton", 200), bg="blue", fg=colorFont)
-    
-    #Posicionamento
-    labelTeam1.place(relx=0, rely=0.025, relwidth=0.4, relheight=0.1, anchor="nw")
-    labelScore1.place(relx=0.35, rely=0.35, relwidth=0.25, relheight=0.4, anchor="center")
-    labelCross.place(relx=0.5, rely=0.35, relwidth=0.05, relheight=0.2, anchor="center")
-    labelTeam2.place(relx=1, rely=0.025, relwidth=0.4, relheight=0.1, anchor="ne")
-    labelScore2.place(relx=0.65, rely=0.35, relwidth=0.25, relheight=0.4, anchor="center")
-
     #Cronômetro
-    timer_label = tk.Label(root, text="10:00:00", font=("Anton", 90), bg="yellow", fg=colorFont)
-    timer_label.place(relx=0.5, rely=0, relwidth=0.3, relheight=0.15, anchor="n")
+    timer_label = tk.Label(root, text="10:00:00", font=("Anton", 90), relief="solid", bg=colorBackground, fg=colorFont)
+    timer_label.place(relx=0.5, rely=0, relwidth=0.28, relheight=0.15, anchor="n")
 
     #Separadores
     separator_inferior_timer = tk.Frame(root, bg="black", height=4)  # Defina a altura como 2 para uma linha fina
     separator_inferior_timer.place(relx=0, rely=0.15, relwidth=4)
-    separator_lateral_esquerda = tk.Frame(root, bg="black", width=4)  # Defina a altura como 2 para uma linha fina
-    separator_lateral_esquerda.place(relx=0.3, rely=0, relheight=0.15)
-    separator_lateral_direita = tk.Frame(root, bg="black", width=4)  # Defina a altura como 2 para uma linha fina
-    separator_lateral_direita.place(relx=0.7, rely=0, relheight=0.15)
-
-    # Labels para exibir o placar de cada quarter
-    quarter_score_labels = []
-    for i in range(4):
-        quarter_label = tk.Label(root, text=f"Quarter {i + 1}", font=("Anton", 55), bg="green", fg=colorFont)
-        score_label = tk.Label(root, text="0 x 0", font=("Anton", 50), bg="green", fg=colorFont)
-        quarter_label.place(relx=0.04 + i * 0.23, rely=0.675, relwidth=0.25, relheight=0.1)
-        score_label.place(relx=0.04 + i * 0.23, rely=0.76, relwidth=0.25, relheight=0.07)
-        quarter_score_labels.append((quarter_label, score_label))
-
-    # Adicionar o label do quarter atual na janela principal
-    labelCurrentQuarter = tk.Label(root, text=f"Quarter atual: {current_quarter_display}", font=("Anton", 70), bg="green", fg=colorFont)
-    labelCurrentQuarter.place(relx=0.5, rely=0.55, relwidth=0.4, relheight=0.12, anchor="n")  # Posicionamento centralizado abaixo do placar
-
-    # Labels para mostrar número de tempos de cada time
-    labelwordfaltas1 = tk.Label(root, text=f"Faltas:", font=("Anton", 60), bg="brown", fg=colorFont)
-    labelfaltas1 = tk.Label(root, text=f"{faltasTeam1}", font=("Anton", 60), bg="brown", fg=colorFont)
-    labelwordfaltas2 = tk.Label(root, text=f"Faltas:", font=("Anton", 60), bg="brown", fg=colorFont)
-    labelfaltas2 = tk.Label(root, text=f"{faltasTeam2}", font=("Anton", 60), bg="brown", fg=colorFont)
-
-    # Posicionar os labels das substituições ao lado dos nomes das equipes
-    labelwordfaltas1.place(relx=0.05, rely=0.85, relwidth=0.15, relheight=0.1, anchor="nw")
-    labelfaltas1.place(relx=0.24, rely=0.85, relwidth=0.03, relheight=0.1, anchor="ne")
-    labelwordfaltas2.place(relx=0.76, rely=0.85, relwidth=0.15, relheight=0.1, anchor="nw")
-    labelfaltas2.place(relx=0.95, rely=0.85, relwidth=0.03, relheight=0.1, anchor="ne")
 
     # Funções para aumentar o placar e alternar o saque automaticamente
     def increaseTeam1():
@@ -293,7 +270,6 @@ def open_windows_on_monitors():
         serving_team = 1  # Time 1 marcou ponto, logo passa a ser o time sacando
         update_score()
         #update_serve_icon()  # Atualiza a bolinha para o lado do time que marcou
-
 
     def increaseTeam1_by_2():
         global scoreTeam1, scoreTeam1_control, serving_team
@@ -376,7 +352,7 @@ def open_windows_on_monitors():
         current_quarter_display = 1
         update_score()
         update_current_quarter_control_label()
-        update_current_quarter_label()
+        update_current_quarter()
 
     # Função para atualizar o cronômetro
     def update_timer():
