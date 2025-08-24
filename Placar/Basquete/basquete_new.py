@@ -180,7 +180,6 @@ def open_windows_on_monitors():
             if quarter_score_labels_CW[i][1] is not None:  # Evita erros de referência
                 quarter_score_labels_CW[i][1].config(text=f"{quarter_scores[i][0]}x{quarter_scores[i][1]}")
     
-    
     # Funções para aumentar o número de faltas
     def increasefaltasTeam1():
         global faltasTeam1
@@ -213,13 +212,16 @@ def open_windows_on_monitors():
         # Armazenar o placar do quarter atual
         store_quarter_score()
         # Passar para o próximo quarter
-        current_quarter += 1
-        current_quarter_display += 1
-        scoreTeam1, scoreTeam2 = 0, 0
-        scoreTeam1_control, scoreTeam2_control = 0, 0
-        update_score()
-        update_current_quarter_control_label()  # Atualiza o label na janela de controle
-        #update_current_quarter()  # Atualiza o label na janela principal
+        if current_quarter < 5  and current_quarter_display < 5 :
+            current_quarter += 1
+            current_quarter_display += 1
+            scoreTeam1, scoreTeam2 = 0, 0
+            scoreTeam1_control, scoreTeam2_control = 0, 0
+            update_score()
+            update_current_quarter_control_label()  # Atualiza o label na janela de controle
+            #update_current_quarter()  # Atualiza o label na janela principal
+        else:
+            pass
         
     def prev_quarter():
         global scoreTeam1, scoreTeam2, current_quarter, current_quarter_display
@@ -274,8 +276,6 @@ def open_windows_on_monitors():
             canvas.create_image(1550, 385, image=equipe2_tk_ref, anchor=CENTER)
             label_equipe2_controlWindow.config(image=equipe2_tk_controlWindow)
             label_equipe2_controlWindow.image = equipe2_tk_controlWindow  # Manter a referência da imagem para não ser coletada pelo garbage collector
-
-
 
     # Labels para exibir o placar de cada set
     quarter_score_labels = []
@@ -422,7 +422,7 @@ def open_windows_on_monitors():
 
     # Função para atualizar o cronômetro
     def update_timer():
-        global time_seconds, time_milliseconds
+        global time_seconds, time_milliseconds, time_formatted
         if timer_running:
             # Verifica se o tempo acabou
             if time_seconds == 0 and time_milliseconds == 0:
@@ -447,6 +447,7 @@ def open_windows_on_monitors():
 
             # Atualizar a cada 100ms (milissegundos)
             root.after(100, update_timer)  # 100ms = 0.1 segundo
+
     # Função para iniciar o cronômetro
     def start_timer():
         global timer_running
@@ -469,13 +470,63 @@ def open_windows_on_monitors():
     def timer_add_1_min():
         global time_seconds
         time_seconds += 60
+        # Converter para minutos, segundos e milissegundos
+        minutes, seconds = divmod(time_seconds, 60)
+        time_formatted = f"{minutes:02d}:{seconds:02d}:{time_milliseconds:02d}"
 
-
+        # Atualizar o cronômetro nas duas janelas
+        timer_label.config(text=time_formatted)
+        timer_label_control.config(text=time_formatted)
 
     def timer_remove_1_min():
         global time_seconds, time_milliseconds
         time_seconds -= 60
+        minutes, seconds = divmod(time_seconds, 60)
+        time_formatted = f"{minutes:02d}:{seconds:02d}:{time_milliseconds:02d}"
 
+        # Atualizar o cronômetro nas duas janelas
+        timer_label.config(text=time_formatted)
+        timer_label_control.config(text=time_formatted)
+
+    def timer_add_10_sec():
+        global time_seconds
+        time_seconds += 10
+        minutes, seconds = divmod(time_seconds, 60)
+        time_formatted = f"{minutes:02d}:{seconds:02d}:{time_milliseconds:02d}"
+
+        # Atualizar o cronômetro nas duas janelas
+        timer_label.config(text=time_formatted)
+        timer_label_control.config(text=time_formatted)
+
+    def timer_remove_10_sec():
+        global time_seconds, time_milliseconds
+        time_seconds -= 10
+        minutes, seconds = divmod(time_seconds, 60)
+        time_formatted = f"{minutes:02d}:{seconds:02d}:{time_milliseconds:02d}"
+
+        # Atualizar o cronômetro nas duas janelas
+        timer_label.config(text=time_formatted)
+        timer_label_control.config(text=time_formatted)
+
+    def timer_add_1_sec():
+        global time_seconds
+        time_seconds += 1
+        minutes, seconds = divmod(time_seconds, 60)
+        time_formatted = f"{minutes:02d}:{seconds:02d}:{time_milliseconds:02d}"
+
+        # Atualizar o cronômetro nas duas janelas
+        timer_label.config(text=time_formatted)
+        timer_label_control.config(text=time_formatted)
+
+    def timer_remove_1_sec():
+        global time_seconds, time_milliseconds
+        time_seconds -= 1
+        minutes, seconds = divmod(time_seconds, 60)
+        time_formatted = f"{minutes:02d}:{seconds:02d}:{time_milliseconds:02d}"
+
+        # Atualizar o cronômetro nas duas janelas
+        timer_label.config(text=time_formatted)
+        timer_label_control.config(text=time_formatted)
 
     def update_team_names():
         global team1_name, team2_name
@@ -497,60 +548,64 @@ def open_windows_on_monitors():
     # Placar time 1
     labelwordPontosTeam1 = tk.Label(controlWindow, text="PONTUAÇÃO", font=("Anton", 20), bg="lightgray", fg="black")
     labelwordPontosTeam1.place(relx=0.15, rely=0.4, relwidth=0.3, relheight=0.05, anchor="n")  # Posiciona no topo centralizado
-    buttonTeam1Up = tk.Button(controlWindow, text="+1", font=("Montserrat Bold", 20), command=increaseTeam1)
-    buttonTeam1_by_2 = tk.Button(controlWindow, text="+2", font=("Montserrat Bold", 20), command=increaseTeam1_by_2)
-    buttonTeam1_by_3 = tk.Button(controlWindow, text="+3", font=("Montserrat Bold", 20), command=increaseTeam1_by_3)
-    buttonTeam1Down = tk.Button(controlWindow, text="-", font=("Montserrat Bold", 20), command=decreaseTeam1)
+    buttonTeam1Up = tk.Button(controlWindow, text="+1", font=("Montserrat Bold", 20), bg="#00FF00", command=increaseTeam1)
+    buttonTeam1_by_2 = tk.Button(controlWindow, text="+2", font=("Montserrat Bold", 20), bg="#00FF00", command=increaseTeam1_by_2)
+    buttonTeam1_by_3 = tk.Button(controlWindow, text="+3", font=("Montserrat Bold", 20), bg="#00FF00", command=increaseTeam1_by_3)
+    buttonTeam1Down = tk.Button(controlWindow, text="-", font=("Montserrat Bold", 20), bg="red", command=decreaseTeam1)
     
     # Placar time 2
     labelwordPontosTeam2 = tk.Label(controlWindow, text="PONTUAÇÃO", font=("Anton", 20), bg="lightgray", fg="black")
     labelwordPontosTeam2.place(relx=0.85, rely=0.4, relwidth=0.3, relheight=0.05, anchor="n")  # Posiciona no topo centralizado
-    buttonTeam2Up = tk.Button(controlWindow, text="+1", font=("Montserrat Bold", 20), command=increaseTeam2)
-    buttonTeam2_by_2 = tk.Button(controlWindow, text="+2", font=("Montserrat Bold", 20), command=increaseTeam2_by_2)
-    buttonTeam2_by_3 = tk.Button(controlWindow, text="+3", font=("Montserrat Bold", 20), command=increaseTeam2_by_3)
-    buttonTeam2Down = tk.Button(controlWindow, text="-", font=("Montserrat Bold", 20), command=decreaseTeam2)
+    buttonTeam2Up = tk.Button(controlWindow, text="+1", font=("Montserrat Bold", 20), bg="#00FF00", command=increaseTeam2)
+    buttonTeam2_by_2 = tk.Button(controlWindow, text="+2", font=("Montserrat Bold", 20), bg="#00FF00", command=increaseTeam2_by_2)
+    buttonTeam2_by_3 = tk.Button(controlWindow, text="+3", font=("Montserrat Bold", 20), bg="#00FF00", command=increaseTeam2_by_3)
+    buttonTeam2Down = tk.Button(controlWindow, text="-", font=("Montserrat Bold", 20), bg="red", command=decreaseTeam2)
 
     # Faltas time 1
     labelwordFaltasTeam1 = tk.Label(controlWindow, text="FALTAS", font=("Anton", 20), bg="lightgray", fg="black")
     labelwordFaltasTeam1.place(relx=0.15, rely=0.6, relwidth=0.3, relheight=0.05, anchor="n")  # Posiciona no topo centralizado
-    buttonFalta1Up = tk.Button(controlWindow, text="+", font=("Montserrat Bold", 20), command=increasefaltasTeam1)
-    buttonFalta1Down = tk.Button(controlWindow, text="-", font=("Montserrat Bold", 20), command=decreasefaltasTeam1)
+    buttonFalta1Up = tk.Button(controlWindow, text="+", font=("Montserrat Bold", 20), bg="#00FF00", command=increasefaltasTeam1)
+    buttonFalta1Down = tk.Button(controlWindow, text="-", font=("Montserrat Bold", 20), bg="red", command=decreasefaltasTeam1)
     labelFaltasTeam1 = tk.Label(controlWindow, text=faltasTeam1, font=("Anton", 70), bg=colorBackground)
     labelFaltasTeam1.place(relx=0.15, rely=0.65, relwidth=0.2, relheight=0.15, anchor="n")
     
     # Faltas time 2
     labelwordFaltasTeam2 = tk.Label(controlWindow, text="FALTAS", font=("Anton", 20), bg="lightgray", fg="black")
     labelwordFaltasTeam2.place(relx=0.85, rely=0.6, relwidth=0.3, relheight=0.05, anchor="n")  # Posiciona no topo centralizado
-    buttonFalta2Up = tk.Button(controlWindow, text="+", font=("Montserrat Bold", 20), command=increasefaltasTeam2)
-    buttonFalta2Down = tk.Button(controlWindow, text="-", font=("Montserrat Bold", 20),command=decreasefaltasTeam2)
+    buttonFalta2Up = tk.Button(controlWindow, text="+", font=("Montserrat Bold", 20), bg="#00FF00", command=increasefaltasTeam2)
+    buttonFalta2Down = tk.Button(controlWindow, text="-", font=("Montserrat Bold", 20), bg="red", command=decreasefaltasTeam2)
     labelFaltasTeam2 = tk.Label(controlWindow, text=faltasTeam2, font=("Anton", 70), bg=colorBackground)
     labelFaltasTeam2.place(relx=0.85, rely=0.65, relwidth=0.2, relheight=0.15, anchor="n")
 
     # Botão para atualizar os nomes das equipes
-    buttonUpdateNames = tk.Button(controlWindow, text="Atualizar Nomes", font=("Anton", 23), command=lambda: update_team_names())
-    buttonUpdateNames.place(relx=0, rely=1, relwidth=0.2, relheight=0.05, anchor="sw")
+    buttonUpdateNames = tk.Button(controlWindow, text="Atualizar Nomes", font=("Anton", 23), bg="orange", command=lambda: update_team_names())
+    buttonUpdateNames.place(relx=0.5, rely=0.35, relwidth=0.4, relheight=0.05, anchor="n")
 
     title_label = tk.Label(controlWindow, text="Período", font=("Anton", 25), bg="lightgray", fg="black")
-    title_label.place(relx=0.5, rely=0.45, relwidth=0.4, relheight=0.05, anchor="n")  # Posiciona no topo centralizado
+    title_label.place(relx=0.5, rely=0.4, relwidth=0.4, relheight=0.05, anchor="n")  # Posiciona no topo centralizado
 
     labelCurrentQuarterControl = tk.Label(controlWindow, text=current_quarter_display, font=("Anton", 40), bg="white", fg="black")
-    labelCurrentQuarterControl.place(relx=0.5, rely=0.5, relwidth=0.2, relheight=0.1, anchor="n")  # Posiciona entre os botões de set
+    labelCurrentQuarterControl.place(relx=0.5, rely=0.45, relwidth=0.2, relheight=0.1, anchor="n")  # Posiciona entre os botões de set
     
+    #Label word Historico Quarters
+    labelQuarterHistory = tk.Label(controlWindow, text="HISTORICO QUARTERS", font=("Anton", 40), bg="lightgray", fg="black")
+    labelQuarterHistory.place(relx=0.5, rely=0.6, relwidth=0.4, relheight=0.1, anchor="n")
+
     # Botão para controlar QUARTERS
-    buttonNextQuarter = tk.Button(controlWindow, text="Próximo \nPeríodo", font=("Anton", 18), command=next_quarter)
-    buttonPrevQuarter = tk.Button(controlWindow, text="Período \nAnterior", font=("Anton", 18), command=prev_quarter)
-    buttonResetQuarters = tk.Button(controlWindow, text="Zerar Períodos", font=("Anton", 23), command=reset_quarters)
+    buttonNextQuarter = tk.Button(controlWindow, text="Próximo \nPeríodo", font=("Anton", 18), bg="#00FF00", command=next_quarter)
+    buttonPrevQuarter = tk.Button(controlWindow, text="Período \nAnterior", font=("Anton", 18), bg="red", command=prev_quarter)
+    buttonResetQuarters = tk.Button(controlWindow, text="Zerar Períodos", font=("Anton", 23), bg="yellow", command=reset_quarters)
     
     # Posicionar o botão de avançar Quarter
-    buttonNextQuarter.place(relx=0.6, rely=0.5, relwidth=0.1, relheight=0.15, anchor="nw")
-    buttonPrevQuarter.place(relx=0.4, rely=0.5, relwidth=0.1, relheight=0.15, anchor="ne")
-    buttonResetQuarters.place(relx=0.5, rely=0.6, relwidth=0.2, relheight=0.05, anchor="n")
+    buttonNextQuarter.place(relx=0.6, rely=0.45, relwidth=0.1, relheight=0.15, anchor="nw")
+    buttonPrevQuarter.place(relx=0.4, rely=0.45, relwidth=0.1, relheight=0.15, anchor="ne")
+    buttonResetQuarters.place(relx=0.5, rely=0.55, relwidth=0.2, relheight=0.05, anchor="n")
 
     #Botão para selecionar imagem do time
-    botao_equipe1 = tk.Button(controlWindow, text="Logo Equipe 1", font=("Anton", 23), command=selecionar_equipe1)
+    botao_equipe1 = tk.Button(controlWindow, text="Logo Equipe 1", font=("Anton", 23), bg="orange", command=selecionar_equipe1)
     botao_equipe1.place(relx=0.15, rely=0, relwidth=0.3, relheight=0.05, anchor="n")
 
-    botao_equipe2 = tk.Button(controlWindow, text="Logo Equipe 2", font=("Anton", 23), command=selecionar_equipe2)
+    botao_equipe2 = tk.Button(controlWindow, text="Logo Equipe 2", font=("Anton", 23), bg="orange", command=selecionar_equipe2)
     botao_equipe2.place(relx=0.85, rely=0, relwidth=0.3, relheight=0.05, anchor="n")
 
     entryTeam1 = tk.Entry(controlWindow, font=("Anton", 30), bg="orange")
@@ -566,15 +621,28 @@ def open_windows_on_monitors():
     timer_label_control = tk.Label(controlWindow, text="10:00:00", font=("Anton", 50), bg=colorBackground, fg=colorFont)
     timer_label_control.place(relx=0.5, rely=0.05, relwidth=0.2, relheight=0.1, anchor="n")
 
-    timerAddMinuteButton=tk.Button(controlWindow, text="+1Min", font=("Anton", 15), command=timer_add_1_min)
+    timerAddMinuteButton=tk.Button(controlWindow, text="+1 Min", font=("Anton", 15), command=timer_add_1_min)
     timerAddMinuteButton.place(relx=0.65, rely=0.15, relwidth=0.1, relheight=0.05, anchor="n")
     
-    timerRemoveMinuteButton=tk.Button(controlWindow, text="-1Min", font=("Anton", 15), command=timer_remove_1_min)
+    timerRemoveMinuteButton=tk.Button(controlWindow, text="-1 Min", font=("Anton", 15), command=timer_remove_1_min)
     timerRemoveMinuteButton.place(relx=0.35, rely=0.15, relwidth=0.1, relheight=0.05, anchor="n")
+
+    timerAdd10SecondButton=tk.Button(controlWindow, text="+10 Seg", font=("Anton", 15), command=timer_add_10_sec)
+    timerAdd10SecondButton.place(relx=0.65, rely=0.2, relwidth=0.1, relheight=0.05, anchor="n")
+    
+    timerRemove10SecondButton=tk.Button(controlWindow, text="-10 Seg", font=("Anton", 15), command=timer_remove_10_sec)
+    timerRemove10SecondButton.place(relx=0.35, rely=0.2, relwidth=0.1, relheight=0.05, anchor="n")
+
+    timerAdd1SecondButton=tk.Button(controlWindow, text="+1 Seg", font=("Anton", 15), command=timer_add_1_sec)
+    timerAdd1SecondButton.place(relx=0.65, rely=0.25, relwidth=0.1, relheight=0.05, anchor="n")
+    
+    timerRemove1SecondButton=tk.Button(controlWindow, text="-1 Seg", font=("Anton", 15), command=timer_remove_1_sec)
+    timerRemove1SecondButton.place(relx=0.35, rely=0.25 , relwidth=0.1, relheight=0.05, anchor="n")
+
     # Criando botões de controle do cronômetro
-    buttonStartTimer = tk.Button(controlWindow, text="Iniciar \nCronômetro", font=("Anton", 20), command=start_timer)
+    buttonStartTimer = tk.Button(controlWindow, text="Iniciar \nCronômetro", font=("Anton", 20), bg="#00FF00", command=start_timer)
     #buttonStopTimer = tk.Button(controlWindow, text="Parar \nCronômetro", font=("Anton", 20), command=stop_timer)
-    buttonResetTimer = tk.Button(controlWindow, text="Reiniciar\nCronômetro", font=("Anton", 20), command=reset_timer)
+    buttonResetTimer = tk.Button(controlWindow, text="Reiniciar\nCronômetro", font=("Anton", 20), bg="red", command=reset_timer)
     #start_button = tk.Button(controlWindow, text="Play\nPause", command=start_timer, font=("Anton", 20))
     #start_button.place(relx=0.65, rely=0.05, relwidth=0.1, relheight=0.1, anchor="n")
     # Botão para parar o cronômetro
@@ -603,12 +671,6 @@ def open_windows_on_monitors():
     buttonTeam2_by_3.place(relx=1, rely=0.55, relwidth=0.05, relheight=0.05, anchor="ne")
     buttonTeam2Down.place(relx=0.7, rely=0.45, relwidth=0.05, relheight=0.15, anchor="nw")
     labelscore2Controlwindow.place(relx=0.85, rely=0.45, relwidth=0.2, relheight=0.15, anchor="n")
-
-    # Posicionar os botões dos sets
-    #buttonQuarter1Up.place(relx=0.15, rely=0.45, relwidth=0.1, relheight=0.05, anchor="nw")
-    #buttonQuarter2Up.place(relx=0.85, rely=0.45, relwidth=0.1, relheight=0.05, anchor="nw")
-    #buttonQuarter1Down.place(relx=0.15, rely=0.45, relwidth=0.1, relheight=0.05, anchor="ne")
-    #buttonQuarter2Down.place(relx=0.85, rely=0.45, relwidth=0.1, relheight=0.05, anchor="ne")
 
     # Posicionar os botões dos tempos
     buttonFalta1Up.place(relx=0.3, rely=0.65, relwidth=0.05, relheight=0.15, anchor="ne")
