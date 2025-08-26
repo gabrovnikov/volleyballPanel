@@ -215,8 +215,8 @@ def open_windows_on_monitors():
         if current_quarter < 5  and current_quarter_display < 5 :
             current_quarter += 1
             current_quarter_display += 1
-            scoreTeam1, scoreTeam2 = 0, 0
-            scoreTeam1_control, scoreTeam2_control = 0, 0
+            #scoreTeam1, scoreTeam2 = 0, 0
+            #scoreTeam1_control, scoreTeam2_control = 0, 0
             update_score()
             update_current_quarter_control_label()  # Atualiza o label na janela de controle
             #update_current_quarter()  # Atualiza o label na janela principal
@@ -235,6 +235,32 @@ def open_windows_on_monitors():
         update_score()
         update_current_quarter_control_label()  # Atualiza o label na janela de controle
         #update_current_quarter()  # Atualiza o label na janela principal
+
+    # Zerar os quarters (panic button)
+    def reset_quarters():
+        global quarterTeam1, quarterTeam2, scoreTeam1, scoreTeam2, current_quarter, current_quarter_display, quarter_scores
+        quarterTeam1 = 0
+        quarterTeam2 = 0
+        scoreTeam1 = 0
+        scoreTeam2 = 0
+        current_quarter = 0
+        current_quarter_display = 1
+        
+        quarter_scores = [[0, 0] for _ in range(len(quarter_scores))]  # Reinicia todos os sets para 0-0
+        
+        update_score()
+        update_current_quarter_control_label()
+
+                # Resetar os labels de histórico de sets na tela principal
+        for i in range(len(quarter_score_labels)):  # Atualiza todos os labels de sets
+            if quarter_score_labels[i][1] is not None:
+                canvas.itemconfig(quarter_score_labels[i][1], text="0x0")  # Reseta para "0x0"
+
+        # Resetar os labels de histórico de sets na tela secundária (controle)
+        for i in range(len(quarter_score_labels_CW)):  # Atualiza o histórico de sets na tela de controle
+            if quarter_score_labels_CW[i][1] is not None:
+                quarter_score_labels_CW[i][1].config(text="0x0")  # Reseta para "0x0"
+
 
     # Função para atualizar o label do quarter atual
     def update_current_quarter():
@@ -407,18 +433,6 @@ def open_windows_on_monitors():
         quarterTeam2 -= 1
         update_score()
 
-    # Zerar os quarters (panic button)
-    def reset_quarters():
-        global quarterTeam1, quarterTeam2, scoreTeam1, scoreTeam2, current_quarter, current_quarter_display
-        quarterTeam1 = 0
-        quarterTeam2 = 0
-        scoreTeam1 = 0
-        scoreTeam2 = 0
-        current_quarter = 0
-        current_quarter_display = 1
-        update_score()
-        update_current_quarter_control_label()
-        #update_current_quarter()
 
     # Função para atualizar o cronômetro
     def update_timer():
