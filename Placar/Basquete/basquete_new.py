@@ -102,6 +102,8 @@ def configure_window_primary(controlWindow, primary_monitor):
     controlWindow.bind("<Escape>", exit_fullscreen)
     controlWindow.bind("<Alt-F4>", block_alt_f4) #bloqueando alt + f4
 
+
+
 # Função que configura a segunda janela
 def configure_window_secondary(root, secondary_monitor):
     root.title("Placar e Cronômetro")
@@ -132,10 +134,10 @@ def open_windows_on_monitors():
     monitors = get_monitors()
     
     # Verifica se há mais de um monitor disponível
-    if len(monitors) < 2:
-        print("Segundo Monitor não conectado.")
+    #if len(monitors) < 2:
+    #    print("Segundo Monitor não conectado.")
     primary_monitor = monitors[0]
-    secondary_monitor = monitors[1]
+    secondary_monitor = monitors[0]
 
     # Criar e configurar a primeira janela no monitor secundário
     root = tk.Tk()
@@ -154,7 +156,6 @@ def open_windows_on_monitors():
         canvas.itemconfig(canvasTeam1, text=str(team1_name))
         team2_name = entryTeam2.get()  # Captura o nome da equipe 2
         canvas.itemconfig(canvasTeam2, text=str(team2_name))
-        entryTeam1.configure(takefocus=0)
         controlWindow.focus_force()
 
 # Atualizar o placar e os quarters
@@ -187,7 +188,10 @@ def open_windows_on_monitors():
         update_score()
     def decreasefaltasTeam1():
         global faltasTeam1
-        faltasTeam1 -= 1
+        if faltasTeam1 == 0:
+            pass
+        else:
+            faltasTeam1 -= 1
         update_score()
 
     def increasefaltasTeam2():
@@ -196,16 +200,25 @@ def open_windows_on_monitors():
         update_score()  
     def decreasefaltasTeam2():
         global faltasTeam2
-        faltasTeam2 -= 1
+        if faltasTeam2 == 0:
+            pass
+        else:
+            faltasTeam2 -= 1
         update_score() 
     # Update visualização quarter atual na janela de comando
     def update_current_quarter_control_label():
         labelCurrentQuarterControl.config(text=current_quarter_display)
     # Função para armazenar o placar do quarter atual
     def store_quarter_score():
-        global quarter_scores, current_quarter
-        quarter_scores[current_quarter][0] = scoreTeam1
-        quarter_scores[current_quarter][1] = scoreTeam2
+        global quarter_scores, current_quarter, scoreTeam1, scoreTeam2
+
+        # soma apenas a coluna do time 1 (índice 0) até o quarto anterior
+        soma_t1 = sum(q[0] for q in quarter_scores[(current_quarter-1)::-1])
+        # soma apenas a coluna do time 2 (índice 1)
+        soma_t2 = sum(q[1] for q in quarter_scores[(current_quarter-1)::-1])
+
+        quarter_scores[current_quarter][0] = scoreTeam1 - soma_t1
+        quarter_scores[current_quarter][1] = scoreTeam2 - soma_t2
     # Função para mudar o quarter
     def next_quarter():
         global scoreTeam1, scoreTeam2, scoreTeam1_control, scoreTeam2_control, current_quarter, current_quarter_display
@@ -463,7 +476,7 @@ def open_windows_on_monitors():
             root.after(100, update_timer)  # 100ms = 0.1 segundo
 
     # Função para iniciar o cronômetro
-    def start_timer():
+    def start_timer(event=None):
         global timer_running
         timer_running = not timer_running
         if timer_running:
@@ -548,6 +561,7 @@ def open_windows_on_monitors():
         canvas.itemconfig(canvasTeam1, text=str(team1_name))
         team2_name = entryTeam2.get()  # Captura o nome da equipe 2
         canvas.itemconfig(canvasTeam2, text=str(team2_name))
+        controlWindow.focus_force()
 
     label_equipe1_controlWindow = tk.Label(controlWindow,  bg=colorBackground)
     label_equipe1_controlWindow.place(relx=0.15, rely=0.05, relwidth=0.3, relheight=0.3, anchor="n")
@@ -655,6 +669,7 @@ def open_windows_on_monitors():
 
     # Criando botões de controle do cronômetro
     buttonStartTimer = tk.Button(controlWindow, text="Iniciar \nCronômetro", font=("Anton", 20), bg="#00FF00", command=start_timer)
+    controlWindow.bind("<space>", start_timer)
     #buttonStopTimer = tk.Button(controlWindow, text="Parar \nCronômetro", font=("Anton", 20), command=stop_timer)
     buttonResetTimer = tk.Button(controlWindow, text="Reiniciar\nCronômetro", font=("Anton", 20), bg="red", command=reset_timer)
     #start_button = tk.Button(controlWindow, text="Play\nPause", command=start_timer, font=("Anton", 20))
