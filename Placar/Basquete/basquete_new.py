@@ -137,7 +137,7 @@ def open_windows_on_monitors():
     #if len(monitors) < 2:
     #    print("Segundo Monitor não conectado.")
     primary_monitor = monitors[0]
-    secondary_monitor = monitors[0]
+    secondary_monitor = monitors[1]
 
     # Criar e configurar a primeira janela no monitor secundário
     root = tk.Tk()
