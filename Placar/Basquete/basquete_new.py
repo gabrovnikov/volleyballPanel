@@ -24,6 +24,8 @@ scoreTeam1_control = 0
 scoreTeam2_control = 0
 quarterTeam1 = 0
 quarterTeam2 = 0
+timeTeam1 = 0
+timeTeam2 = 0
 current_quarter = 0  # Para saber qual quarter está rodando
 
 quarter_scores = [[0, 0] for _ in range(10)]  # Armazena os placares de cada quarter
@@ -47,6 +49,19 @@ challengeTeam2 = 0
 # variáveis de cor
 colorFont = "black"
 colorBackground = "white"
+
+#Variável para controlar o estado
+
+MAX_TEMPOS = 5
+
+# Lista para guardar os IDs dos círculos
+lista_ids_tempos_time1 = []
+lista_ids_tempos_time2 = []
+
+
+# Cores para os estados
+COR_ATIVA = "red"
+COR_INATIVA = "lightgrey"
 
 #definir o time que está sacando 
 serving_team = 1  # Começa com a Equipe 1 
@@ -163,11 +178,15 @@ def open_windows_on_monitors():
         labelCurrentQuarterControl.config(text=str(current_quarter_display))
         labelscore1Controlwindow.config(text=str(scoreTeam1))
         labelscore2Controlwindow.config(text=str(scoreTeam2))
-        canvas.itemconfig(canvascurrentQuarter, text=f"QUARTER ATUAL: {current_quarter_display}")
+        timeTeam1ControlWindow.config(text=str(f"Tempos: {timeTeam1}"))
+        timeTeam2ControlWindow.config(text=str(f"Tempos: {timeTeam2}"))
+        canvas.itemconfig(canvascurrentQuarter, text=f"PERIODO ATUAL: {current_quarter_display}")
         canvas.itemconfig(canvasscoreTeam1, text=f"{scoreTeam1}")
         canvas.itemconfig(canvasfaltas1, text=str(faltasTeam1))
+        #canvas.itemconfig(canvastimeTeam1,text=str(timeTeam1))
         canvas.itemconfig(canvasscoreTeam2, text=f"{scoreTeam2}")
         canvas.itemconfig(canvasfaltas2, text=str(faltasTeam2))
+        #canvas.itemconfig(canvastimeTeam2,text=str(timeTeam2))
         labelFaltasTeam1.config(text=faltasTeam1)
         labelFaltasTeam2.config(text=faltasTeam2)
                 # 🔥 ATUALIZA OS quarters FINALIZADOS PARA APARECEREM NO HISTÓRICO
@@ -195,7 +214,8 @@ def open_windows_on_monitors():
     def increasefaltasTeam2():
         global faltasTeam2
         faltasTeam2 += 1
-        update_score()  
+        update_score()
+
     def decreasefaltasTeam2():
         global faltasTeam2
         if faltasTeam2 == 0:
@@ -203,6 +223,33 @@ def open_windows_on_monitors():
         else:
             faltasTeam2 -= 1
         update_score() 
+
+    def increaseTimeTeam1():
+        global timeTeam1
+        timeTeam1 += 1
+        atualizar_cores_bolinhas()
+        update_score()
+
+    def increaseTimeTeam2():
+        global timeTeam2
+        timeTeam2 += 1
+        atualizar_cores_bolinhas()
+        update_score()  
+
+    def decreaseTimeTeam1():
+        global timeTeam1
+        if timeTeam1 >= 1:
+            timeTeam1 -= 1
+        atualizar_cores_bolinhas()
+        update_score()   
+
+    def decreaseTimeTeam2():
+        global timeTeam2
+        if timeTeam2 >= 1 :
+            timeTeam2 -= 1
+        atualizar_cores_bolinhas()
+        update_score()
+
     # Update visualização quarter atual na janela de comando
     def update_current_quarter_control_label():
         labelCurrentQuarterControl.config(text=current_quarter_display)
@@ -272,6 +319,56 @@ def open_windows_on_monitors():
             if quarter_score_labels_CW[i][1] is not None:
                 quarter_score_labels_CW[i][1].config(text="0x0")  # Reseta para "0x0"
 
+    # 2. Função que ATUALIZA as cores das bolinhas com base na variável
+    def atualizar_cores_bolinhas():
+        """Verifica as variáveis timeTeam1 e timeTeam2 e atualiza as cores dos círculos."""
+        
+        # Atualiza os círculos do TIME 1
+        for i in range(MAX_TEMPOS):
+            bolinha_id = lista_ids_tempos_time1[i]
+            if i < timeTeam1:
+                canvas.itemconfig(bolinha_id, fill=COR_ATIVA)
+            else:
+                canvas.itemconfig(bolinha_id, fill=COR_INATIVA)
+                
+        # Atualiza os círculos do TIME 2
+        for i in range(MAX_TEMPOS):
+            bolinha_id = lista_ids_tempos_time2[i]
+            if i < timeTeam2: # <-- Usando a variável do time 2
+                canvas.itemconfig(bolinha_id, fill=COR_ATIVA)
+            else:
+                canvas.itemconfig(bolinha_id, fill=COR_INATIVA)
+
+    # 4. Loop para DESENHAR as bolinhas na tela pela primeira vez
+    x1_inicial = 5*(secondary_monitor.width)/100
+    y1_inicial = 80*(secondary_monitor.height)/100
+    tamanho_bolinha = 60
+    espacamento = 30
+
+    for i in range(MAX_TEMPOS):
+        x0 = x1_inicial + i * (tamanho_bolinha + espacamento)
+        y0 = y1_inicial
+        x1 = x0 + tamanho_bolinha
+        y1 = y0 + tamanho_bolinha
+        # create_oval desenha um círculo/elipse. Passamos a cor inicial
+        bolinha_id1 = canvas.create_oval(x0, y0, x1, y1, fill=COR_INATIVA, outline="black")
+        # Adicionamos o ID retornado à nossa lista de controle
+        lista_ids_tempos_time1.append(bolinha_id1)
+
+    x2_inicial = 72*(secondary_monitor.width)/100
+    y2_inicial = 80*(secondary_monitor.height)/100
+    tamanho_bolinha = 60
+    espacamento = 30
+
+    for i in range(MAX_TEMPOS):
+        x0 = x2_inicial + i * (tamanho_bolinha + espacamento)
+        y0 = y2_inicial
+        x1 = x0 + tamanho_bolinha
+        y1 = y0 + tamanho_bolinha
+        # create_oval desenha um círculo/elipse. Passamos a cor inicial
+        bolinha_id2 = canvas.create_oval(x0, y0, x1, y1, fill=COR_INATIVA, outline="black")
+        # Adicionamos o ID retornado à nossa lista de controle
+        lista_ids_tempos_time2.append(bolinha_id2)
 
     # Função para atualizar o label do quarter atual
     def update_current_quarter():
@@ -292,7 +389,7 @@ def open_windows_on_monitors():
             # Atualizar o Label com a imagem selecionada
             #label_equipe1.config(image=equipe1_tk)
             #label_equipe1.image = equipe1_tk  # Manter a referência da imagem para não ser coletada pelo garbage collector
-            canvas.create_image(375, 385, image=equipe1_tk_ref, anchor=CENTER)
+            canvas.create_image(15*(secondary_monitor.width)/100, 385, image=equipe1_tk_ref, anchor=CENTER)
             label_equipe1_controlWindow.config(image=equipe1_tk_controlWindow)
             label_equipe1_controlWindow.image = equipe1_tk_controlWindow  # Manter a referência da imagem para não ser coletada pelo garbage collector         
 
@@ -303,27 +400,39 @@ def open_windows_on_monitors():
         if caminho_equipe2:  # Se um arquivo for selecionado
             # Carregar e exibir a imagem usando PIL
             equipe2 = Image.open(caminho_equipe2)
-            equipe2 = equipe2.resize((650, 350))  # Redimensiona para ajustar ao Label
+            equipe2 = equipe2.resize((800, 400))  # Redimensiona para ajustar ao Label
             equipe2_controlWindow = equipe2.resize((500, 250))  # Redimensiona para ajustar ao Label
             equipe2_tk_ref = ImageTk.PhotoImage(equipe2)
             equipe2_tk_controlWindow = ImageTk.PhotoImage(equipe2_controlWindow)
             # Atualizar o Label com a imagem selecionada
             #label_equipe2.config(image=equipe2_tk)
             #label_equipe2.image = equipe2_tk  # Manter a referência da imagem para não ser coletada pelo garbage collector
-            canvas.create_image(1550, 385, image=equipe2_tk_ref, anchor=CENTER)
+            canvas.create_image(85*(secondary_monitor.width)/100, 385, image=equipe2_tk_ref, anchor=CENTER)
             label_equipe2_controlWindow.config(image=equipe2_tk_controlWindow)
             label_equipe2_controlWindow.image = equipe2_tk_controlWindow  # Manter a referência da imagem para não ser coletada pelo garbage collector
 
     # Labels para exibir o placar de cada set
     quarter_score_labels = []
     for i in range(5):
-        x_quarter_label = 0.36 + i * 0.55
-        x_score_label = 0.36 + i * 0.55
-        y_quarter_label = 1.5
+        x_quarter_label = 0.25 + i * 0.55
+        x_score_label = 0.45 + i * 0.55
+        y_quarter_label = 1.67
         y_score_label = 1.67
         if i < 4:  # Apenas os 4 primeiros sets aparecem na tela
-            quarter_label = canvas.create_text(x_quarter_label * 800, y_quarter_label * 600, text=f"QUARTER {i + 1}", font=("Anton", 60), fill=colorFont, anchor="center")
-            score_label = canvas.create_text(x_score_label * 800, y_score_label * 600, text="0x0", font=("Anton", 55), fill=colorFont, anchor="center")
+            quarter_label = canvas.create_text(x_quarter_label * 800, y_quarter_label * 600, text=f"Q{i + 1}", font=("Anton", 50), fill=colorFont, anchor="center")
+            
+            # Coordenadas do centro do texto do placar
+            center_x = x_score_label * 800
+            center_y = y_score_label * 600
+            
+            # Dimensões do retângulo
+            rect_width = 120
+            rect_height = 140
+
+            # Desenha o retângulo ANTES do texto para que o texto fique por cima
+            #canvas.create_rectangle(center_x - rect_width / 2, (center_y - 100) - rect_height / 2, center_x + rect_width / 2, center_y + rect_height / 2, outline="black", width=6)
+
+            score_label = canvas.create_text(center_x, center_y, text="0x0", font=("Anton", 45), fill=colorFont, anchor="center")
         else:
             quarter_label = None
             score_label = None
@@ -331,7 +440,7 @@ def open_windows_on_monitors():
 
     quarter_score_labels_CW = []
     for i in range(5):  # Agora garantimos que TODOS os 5 sets existem na lista
-        quarter_label = tk.Label(controlWindow, text=f"QUARTER {i + 1}", font=("Anton", 25), relief="solid", borderwidth=1, bg="#dddddd", fg=colorFont)
+        quarter_label = tk.Label(controlWindow, text=f"PERIODO {i + 1}", font=("Anton", 25), relief="solid", borderwidth=1, bg="#dddddd", fg=colorFont)
         score_label = tk.Label(controlWindow, text="0x0", font=("Anton", 25), relief="solid", borderwidth=1, bg=colorBackground, fg=colorFont)
 
         if i < 4:  # Apenas 4 sets aparecem na tela, mas ainda precisamos armazenar o 5º para controle
@@ -344,16 +453,20 @@ def open_windows_on_monitors():
     canvasscoreTeam1 = canvas.create_text(48*(secondary_monitor.width)/100, 37*(secondary_monitor.height)/100, text=f"{scoreTeam1}", font=("Anton", 200), fill=colorFont, anchor="e" )
     canvas.create_text(5*(secondary_monitor.width)/100, 70*(secondary_monitor.height)/100, text=f"FALTAS: ", font=("Anton", 60), fill=colorFont, anchor="w" )
     canvasfaltas1 = canvas.create_text(25*(secondary_monitor.width)/100, 70*(secondary_monitor.height)/100, text=f"{faltasTeam1}", font=("Anton", 60), fill=colorFont, anchor="w" )
-    
+    #canvas.create_text(5*(secondary_monitor.width)/100, 75*(secondary_monitor.height)/100, text = "TEMPOS: ", font=("Anton", 60), fill=colorFont, anchor="nw" )
+    #canvastimeTeam1 = canvas.create_text(25*(secondary_monitor.width)/100, 75*(secondary_monitor.height)/100, text = f"{timeTeam1}", font=("Anton", 60), fill=colorFont, anchor="nw")
+
     canvasCross = canvas.create_text(50*(secondary_monitor.width)/100, 39*(secondary_monitor.height)/100, text = "X", font=("Anton", 80), fill=colorFont, anchor="center")
+    canvas.create_text(50*(secondary_monitor.width)/100, 74*(secondary_monitor.height)/100, text = "TEMPOS", font=("Anton", 60), fill=colorFont, anchor="n" )
 
     canvasTeam2 = canvas.create_text(82*(secondary_monitor.width)/100, 90, text=f"{team2_name}", font=("Anton", 55), fill=colorFont, anchor="center" )
     canvasscoreTeam2 = canvas.create_text(52*(secondary_monitor.width)/100, 37*(secondary_monitor.height)/100, text=f"{scoreTeam2}", font=("Anton", 200), fill=colorFont, anchor="w" )
     canvas.create_text(72*(secondary_monitor.width)/100, 70*(secondary_monitor.height)/100, text=f"FALTAS: ", font=("Anton", 60), fill=colorFont, anchor="w" )
     canvasfaltas2 = canvas.create_text(92*(secondary_monitor.width)/100, 70*(secondary_monitor.height)/100, text=f"{faltasTeam2}", font=("Anton", 60), fill=colorFont, anchor="w" )
-
+    #canvas.create_text(72*(secondary_monitor.width)/100, 75*(secondary_monitor.height)/100, text = "TEMPOS: ", font=("Anton", 60), fill=colorFont, anchor="nw" )
+    #canvastimeTeam2 = canvas.create_text(92*(secondary_monitor.width)/100, 75*(secondary_monitor.height)/100, text = f"{timeTeam2}", font=("Anton", 60), fill=colorFont, anchor="nw")
     
-    canvascurrentQuarter = canvas.create_text(50*(secondary_monitor.width)/100, 70*(secondary_monitor.height)/100, text=f"QUARTER ATUAL: {current_quarter_display}", font=("Anton", 60), fill=colorFont, anchor="center" )
+    canvascurrentQuarter = canvas.create_text(50*(secondary_monitor.width)/100, 70*(secondary_monitor.height)/100, text=f"PERIODO ATUAL: {current_quarter_display}", font=("Anton", 60), fill=colorFont, anchor="center" )
     
 # Labels do placar
 
@@ -615,6 +728,23 @@ def open_windows_on_monitors():
     buttonFalta2Down = tk.Button(controlWindow, text="-", font=("Montserrat Bold", 20), bg="red", command=decreasefaltasTeam2)
     labelFaltasTeam2 = tk.Label(controlWindow, text=faltasTeam2, font=("Anton", 70), bg=colorBackground)
     labelFaltasTeam2.place(relx=0.85, rely=0.65, relwidth=0.2, relheight=0.15, anchor="n")
+    
+    #Visualizando na tela de comando info de tempos
+    timeTeam1ControlWindow = tk.Label(controlWindow, text=f"Tempos: {timeTeam1}", font=("Anton", 20), relief = "solid", bg=colorBackground)
+    timeTeam1ControlWindow.place(relx=0.15, rely=0.6, relwidth=0.2, relheight=0.05, anchor="n") 
+    timeTeam2ControlWindow = tk.Label(controlWindow, text=f"Tempos: {timeTeam2}", font=("Anton", 20), relief = "solid", bg=colorBackground)
+    timeTeam2ControlWindow.place(relx=0.85, rely=0.6, relwidth=0.2, relheight=0.05, anchor="n")
+
+    # Botões para controle de tempos
+    buttonTime1Up = tk.Button(controlWindow, text="+", font=("Montserrat Bold", 30), bg="#00FF00", command=increaseTimeTeam1)
+    buttonTime1Down = tk.Button(controlWindow, text="-", font=("Montserrat Bold", 30), bg="red", command=decreaseTimeTeam1)
+    buttonTime2Up = tk.Button(controlWindow, text="+", font=("Montserrat Bold", 30), bg="#00FF00", command=increaseTimeTeam2)
+    buttonTime2Down = tk.Button(controlWindow, text="-", font=("Montserrat Bold", 30), bg="red", command=decreaseTimeTeam2)
+    # Posicionar os botões dos tempos
+    buttonTime1Up.place(relx=0.30, rely=0.6, relwidth=0.05, relheight=0.05, anchor="ne")
+    buttonTime2Up.place(relx=1, rely=0.6, relwidth=0.05, relheight=0.05, anchor="ne")
+    buttonTime1Down.place(relx=0, rely=0.6, relwidth=0.05, relheight=0.05, anchor="nw")
+    buttonTime2Down.place(relx=0.7, rely=0.6, relwidth=0.05, relheight=0.05, anchor="nw")
 
     # Botão para atualizar os nomes das equipes
     buttonUpdateNames = tk.Button(controlWindow, text="Atualizar Nomes", font=("Anton", 23), bg="orange", command=lambda: update_team_names())
