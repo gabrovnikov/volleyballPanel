@@ -42,26 +42,19 @@ subsTeam2 = 0
 faltasTeam1 = 0
 faltasTeam2 = 0
 
-# Variáveis de desafio
-challengeTeam1 = 0
-challengeTeam2 = 0
-
 # variáveis de cor
 colorFont = "black"
 colorBackground = "white"
 
-#Variável para controlar o estado
+MAX_TEMPOS_VISIVEIS = 3 
 
-MAX_TEMPOS = 5
-
-# Lista para guardar os IDs dos círculos
+# Listas para guardar os IDs dos círculos de tempo de cada time
 lista_ids_tempos_time1 = []
 lista_ids_tempos_time2 = []
 
-
-# Cores para os estados
-COR_ATIVA = "red"
-COR_INATIVA = "lightgrey"
+# Cores para os estados das bolinhas de tempo
+COR_ATIVA_TEMPO = "red"  # Verde para tempo pedido
+COR_INATIVA_TEMPO = "gray"
 
 #definir o time que está sacando 
 serving_team = 1  # Começa com a Equipe 1 
@@ -197,7 +190,7 @@ def open_windows_on_monitors():
         for i in range(current_quarter):  # Garante que todos os sets finalizados sejam exibidos corretamente
             if quarter_score_labels_CW[i][1] is not None:  # Evita erros de referência
                 quarter_score_labels_CW[i][1].config(text=f"{quarter_scores[i][0]}x{quarter_scores[i][1]}")
-    
+        atualizar_indicadores_de_tempo()
     # Funções para aumentar o número de faltas
     def increasefaltasTeam1():
         global faltasTeam1
@@ -225,29 +218,44 @@ def open_windows_on_monitors():
         update_score() 
 
     def increaseTimeTeam1():
-        global timeTeam1
-        timeTeam1 += 1
-        atualizar_cores_bolinhas()
+        global timeTeam1, current_quarter_display
+        
+        # Verifica se estamos na primeira metade (períodos 1 e 2)
+        if current_quarter_display <= 2:
+            # Só permite adicionar se tiver menos de 2 tempos pedidos
+            if timeTeam1 < 2:
+                timeTeam1 += 1
+        # Verifica se estamos na segunda metade (períodos 3 e 4)
+        else:
+            # Só permite adicionar se tiver menos de 3 tempos pedidos
+            if timeTeam1 < 3:
+                timeTeam1 += 1
+                
         update_score()
 
     def increaseTimeTeam2():
-        global timeTeam2
-        timeTeam2 += 1
-        atualizar_cores_bolinhas()
-        update_score()  
+        global timeTeam2, current_quarter_display
+
+        # Lógica idêntica para o Time 2
+        if current_quarter_display <= 2:
+            if timeTeam2 < 2:
+                timeTeam2 += 1
+        else:
+            if timeTeam2 < 3:
+                timeTeam2 += 1
+                
+        update_score()
 
     def decreaseTimeTeam1():
         global timeTeam1
         if timeTeam1 >= 1:
             timeTeam1 -= 1
-        atualizar_cores_bolinhas()
         update_score()   
 
     def decreaseTimeTeam2():
         global timeTeam2
         if timeTeam2 >= 1 :
             timeTeam2 -= 1
-        atualizar_cores_bolinhas()
         update_score()
 
     # Update visualização quarter atual na janela de comando
@@ -266,18 +274,22 @@ def open_windows_on_monitors():
         quarter_scores[current_quarter][1] = scoreTeam2 - soma_t2
     # Função para mudar o quarter
     def next_quarter():
-        global scoreTeam1, scoreTeam2, scoreTeam1_control, scoreTeam2_control, current_quarter, current_quarter_display
+        global scoreTeam1, scoreTeam2, scoreTeam1_control, scoreTeam2_control, current_quarter, current_quarter_display, timeTeam1, timeTeam2
+        
+        # ADICIONE ESTA VERIFICAÇÃO AQUI
+        # Se estamos passando do 2º para o 3º período, zera os tempos
+        if current_quarter_display == 2:
+            timeTeam1 = 0
+            timeTeam2 = 0
+
         # Armazenar o placar do quarter atual
         store_quarter_score()
         # Passar para o próximo quarter
         if current_quarter < 5  and current_quarter_display < 5 :
             current_quarter += 1
             current_quarter_display += 1
-            #scoreTeam1, scoreTeam2 = 0, 0
-            #scoreTeam1_control, scoreTeam2_control = 0, 0
             update_score()
-            update_current_quarter_control_label()  # Atualiza o label na janela de controle
-            #update_current_quarter()  # Atualiza o label na janela principal
+            update_current_quarter_control_label()
         else:
             pass
         
@@ -318,57 +330,39 @@ def open_windows_on_monitors():
         for i in range(len(quarter_score_labels_CW)):  # Atualiza o histórico de sets na tela de controle
             if quarter_score_labels_CW[i][1] is not None:
                 quarter_score_labels_CW[i][1].config(text="0x0")  # Reseta para "0x0"
+    def atualizar_indicadores_de_tempo():
 
-    # 2. Função que ATUALIZA as cores das bolinhas com base na variável
-    def atualizar_cores_bolinhas():
-        """Verifica as variáveis timeTeam1 e timeTeam2 e atualiza as cores dos círculos."""
-        
-        # Atualiza os círculos do TIME 1
-        for i in range(MAX_TEMPOS):
-            bolinha_id = lista_ids_tempos_time1[i]
-            if i < timeTeam1:
-                canvas.itemconfig(bolinha_id, fill=COR_ATIVA)
-            else:
-                canvas.itemconfig(bolinha_id, fill=COR_INATIVA)
-                
-        # Atualiza os círculos do TIME 2
-        for i in range(MAX_TEMPOS):
-            bolinha_id = lista_ids_tempos_time2[i]
-            if i < timeTeam2: # <-- Usando a variável do time 2
-                canvas.itemconfig(bolinha_id, fill=COR_ATIVA)
-            else:
-                canvas.itemconfig(bolinha_id, fill=COR_INATIVA)
+            global current_quarter_display, timeTeam1, timeTeam2
 
-    # 4. Loop para DESENHAR as bolinhas na tela pela primeira vez
-    x1_inicial = 5*(secondary_monitor.width)/100
-    y1_inicial = 80*(secondary_monitor.height)/100
-    tamanho_bolinha = 60
-    espacamento = 30
+            # 1. Decide quantas bolinhas devem estar visíveis
+            if current_quarter_display <= 2:
+                bolinhas_a_mostrar = 2
+            else: # Períodos 3, 4 e prorrogações
+                bolinhas_a_mostrar = 3
 
-    for i in range(MAX_TEMPOS):
-        x0 = x1_inicial + i * (tamanho_bolinha + espacamento)
-        y0 = y1_inicial
-        x1 = x0 + tamanho_bolinha
-        y1 = y0 + tamanho_bolinha
-        # create_oval desenha um círculo/elipse. Passamos a cor inicial
-        bolinha_id1 = canvas.create_oval(x0, y0, x1, y1, fill=COR_INATIVA, outline="black")
-        # Adicionamos o ID retornado à nossa lista de controle
-        lista_ids_tempos_time1.append(bolinha_id1)
+            # --- ATUALIZA TIME 1 ---
+            for i in range(MAX_TEMPOS_VISIVEIS):
+                bolinha_id = lista_ids_tempos_time1[i]
+                if i < bolinhas_a_mostrar:
+                    canvas.itemconfig(bolinha_id, state='normal')
+                    if i < timeTeam1:
+                        canvas.itemconfig(bolinha_id, fill=COR_ATIVA_TEMPO)
+                    else:
+                        canvas.itemconfig(bolinha_id, fill=COR_INATIVA_TEMPO)
+                else:
+                    canvas.itemconfig(bolinha_id, state='hidden')
 
-    x2_inicial = 72*(secondary_monitor.width)/100
-    y2_inicial = 80*(secondary_monitor.height)/100
-    tamanho_bolinha = 60
-    espacamento = 30
-
-    for i in range(MAX_TEMPOS):
-        x0 = x2_inicial + i * (tamanho_bolinha + espacamento)
-        y0 = y2_inicial
-        x1 = x0 + tamanho_bolinha
-        y1 = y0 + tamanho_bolinha
-        # create_oval desenha um círculo/elipse. Passamos a cor inicial
-        bolinha_id2 = canvas.create_oval(x0, y0, x1, y1, fill=COR_INATIVA, outline="black")
-        # Adicionamos o ID retornado à nossa lista de controle
-        lista_ids_tempos_time2.append(bolinha_id2)
+            # --- ATUALIZA TIME 2 ---
+            for i in range(MAX_TEMPOS_VISIVEIS):
+                bolinha_id = lista_ids_tempos_time2[i]
+                if i < bolinhas_a_mostrar:
+                    canvas.itemconfig(bolinha_id, state='normal')
+                    if i < timeTeam2:
+                        canvas.itemconfig(bolinha_id, fill=COR_ATIVA_TEMPO)
+                    else:
+                        canvas.itemconfig(bolinha_id, fill=COR_INATIVA_TEMPO)
+                else:
+                    canvas.itemconfig(bolinha_id, state='hidden')
 
     # Função para atualizar o label do quarter atual
     def update_current_quarter():
@@ -448,22 +442,45 @@ def open_windows_on_monitors():
             score_label.place(relx=0.3 + i * 0.1, rely=0.75, relwidth=0.1, relheight=0.05)
 
         quarter_score_labels_CW.append((quarter_label, score_label))
+        
+    y_inicial_tempos = 82 * (secondary_monitor.height) / 100
+    tamanho_bolinha_tempos = 50
+    espacamento_tempos = 10
+    x_inicial_time1 = 23 * (secondary_monitor.width) / 100
+    for i in range(MAX_TEMPOS_VISIVEIS):
+        x0 = x_inicial_time1 + i * (tamanho_bolinha_tempos + espacamento_tempos)
+        y0 = y_inicial_tempos
+        x1 = x0 + tamanho_bolinha_tempos
+        y1 = y0 + tamanho_bolinha_tempos
+        bolinha_id = canvas.create_oval(x0, y0, x1, y1, fill=COR_INATIVA_TEMPO, outline="black")
+        lista_ids_tempos_time1.append(bolinha_id)
+
+    # Desenha os 3 círculos do TIME 2
+    largura_total_bolinhas = (tamanho_bolinha_tempos * MAX_TEMPOS_VISIVEIS) + (espacamento_tempos * (MAX_TEMPOS_VISIVEIS - 1))
+    x_inicial_time2 = (98 * (secondary_monitor.width) / 100) - largura_total_bolinhas
+    for i in range(MAX_TEMPOS_VISIVEIS):
+        x0 = x_inicial_time2 + i * (tamanho_bolinha_tempos + espacamento_tempos)
+        y0 = y_inicial_tempos
+        x1 = x0 + tamanho_bolinha_tempos
+        y1 = y0 + tamanho_bolinha_tempos
+        bolinha_id = canvas.create_oval(x0, y0, x1, y1, fill=COR_INATIVA_TEMPO, outline="black")
+        lista_ids_tempos_time2.append(bolinha_id)
 
     canvasTeam1 = canvas.create_text(18*(secondary_monitor.width)/100, 90, text=f"{team1_name}", font=("Anton", 55), fill=colorFont, anchor="center" )
     canvasscoreTeam1 = canvas.create_text(48*(secondary_monitor.width)/100, 37*(secondary_monitor.height)/100, text=f"{scoreTeam1}", font=("Anton", 200), fill=colorFont, anchor="e" )
     canvas.create_text(5*(secondary_monitor.width)/100, 70*(secondary_monitor.height)/100, text=f"FALTAS: ", font=("Anton", 60), fill=colorFont, anchor="w" )
     canvasfaltas1 = canvas.create_text(25*(secondary_monitor.width)/100, 70*(secondary_monitor.height)/100, text=f"{faltasTeam1}", font=("Anton", 60), fill=colorFont, anchor="w" )
-    #canvas.create_text(5*(secondary_monitor.width)/100, 75*(secondary_monitor.height)/100, text = "TEMPOS: ", font=("Anton", 60), fill=colorFont, anchor="nw" )
+    canvas.create_text(5*(secondary_monitor.width)/100, 75*(secondary_monitor.height)/100, text = "TEMPOS: ", font=("Anton", 60), fill=colorFont, anchor="nw" )
     #canvastimeTeam1 = canvas.create_text(25*(secondary_monitor.width)/100, 75*(secondary_monitor.height)/100, text = f"{timeTeam1}", font=("Anton", 60), fill=colorFont, anchor="nw")
 
     canvasCross = canvas.create_text(50*(secondary_monitor.width)/100, 39*(secondary_monitor.height)/100, text = "X", font=("Anton", 80), fill=colorFont, anchor="center")
-    canvas.create_text(50*(secondary_monitor.width)/100, 74*(secondary_monitor.height)/100, text = "TEMPOS", font=("Anton", 60), fill=colorFont, anchor="n" )
+    
 
     canvasTeam2 = canvas.create_text(82*(secondary_monitor.width)/100, 90, text=f"{team2_name}", font=("Anton", 55), fill=colorFont, anchor="center" )
     canvasscoreTeam2 = canvas.create_text(52*(secondary_monitor.width)/100, 37*(secondary_monitor.height)/100, text=f"{scoreTeam2}", font=("Anton", 200), fill=colorFont, anchor="w" )
     canvas.create_text(72*(secondary_monitor.width)/100, 70*(secondary_monitor.height)/100, text=f"FALTAS: ", font=("Anton", 60), fill=colorFont, anchor="w" )
     canvasfaltas2 = canvas.create_text(92*(secondary_monitor.width)/100, 70*(secondary_monitor.height)/100, text=f"{faltasTeam2}", font=("Anton", 60), fill=colorFont, anchor="w" )
-    #canvas.create_text(72*(secondary_monitor.width)/100, 75*(secondary_monitor.height)/100, text = "TEMPOS: ", font=("Anton", 60), fill=colorFont, anchor="nw" )
+    canvas.create_text(72*(secondary_monitor.width)/100, 75*(secondary_monitor.height)/100, text = "TEMPOS: ", font=("Anton", 60), fill=colorFont, anchor="nw" )
     #canvastimeTeam2 = canvas.create_text(92*(secondary_monitor.width)/100, 75*(secondary_monitor.height)/100, text = f"{timeTeam2}", font=("Anton", 60), fill=colorFont, anchor="nw")
     
     canvascurrentQuarter = canvas.create_text(50*(secondary_monitor.width)/100, 70*(secondary_monitor.height)/100, text=f"PERIODO ATUAL: {current_quarter_display}", font=("Anton", 60), fill=colorFont, anchor="center" )
@@ -854,9 +871,10 @@ def open_windows_on_monitors():
     separator2.place(relx=0.7, rely=0, relheight=0.8)
     separator3 = tk.Frame(controlWindow, bg="black", height=2)  # Defina a altura como 2 para uma linha fina
     separator3.place(relx=0, rely=0.8, relwidth=1)
-
-        # Executar as duas janelas Tkinter
+    atualizar_indicadores_de_tempo()
+     # Executar as duas janelas Tkinter
     root.mainloop()
+    
 
 # Chamar a função para abrir as janelas
 open_windows_on_monitors()
