@@ -5,10 +5,8 @@ from tkinter import filedialog
 from PIL import Image, ImageTk
 from screeninfo import get_monitors
 import os
-import subprocess
-import time
 import pygetwindow as gw
-import math
+from pygame import mixer
 
 # Variáveis globais do cronômetro
 timer_running = False
@@ -58,7 +56,7 @@ time_seconds = 600  # 08 minutos em segundos
 time_milliseconds = 0  # Começando com 0 milissegundos
 
 #Verificando arquitetura de pastas necessarias para rodar o codigo
-folder_names_1 = ["Atletas", "Bandeira", "Camera Interativa", "Equipes", "Eventos", "Imagens", "Patrocinadores", "Videos Abertura"]
+folder_names_1 = ["Atletas", "Bandeira", "Camera Interativa", "Equipes", "Eventos", "Imagens", "Patrocinadores", "Videos Abertura", "Sons"]
 
 def create_folder(name):
     folder_name = name
@@ -130,9 +128,9 @@ def configure_window_secondary(root, secondary_monitor):
 
 # Função para abrir as janelas em monitores diferentes
 def open_windows_on_monitors():
+    mixer.init()
     # Obter informações dos monitores conectados
     monitors = get_monitors()
-    
     # Verifica se há mais de um monitor disponível
     #if len(monitors) < 2:
     #    print("Segundo Monitor não conectado.")
@@ -446,6 +444,18 @@ def open_windows_on_monitors():
         quarterTeam2 -= 1
         update_score()
 
+    # Função para tocar um som de buzzer
+    def play_buzzer_sound():
+        try:
+            # Carrega o som da pasta 'Sons'
+            mixer.music.load("Sons/buzzer.mp3") 
+            # Toca o som
+            mixer.music.play()
+        except Exception as e:
+            print(f"Erro ao tocar o som: {e}")
+            # Opcional: Mostrar um pop-up de erro
+            # from tkinter import messagebox
+            # messagebox.showerror("Erro de Áudio", "Não foi possível encontrar ou tocar o arquivo 'buzzer.mp3' na pasta 'Sons'.")
 
     # Função para atualizar o cronômetro
     def update_timer():
@@ -453,6 +463,7 @@ def open_windows_on_monitors():
         if timer_running:
             # Verifica se o tempo acabou
             if time_seconds == 0 and time_milliseconds == 0:
+                play_buzzer_sound()
                 stop_timer()  # O cronômetro terminou, parar de atualizar
                 return
             
